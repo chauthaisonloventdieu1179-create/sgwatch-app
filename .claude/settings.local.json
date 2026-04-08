@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(dart analyze:*)",
+      "Bash(flutter pub add:*)",
+      "mcp__figma-desktop__get_screenshot",
+      "mcp__figma-desktop__get_design_context",
+      "Bash(ls \"e:\\\\JANPAN_CHAUTHAISON_SOURCE\\\\DU_AN_FREELANCER\\\\SGWatch\\\\App\\\\sgwatch_app\\\\assets\\\\images\"\" 2>/dev/null || echo \"dir not found \")",
+      "Bash(node -e \":*)",
+      "Bash(node -e \"require\\(''fs''\\).writeFileSync\\(''e:/JANPAN_CHAUTHAISON_SOURCE/DU_AN_FREELANCER/SGWatch/App/sgwatch_app/lib/features/orders/presentation/order_viewmodel.dart'', '''', ''utf8''\\); console.log\\(''cleared''\\);\")",
+      "Bash(find /e/JANPAN_CHAUTHAISON_SOURCE/DU_AN_FREELANCER/SGWatch/App/sgwatch_app/lib/app -type f -name \"*.dart\" -exec basename {} ;)",
+      "Bash(python3 -c \"import sys; s = sys.stdin.read\\(\\); print\\(s[:5000]\\)\")",
+      "Bash(ls -la \"C:\\\\Users\\\\SONCT9\\\\.claude\\\\projects\\\\e--JANPAN-CHAUTHAISON-SOURCE-DU-AN-FREELANCER-SGWatch-App-sgwatch-app\"\"*.jsonl 2>/dev/null || dir \"C:UsersSONCT9.claudeprojectse--JANPAN-CHAUTHAISON-SOURCE-DU-AN-FREELANCER-SGWatch-App-sgwatch-app\"\")",
+      "WebFetch(domain:provinces.open-api.vn)"
+    ]
+  }
+}

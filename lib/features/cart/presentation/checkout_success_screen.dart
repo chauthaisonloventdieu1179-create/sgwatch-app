@@ -1,0 +1,708 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sgwatch_app/app/config/constants.dart';
+import 'package:sgwatch_app/core/network/api_client.dart';
+import 'package:sgwatch_app/core/theme/app_colors.dart';
+import 'package:sgwatch_app/core/utils/price_formatter.dart';
+import 'package:sgwatch_app/features/orders/data/models/order_model.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class CheckoutSuccessScreen extends StatefulWidget {
+  final Map<String, dynamic> orderJson;
+
+  const CheckoutSuccessScreen({
+    super.key,
+    required this.orderJson,
+  });
+
+  @override
+  State<CheckoutSuccessScreen> createState() => _CheckoutSuccessScreenState();
+}
+
+class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
+  late final OrderDetailModel _order;
+  XFile? _selectedImage;
+  bool _isUploading = false;
+  bool _uploaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _order = OrderDetailModel.fromJson(widget.orderJson);
+  }
+
+  bool get _isVN {
+    final lower = _order.shippingCountry.toLowerCase();
+    return lower.contains('vn') ||
+        lower.contains('vietnam') ||
+        lower.contains('vi\u1ec7t');
+  }
+
+  String get _transferContent =>
+      '${_order.orderNumber} - ${_order.shippingName}';
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (file != null) setState(() => _selectedImage = file);
+  }
+
+  Future<void> _upload() async {
+    if (_selectedImage == null) return;
+    setState(() => _isUploading = true);
+
+    try {
+      final formData = FormData.fromMap({
+        'payment_receipt': await MultipartFile.fromFile(
+          _selectedImage!.path,
+          filename: _selectedImage!.name,
+        ),
+      });
+
+      final endpoint = Endpoints.paymentReceipt.replaceFirst(
+        '{id}',
+        _order.id.toString(),
+      );
+      await ApiClient().post(endpoint, data: formData);
+
+      if (!mounted) return;
+      setState(() {
+        _isUploading = false;
+        _uploaded = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tải biên lai thành công! Đang chờ xác nhận.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isUploading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tải biên lai thất bại: ${e.toString()}'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    }
+  }
+
+  Future<void> _openYouTubeGuide() async {
+    final uri = Uri.parse('https://youtu.be/HmFedZcUJbQ');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          // Pop all checkout screens back to home
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundGrey,
+        body: Column(
+          children: [
+            _buildAppBar(context),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildSuccessHeader(),
+                    const SizedBox(height: 16),
+                    _buildOrderSummary(),
+                    const SizedBox(height: 16),
+                    _buildBankInfoCard(),
+                    const SizedBox(height: 16),
+                    _buildUploadSection(),
+                    const SizedBox(height: 24),
+                    _buildBackButton(),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 10,
+        left: 20,
+        right: 20,
+        bottom: 10,
+      ),
+      decoration: const BoxDecoration(
+        color: AppColors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x0D000000),
+            blurRadius: 4,
+            offset: Offset(1, 2),
+          ),
+        ],
+      ),
+      child: const Row(
+        children: [
+          SizedBox(width: 30),
+          Expanded(
+            child: Text(
+              'Đặt hàng thành công',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
+              ),
+            ),
+          ),
+          SizedBox(width: 30),
+        ],
+      ),
+    );
+  }
+
+  // ── Success header ──────────────────────────────────────────
+
+  Widget _buildSuccessHeader() {
+    return _card(
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.check_circle,
+                size: 40, color: Colors.green.shade600),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Đặt hàng thành công!',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.black,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _order.orderNumber,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF3E0),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange.shade300),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    size: 18, color: Colors.orange.shade700),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Vui lòng chuyển khoản và tải lên biên lai để xác nhận đơn hàng',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.orange.shade700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Order summary ───────────────────────────────────────────
+
+  Widget _buildOrderSummary() {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Thông tin đơn hàng',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.black,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...(_order.items.map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        color: AppColors.backgroundGrey,
+                        child: Image.network(
+                          item.productImage,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.watch,
+                            size: 22,
+                            color: AppColors.greyLight,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.productName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${PriceFormatter.formatJPY(item.unitPrice)} x${item.quantity}',
+                            style: const TextStyle(
+                                fontSize: 12, color: AppColors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ))),
+          const Divider(height: 1, color: AppColors.greyLight),
+          const SizedBox(height: 10),
+          if (_order.discountAmount > 0)
+            _summaryRow(
+                'Giảm giá', '-${PriceFormatter.formatJPY(_order.discountAmount)}',
+                color: const Color(0xFF4CAF50)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Tổng thanh toán',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
+                ),
+              ),
+              Text(
+                PriceFormatter.formatJPY(_order.totalAmount),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(String label, String value, {Color? color}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: const TextStyle(fontSize: 13, color: AppColors.grey)),
+          Text(value,
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color ?? AppColors.black)),
+        ],
+      ),
+    );
+  }
+
+  // ── Bank info card (VN vs JP) ────────────────────────────────
+
+  Widget _buildBankInfoCard() {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
+              SizedBox(width: 8),
+              Text(
+                'Thông tin chuyển khoản',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1565C0),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_isVN) ...[
+            _bankRow('Ngân hàng', 'VIETCOMBANK'),
+            _bankRow('Số tài khoản', '9042628888'),
+            _bankRow('Chủ tài khoản', 'TRAN TOAN'),
+            _bankRow(
+              'Số tiền',
+              PriceFormatter.formatJPY(_order.totalAmount),
+              highlight: true,
+            ),
+            _bankRow('Nội dung CK', _transferContent),
+          ] else ...[
+            const Text(
+              'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.black,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+            _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
+            _bankRow('Loại TK', '普通 (Futsu)'),
+            _bankRow('Số tài khoản', '3061217'),
+            _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+            _bankRow(
+              'Số tiền',
+              PriceFormatter.formatJPY(_order.totalAmount),
+              highlight: true,
+            ),
+            _bankRow('Nội dung CK', _transferContent),
+            const SizedBox(height: 8),
+            // Tips box
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF3E0),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFFFCC02)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Cách tìm tên chi nhánh:',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFE65100),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Gõ chữ テ sau đó tìm đến chi nhánh 天満橋支店',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFFE65100),
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: _openYouTubeGuide,
+                    child: Row(
+                      children: [
+                        Icon(Icons.play_circle_fill,
+                            size: 20, color: Colors.red.shade600),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Video hướng dẫn chuyển khoản từ Yucho sang Mizuho',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.red.shade600,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _bankRow(String label, String value, {bool highlight = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 13, color: AppColors.grey),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: highlight ? FontWeight.bold : FontWeight.w600,
+                color: highlight ? AppColors.primary : AppColors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Upload section ──────────────────────────────────────────
+
+  Widget _buildUploadSection() {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Tải lên biên lai chuyển khoản',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.black,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Chụp ảnh hoặc tải ảnh màn hình sau khi chuyển khoản',
+            style: TextStyle(fontSize: 12, color: AppColors.grey),
+          ),
+          const SizedBox(height: 12),
+          if (_uploaded)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.green.shade300),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green.shade600),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Đã tải biên lai thành công!',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green.shade700,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else ...[
+            GestureDetector(
+              onTap: _isUploading ? null : _pickImage,
+              child: Container(
+                width: double.infinity,
+                height: 140,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundGrey,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _selectedImage != null
+                        ? Colors.green
+                        : AppColors.greyLight,
+                  ),
+                ),
+                child: _selectedImage != null
+                    ? Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(9),
+                            child: Image.file(
+                              File(_selectedImage!.path),
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  _uploadPlaceholder(hasFile: true),
+                            ),
+                          ),
+                          Positioned(
+                            top: 6,
+                            right: 6,
+                            child: GestureDetector(
+                              onTap: () =>
+                                  setState(() => _selectedImage = null),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: const BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.close,
+                                    size: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : _uploadPlaceholder(hasFile: false),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed:
+                    (_selectedImage == null || _isUploading) ? null : _upload,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.black,
+                  foregroundColor: AppColors.white,
+                  disabledBackgroundColor: AppColors.greyLight,
+                  disabledForegroundColor: AppColors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0,
+                ),
+                child: _isUploading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Xác nhận đã chuyển khoản',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _uploadPlaceholder({required bool hasFile}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          hasFile ? Icons.check_circle_outline : Icons.cloud_upload_outlined,
+          size: 36,
+          color: hasFile ? Colors.green : AppColors.greyPlaceholder,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          hasFile ? 'Đã chọn ảnh — nhấn để đổi' : 'Nhấn để chọn ảnh biên lai',
+          style: TextStyle(
+            fontSize: 13,
+            color: hasFile ? Colors.green : AppColors.greyPlaceholder,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Back button ─────────────────────────────────────────────
+
+  Widget _buildBackButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.black,
+          side: const BorderSide(color: AppColors.greyLight),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text(
+          'Về trang chủ',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  // ── Card helper ─────────────────────────────────────────────
+
+  Widget _card({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0D000000),
+            blurRadius: 4,
+            offset: Offset(1, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}

@@ -1,0 +1,276 @@
+import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/network/api_client.dart';
+import 'package:sgwatch_app/features/home/data/datasources/product_remote_datasource.dart';
+import 'package:sgwatch_app/features/home/data/models/product_model.dart';
+import 'package:sgwatch_app/features/home/data/models/review_model.dart';
+
+class ProductDetailViewModel extends ChangeNotifier {
+  ProductModel product;
+
+  ProductDetailViewModel(this.product);
+
+  final _datasource = ProductRemoteDatasource(ApiClient());
+
+  bool _isLoading = false;
+  String? _error;
+  int _currentImageIndex = 0;
+  bool _isDescriptionExpanded = false;
+  List<String> _images = [];
+  List<List<String>> _specs = [];
+  String? _productInfo;
+  String? _dealInfo;
+  String? _description;
+
+  // Reviews
+  List<ReviewModel> _reviews = [];
+  bool _isReviewsLoading = false;
+
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  int get currentImageIndex => _currentImageIndex;
+  bool get isDescriptionExpanded => _isDescriptionExpanded;
+  List<String> get images => _images;
+  List<List<String>> get visibleSpecs =>
+      _isDescriptionExpanded ? _specs : _specs.take(6).toList();
+  bool get hasMoreSpecs => _specs.length > 6;
+  String? get productInfo => _productInfo;
+  String? get dealInfo => _dealInfo;
+  String? get description => _description;
+  bool get isWatch => product.categorySlug == null || product.categorySlug == 'dong-ho';
+  String? get shortDescription => isWatch ? null : product.shortDescription;
+
+  List<ReviewModel> get reviews => _reviews;
+  bool get isReviewsLoading => _isReviewsLoading;
+  bool get isPurchased => product.isPurchased == true;
+
+  void setImageIndex(int index) {
+    _currentImageIndex = index;
+    notifyListeners();
+  }
+
+  void expandDescription() {
+    _isDescriptionExpanded = true;
+    notifyListeners();
+  }
+
+  Future<void> loadProductDetail() async {
+    if (product.slug == null || product.slug!.isEmpty) {
+      _images = [product.imageUrl];
+      _specs = _buildSpecsFromProduct(product);
+      notifyListeners();
+      return;
+    }
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      // Call detail + reviews in parallel
+      final results = await Future.wait([
+        _datasource.getProductDetail(product.slug!),
+        _datasource.getProductReviews(product.id),
+      ]);
+
+      final detail = results[0] as ProductModel;
+      final reviewResponse = results[1] as ReviewListResponse;
+
+      product = detail;
+
+      // Images from API: primary_image_url first, then images array (no duplicates)
+      final seen = <String>{};
+      final allImages = <String>[];
+      if (detail.imageUrl.isNotEmpty) {
+        seen.add(detail.imageUrl);
+        allImages.add(detail.imageUrl);
+      }
+      if (detail.images != null) {
+        for (final img in detail.images!) {
+          if (seen.add(img.imageUrl)) {
+            allImages.add(img.imageUrl);
+          }
+        }
+      }
+      _images = allImages.isNotEmpty ? allImages : [detail.imageUrl];
+
+      _productInfo = detail.productInfo;
+      _dealInfo = detail.dealInfo;
+      _description = detail.description;
+      _specs = _buildSpecsFromProduct(detail);
+      _reviews = reviewResponse.reviews;
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = 'Không thể tải chi tiết sản phẩm.';
+      notifyListeners();
+    }
+  }
+
+  /// Reload reviews only (after create/update/delete)
+  Future<void> reloadReviews() async {
+    _isReviewsLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _datasource.getProductReviews(product.id);
+      _reviews = response.reviews;
+    } catch (_) {}
+
+    _isReviewsLoading = false;
+    notifyListeners();
+  }
+
+  /// Create review
+  Future<bool> createReview({
+    required int rating,
+    String? title,
+    String? content,
+    List<String>? imagePaths,
+  }) async {
+    try {
+      await _datasource.createReview(
+        productId: product.id,
+        rating: rating,
+        title: title,
+        content: content,
+        imagePaths: imagePaths,
+      );
+      await reloadReviews();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Update review
+  Future<bool> updateReview({
+    required int reviewId,
+    required int rating,
+    String? title,
+    String? content,
+    List<String>? existingImages,
+    List<String>? newImagePaths,
+  }) async {
+    try {
+      await _datasource.updateReview(
+        reviewId: reviewId,
+        rating: rating,
+        title: title,
+        content: content,
+        existingImages: existingImages,
+        newImagePaths: newImagePaths,
+      );
+      await reloadReviews();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Delete review
+  Future<bool> deleteReview(int reviewId) async {
+    try {
+      await _datasource.deleteReview(reviewId);
+      await reloadReviews();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Attribute keys to skip (already shown above or duplicated)
+  static const _skipAttributeKeys = {
+    'brand', 'brand_name', 'category', 'category_name',
+    'price', 'original_price', 'price_jpy', 'original_price_jpy',
+    'price_vnd', 'original_price_vnd', 'sale_percent',
+    'name', 'slug', 'sku', 'description', 'short_description',
+    'product_info', 'deal_info', 'image', 'images', 'image_url',
+    'gender', 'movement_type', 'condition',
+    'stock_quantity', 'warranty', 'warranty_months',
+    'points', 'is_featured', 'is_favorited', 'is_purchased',
+    'average_rating', 'review_count', 'view_count', 'sold_count',
+  };
+
+  List<List<String>> _buildSpecsFromProduct(ProductModel p) {
+    final specs = <List<String>>[];
+    if (p.sku != null) specs.add(['Mã sản phẩm', p.sku!]);
+
+    // Brand: ưu tiên brandName, fallback sang attributes['brand']
+    final brand = p.brandName
+        ?? p.attributes?['brand']?.toString()
+        ?? p.attributes?['brand_name']?.toString();
+    if (brand != null && brand.isNotEmpty) {
+      specs.add(['Thương hiệu', brand]);
+    }
+
+    if (p.gender != null) specs.add(['Giới tính', _mapGender(p.gender!)]);
+    if (p.movementType != null) specs.add(['Kiểu máy', _mapMovement(p.movementType!)]);
+    if (p.condition != null) specs.add(['Tình trạng', _mapCondition(p.condition!)]);
+    if (p.warrantyMonths != null && p.warrantyMonths! > 0) {
+      specs.add(['Bảo hành', '${p.warrantyMonths} tháng']);
+    }
+    // Attributes from API (laptop, ipad, etc.) — skip duplicates
+    if (p.attributes != null) {
+      for (final entry in p.attributes!.entries) {
+        if (_skipAttributeKeys.contains(entry.key)) continue;
+        final value = entry.value?.toString();
+        if (value == null || value.isEmpty) continue;
+        specs.add([_mapAttributeKey(entry.key), value]);
+      }
+    }
+    return specs;
+  }
+
+  static const _attributeLabels = {
+    'year': 'Năm sản xuất',
+    'color': 'Màu sắc',
+    'gpu': 'Card đồ họa',
+    'ports': 'Cổng kết nối',
+    'target_customer': 'Đối tượng',
+    'battery': 'Pin',
+    'design': 'Thiết kế',
+    'security': 'Bảo mật',
+    'screen': 'Màn hình',
+    'cpu': 'CPU',
+    'ram': 'RAM',
+    'storage': 'Ổ cứng',
+    'os': 'Hệ điều hành',
+    'weight': 'Trọng lượng',
+    'size': 'Kích thước',
+    'thong_so_ky_thuat': 'Thông số chi tiết',
+  };
+
+  String _mapAttributeKey(String key) {
+    return _attributeLabels[key] ?? key;
+  }
+
+  String _mapGender(String value) {
+    switch (value) {
+      case 'male': return 'Nam';
+      case 'female': return 'Nữ';
+      case 'unisex': return 'Unisex';
+      default: return value;
+    }
+  }
+
+  String _mapMovement(String value) {
+    switch (value) {
+      case 'quartz': return 'Pin';
+      case 'automatic':
+      case 'mechanical':
+      case 'solar':
+      default: return 'Cơ (Automatic)';
+    }
+  }
+
+  String _mapCondition(String value) {
+    switch (value) {
+      case 'new': return 'Mới 100%';
+      case 'used': return 'Đã qua sử dụng';
+      case 'refurbished': return 'Refurbished';
+      default: return value;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+name: sgwatch_app
+description: ""
+publish_to: 'none' 
+
+version: 1.1.5
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  dio: ^5.9.1
+  shared_preferences: ^2.5.3
+  image_picker: ^1.2.1
+  url_launcher: ^6.3.2
+  webview_flutter: ^4.10.0
+  path_provider: ^2.1.5
+  open_filex: ^4.5.0
+  video_player: ^2.10.1
+  shimmer: ^3.0.0
+  flutter_stripe: ^11.5.0
+  flutter_launcher_icons: ^0.13.1
+  pusher_channels_flutter: ^2.2.1
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.4
+  flutter_local_notifications: ^18.0.1
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo/
+    - assets/images/
+    - assets/images/huongdanmuahang/
+    - assets/videos/
+    # - assets/icons/
+    # - assets/sounds/
+    - assets/logo/logo-app.png
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/appicon.png"
+  # nếu bạn có icon adaptive Android:
+  # adaptive_icon_background: "#000000"
+  # adaptive_icon_foreground: "assets/images/logo_foreground.png"

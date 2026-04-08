@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "726210232782",
+    "project_id": "sgwatch-b8282",
+    "storage_bucket": "sgwatch-b8282.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726210232782:android:026674f2f82d19222d2b9f",
+        "android_client_info": {
+          "package_name": "com.sg.sgwatch_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi6u3v24neQhzRr0qCKDMFlIeQmYyKt6s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
