@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Chăm sóc khách hàng',
+          'Tư vấn trực tiếp',
           style: TextStyle(
             color: AppColors.black,
             fontSize: 16,

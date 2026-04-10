@@ -3,8 +3,35 @@ import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/chat/presentation/chat_screen.dart';
 
-class FloatingSocialButtons extends StatelessWidget {
+class FloatingSocialButtons extends StatefulWidget {
   const FloatingSocialButtons({super.key});
+
+  @override
+  State<FloatingSocialButtons> createState() => _FloatingSocialButtonsState();
+}
+
+class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void _showZaloQr(BuildContext context) {
     showDialog(
@@ -103,6 +130,7 @@ class FloatingSocialButtons extends StatelessWidget {
       bottom: 16,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // Zalo
           _buildImageButton(
@@ -110,59 +138,110 @@ class FloatingSocialButtons extends StatelessWidget {
             assetPath: 'assets/logo/zalo-logo.png',
           ),
           const SizedBox(height: 10),
-          // Chat CSKH
-          GestureDetector(
-            onTap: () => _openChat(context),
-            child: ValueListenableBuilder<int>(
-              valueListenable: ChatUnreadService.instance.unreadCount,
-              builder: (_, unread, __) {
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x40000000),
-                            blurRadius: 6,
-                            offset: Offset(0, 2),
+          // Chat CSKH với animation nhấp nháy
+          ScaleTransition(
+            scale: _scaleAnimation,
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => _openChat(context),
+              child: ValueListenableBuilder<int>(
+                valueListenable: ChatUnreadService.instance.unreadCount,
+                builder: (_, unread, __) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Label "Tư vấn trực tiếp"
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(14),
+                            bottomLeft: Radius.circular(14),
                           ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.headset_mic, size: 22, color: AppColors.white),
-                      ),
-                    ),
-                    if (unread > 0)
-                      Positioned(
-                        top: -4,
-                        right: -4,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-                          child: Center(
-                            child: Text(
-                              unread > 99 ? '99+' : '$unread',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x40000000),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
                             ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Tư vấn\ntrực tiếp',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            height: 1.4,
                           ),
                         ),
                       ),
-                  ],
-                );
-              },
+                      // FAB icon button
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.headset_mic,
+                                size: 22,
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                          if (unread > 0)
+                            Positioned(
+                              top: -4,
+                              right: -4,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 18,
+                                  minHeight: 18,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    unread > 99 ? '99+' : '$unread',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ],
