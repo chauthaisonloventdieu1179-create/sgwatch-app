@@ -191,6 +191,15 @@ class ProductDetailViewModel extends ChangeNotifier {
     'stock_quantity', 'warranty', 'warranty_months',
     'points', 'is_featured', 'is_favorited', 'is_purchased',
     'average_rating', 'review_count', 'view_count', 'sold_count',
+    'thong_so_ky_thuat', // parsed separately below
+  };
+
+  // Labels inside thong_so_ky_thuat that duplicate fixed rows above
+  static const _thongSoSkipLabels = {
+    'thương hiệu',
+    'số hiệu sản phẩm',
+    'mã sản phẩm',
+    'giới tính',
   };
 
   List<List<String>> _buildSpecsFromProduct(ProductModel p) {
@@ -211,8 +220,9 @@ class ProductDetailViewModel extends ChangeNotifier {
     if (p.warrantyMonths != null && p.warrantyMonths! > 0) {
       specs.add(['Bảo hành', '${p.warrantyMonths} tháng']);
     }
-    // Attributes from API (laptop, ipad, etc.) — skip duplicates
+
     if (p.attributes != null) {
+      // Generic attributes (electronics: gpu, cpu, ram, etc.)
       for (final entry in p.attributes!.entries) {
         if (_skipAttributeKeys.contains(entry.key)) continue;
         final raw = entry.value;
@@ -231,8 +241,32 @@ class ProductDetailViewModel extends ChangeNotifier {
         if (value.isEmpty) continue;
         specs.add([_mapAttributeKey(entry.key), value]);
       }
+
+      // Parse thong_so_ky_thuat thành từng hàng label | value
+      final thongSo = p.attributes!['thong_so_ky_thuat']?.toString();
+      if (thongSo != null && thongSo.isNotEmpty) {
+        _appendThongSoKyThuat(thongSo, specs);
+      }
     }
+
     return specs;
+  }
+
+  void _appendThongSoKyThuat(String raw, List<List<String>> specs) {
+    // Tách theo dòng trống (\r\n\r\n hoặc \n\n)
+    final lines = raw.split(RegExp(r'\r?\n\r?\n'));
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) continue;
+      final colonIdx = trimmed.indexOf(':');
+      if (colonIdx < 0) continue;
+      final label = trimmed.substring(0, colonIdx).trim();
+      final value = trimmed.substring(colonIdx + 1).trim();
+      if (label.isEmpty || value.isEmpty) continue;
+      // Bỏ các dòng trùng với fixed rows đã hiển thị
+      if (_thongSoSkipLabels.contains(label.toLowerCase())) continue;
+      specs.add([label, value]);
+    }
   }
 
   static const _attributeLabels = {
@@ -251,7 +285,6 @@ class ProductDetailViewModel extends ChangeNotifier {
     'os': 'Hệ điều hành',
     'weight': 'Trọng lượng',
     'size': 'Kích thước',
-    'thong_so_ky_thuat': 'Thông số chi tiết',
   };
 
   String _mapAttributeKey(String key) {
