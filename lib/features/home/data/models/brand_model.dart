@@ -53,17 +53,17 @@ class BrandModel {
       6: 'assets/images/longines-logo.png',
       7: 'assets/images/tissot-logo.png',
       // 8: 'assets/images/omega-logo.png', // Omega removed
-      11: 'assets/images/donghocap-logo.jpg', // Đồng hồ khác
+      11: 'assets/images/donghokhac-logo.png', // Đồng hồ khác
       // Row 1 special items
-      -10: 'assets/images/donghonu.webp',
-      -11: 'assets/images/donghocap-logo.jpg',
+      -10: 'assets/images/male-logo.png',       // Đồng hồ nữ
+      -11: 'assets/images/couple-logo.png',     // Đồng hồ cặp đôi
       -12: 'assets/images/donghoorder-logo.png',
-      -13: 'assets/images/donghoorder-logo.png', // nội địa reuses order logo
+      -13: 'assets/images/noidia-logo.png',     // Đồng hồ nội địa
       // Row 2 items
       -20: 'assets/images/laptop-logo.jpg',
       -21: 'assets/images/mackbook.webp',
       -22: 'assets/images/ipad.jpg',
-      -23: 'assets/images/donghoorder-logo.png', // đồng hồ cũ dùng logo order
+      -23: 'assets/images/donghocu-logo.png',   // Đồng hồ cũ
     };
     return map[id];
   }
