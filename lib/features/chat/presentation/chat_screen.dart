@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
@@ -360,10 +361,22 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
     // Text message
-    return SelectableText(
-      msg.message ?? '',
-      style: const TextStyle(
-          fontSize: 14, color: AppColors.black, height: 1.4),
+    final text = msg.message ?? '';
+    return GestureDetector(
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: text));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đã copy tin nhắn'),
+            duration: Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14, color: AppColors.black, height: 1.4),
+      ),
     );
   }
 
