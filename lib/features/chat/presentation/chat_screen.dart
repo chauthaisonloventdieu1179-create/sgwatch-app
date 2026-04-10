@@ -360,7 +360,7 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
     // Text message
-    return Text(
+    return SelectableText(
       msg.message ?? '',
       style: const TextStyle(
           fontSize: 14, color: AppColors.black, height: 1.4),

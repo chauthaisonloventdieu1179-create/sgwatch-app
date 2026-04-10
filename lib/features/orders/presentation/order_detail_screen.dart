@@ -153,29 +153,31 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
 
     final d = _detail!;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          _buildStatusCard(d),
-          const SizedBox(height: 12),
-          _buildItemsCard(d),
-          const SizedBox(height: 12),
-          _buildPriceCard(d),
-          const SizedBox(height: 12),
-          _buildShippingCard(d),
-          const SizedBox(height: 12),
-          _buildPaymentCard(d),
-          if (d.cancelReason != null) ...[
+    return SelectionArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildStatusCard(d),
             const SizedBox(height: 12),
-            _buildCancelCard(d),
+            _buildItemsCard(d),
+            const SizedBox(height: 12),
+            _buildPriceCard(d),
+            const SizedBox(height: 12),
+            _buildShippingCard(d),
+            const SizedBox(height: 12),
+            _buildPaymentCard(d),
+            if (d.cancelReason != null) ...[
+              const SizedBox(height: 12),
+              _buildCancelCard(d),
+            ],
+            if (d.status == OrderStatus.completed) ...[
+              const SizedBox(height: 16),
+              _buildInvoiceButton(d),
+            ],
+            const SizedBox(height: 24),
           ],
-          if (d.status == OrderStatus.completed) ...[
-            const SizedBox(height: 16),
-            _buildInvoiceButton(d),
-          ],
-          const SizedBox(height: 24),
-        ],
+        ),
       ),
     );
   }
@@ -1228,7 +1230,7 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
             ),
           ),
           Expanded(
-            child: Text(
+            child: SelectableText(
               value,
               style: TextStyle(
                 fontSize: 13,

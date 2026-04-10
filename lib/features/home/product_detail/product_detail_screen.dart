@@ -80,32 +80,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           _buildAppBar(context),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildImageSlider(),
-                  _buildProductInfo(),
-                  const SizedBox(height: 10),
-                  if (_viewModel.productInfo != null) _buildProductInfoBox(),
-                  if (_viewModel.productInfo != null)
+            child: SelectionArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildImageSlider(),
+                    _buildProductInfo(),
                     const SizedBox(height: 10),
-                  if (_viewModel.dealInfo != null) _buildDealBox(),
-                  if (_viewModel.dealInfo != null) const SizedBox(height: 10),
-                  if (_viewModel.description != null) _buildDescriptionBox(),
-                  if (_viewModel.description != null)
+                    if (_viewModel.productInfo != null) _buildProductInfoBox(),
+                    if (_viewModel.productInfo != null)
+                      const SizedBox(height: 10),
+                    if (_viewModel.dealInfo != null) _buildDealBox(),
+                    if (_viewModel.dealInfo != null) const SizedBox(height: 10),
+                    if (_viewModel.description != null) _buildDescriptionBox(),
+                    if (_viewModel.description != null)
+                      const SizedBox(height: 10),
+                    if (_viewModel.shortDescription != null &&
+                        _viewModel.shortDescription!.isNotEmpty)
+                      _buildShortDescriptionBox(),
+                    if (_viewModel.shortDescription != null &&
+                        _viewModel.shortDescription!.isNotEmpty)
+                      const SizedBox(height: 10),
+                    _buildSpecsTable(),
                     const SizedBox(height: 10),
-                  if (_viewModel.shortDescription != null &&
-                      _viewModel.shortDescription!.isNotEmpty)
-                    _buildShortDescriptionBox(),
-                  if (_viewModel.shortDescription != null &&
-                      _viewModel.shortDescription!.isNotEmpty)
-                    const SizedBox(height: 10),
-                  _buildSpecsTable(),
-                  const SizedBox(height: 10),
-                  _buildReviewSection(),
-                  const SizedBox(height: 100),
-                ],
+                    _buildReviewSection(),
+                    const SizedBox(height: 100),
+                  ],
+                ),
               ),
             ),
           ),

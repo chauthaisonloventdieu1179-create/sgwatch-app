@@ -109,7 +109,8 @@ class _GuideScreenState extends State<GuideScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: SelectionArea(
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,6 +333,7 @@ class _GuideScreenState extends State<GuideScreen> {
             const SizedBox(height: 24),
           ],
         ),
+      ),
       ),
     );
   }
