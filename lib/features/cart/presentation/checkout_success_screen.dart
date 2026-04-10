@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
