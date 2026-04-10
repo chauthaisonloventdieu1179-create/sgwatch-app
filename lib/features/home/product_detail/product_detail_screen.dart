@@ -246,6 +246,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     height: 1.4,
                   ),
                 ),
+                if (p.isPreOrder)
+                  const TextSpan(
+                    text: ' - Nhận Order',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      height: 1.4,
+                    ),
+                  ),
                 if (p.sku != null && p.sku!.isNotEmpty)
                   TextSpan(
                     text: '  #${p.sku}',

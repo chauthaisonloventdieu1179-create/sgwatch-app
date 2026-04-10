@@ -117,6 +117,16 @@ class HomeProductCard extends StatelessWidget {
                                   height: 1.3,
                                 ),
                               ),
+                              if (product.isPreOrder)
+                                const TextSpan(
+                                  text: ' - Nhận Order',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                    height: 1.3,
+                                  ),
+                                ),
                               if (product.sku != null && product.sku!.isNotEmpty)
                                 TextSpan(
                                   text: '  #${product.sku}',

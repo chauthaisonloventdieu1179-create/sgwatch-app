@@ -32,6 +32,7 @@ class ProductModel {
   final List<ProductImage>? images;
   final double? salePercent;
   final Map<String, dynamic>? attributes;
+  final String? stockType;
 
   const ProductModel({
     required this.id,
@@ -67,7 +68,10 @@ class ProductModel {
     this.images,
     this.salePercent,
     this.attributes,
+    this.stockType,
   });
+
+  bool get isPreOrder => stockType == 'pre_order';
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     final brand = json['brand'] as Map<String, dynamic>?;
@@ -122,6 +126,7 @@ class ProductModel {
       images: images,
       salePercent: _parseNullableDouble(json['sale_percent']),
       attributes: json['attributes'] as Map<String, dynamic>?,
+      stockType: json['stock_type']?.toString(),
     );
   }
 
