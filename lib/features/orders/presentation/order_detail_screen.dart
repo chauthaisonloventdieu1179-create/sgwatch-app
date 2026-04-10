@@ -660,7 +660,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     try {
       final token = await LocalStorage.getToken();
-      final endpoint = Endpoints.paymentReceipt.replaceFirst('{id}', d.id.toString());
+      final endpoint = Endpoints.orderInvoice.replaceFirst('{id}', d.id.toString());
       final base = Env.baseURL.endsWith('/') ? Env.baseURL.substring(0, Env.baseURL.length - 1) : Env.baseURL;
       final url = '$base${Env.apiPath}$endpoint';
 
