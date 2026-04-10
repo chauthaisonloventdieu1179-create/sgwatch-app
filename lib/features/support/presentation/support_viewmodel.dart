@@ -7,24 +7,24 @@ class SupportViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  String get phoneNumber => '00-0000-0000';
-
-  List<String> get policyItems => const [
-        'Chi phí vận chuyển',
-        'Chính sách hoàn tiền',
-        'Chính sách bảo mật',
-        'Chính sách bảo hành đồng hồ',
-        'Chính sách bảo hành laptop',
-        'Chính sách bảo hành sim',
-      ];
+  String get phoneNumber => '090 3978 1993';
 
   List<String> get socialItems => const [
         'Facebook',
-        // 'Youtube',
-        'Messenger',
         'Zalo',
-        // 'Khiếu nại',
+        'TikTok',
       ];
+
+  String? socialLink(String title) {
+    switch (title) {
+      case 'Facebook':
+        return 'https://www.facebook.com/share/1B28CbZ8yg/?mibextid=wwXIfr';
+      case 'TikTok':
+        return 'https://www.tiktok.com/@sgwatch2021?_r=1&_t=ZS-95Pmu2Mvz3E';
+      default:
+        return null;
+    }
+  }
 
   Future<void> loadSupportData() async {
     _isLoading = true;
@@ -32,7 +32,6 @@ class SupportViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Replace with API call
       await Future.delayed(const Duration(milliseconds: 100));
     } catch (e) {
       _error = e.toString();
@@ -40,13 +39,5 @@ class SupportViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-  }
-
-  void openPolicy(int index) {
-    // TODO: Navigate to policy detail
-  }
-
-  void openSocialLink(int index) {
-    // TODO: Open external link
   }
 }

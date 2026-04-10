@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/support/presentation/support_viewmodel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -31,6 +32,104 @@ class _SupportScreenState extends State<SupportScreen> {
     super.dispose();
   }
 
+  Future<void> _openLink(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  void _showZaloQr() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval(
+                child: Image.asset(
+                  'assets/logo/zalo-logo.png',
+                  width: 48,
+                  height: 48,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Vui lòng kết bạn để trao đổi\ntrực tiếp với chúng tôi.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.black,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x1A000000),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/qr-zalo.jpg',
+                    width: 280,
+                    height: 280,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.black,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Đóng',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onSocialTap(String title) {
+    if (title == 'Zalo') {
+      _showZaloQr();
+      return;
+    }
+    final link = _viewModel.socialLink(title);
+    if (link != null) _openLink(link);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,10 +158,6 @@ class _SupportScreenState extends State<SupportScreen> {
           children: [
             const SizedBox(height: 16),
             _buildContactCard(),
-            // const SizedBox(height: 24),
-            // _buildSectionTitle('Hỗ trợ khách hàng'),
-            // const SizedBox(height: 8),
-            // _buildPolicyCard(),
             const SizedBox(height: 24),
             _buildSectionTitle('Kết nối với chúng tôi'),
             const SizedBox(height: 8),
@@ -126,71 +221,6 @@ class _SupportScreenState extends State<SupportScreen> {
     );
   }
 
-  // Widget _buildPolicyCard() {
-  //   final items = _viewModel.policyItems;
-
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16),
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         color: AppColors.white,
-  //         borderRadius: BorderRadius.circular(10),
-  //         boxShadow: const [
-  //           BoxShadow(
-  //             color: Color(0x0D000000),
-  //             blurRadius: 4,
-  //             offset: Offset(1, 2),
-  //           ),
-  //         ],
-  //       ),
-  //       child: Column(
-  //         children: items.asMap().entries.map((entry) {
-  //           final isLast = entry.key == items.length - 1;
-  //           return _buildPolicyItem(entry.value, isLast, entry.key);
-  //         }).toList(),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildPolicyItem(String title, bool isLast, int index) {
-  //   return Column(
-  //     children: [
-  //       InkWell(
-  //         onTap: () => _viewModel.openPolicy(index),
-  //         child: Padding(
-  //           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-  //           child: Row(
-  //             children: [
-  //               Expanded(
-  //                 child: Text(
-  //                   title,
-  //                   style: const TextStyle(
-  //                     fontSize: 14,
-  //                     color: AppColors.black,
-  //                   ),
-  //                 ),
-  //               ),
-  //               const Icon(
-  //                 Icons.chevron_right,
-  //                 color: AppColors.grey,
-  //                 size: 22,
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //       if (!isLast)
-  //         const Divider(
-  //           height: 1,
-  //           indent: 20,
-  //           endIndent: 20,
-  //           color: AppColors.greyLight,
-  //         ),
-  //     ],
-  //   );
-  // }
-
   Widget _buildSocialCard() {
     final items = _viewModel.socialItems;
 
@@ -211,18 +241,18 @@ class _SupportScreenState extends State<SupportScreen> {
         child: Column(
           children: items.asMap().entries.map((entry) {
             final isLast = entry.key == items.length - 1;
-            return _buildSocialItem(entry.value, isLast, entry.key);
+            return _buildSocialItem(entry.value, isLast);
           }).toList(),
         ),
       ),
     );
   }
 
-  Widget _buildSocialItem(String title, bool isLast, int index) {
+  Widget _buildSocialItem(String title, bool isLast) {
     return Column(
       children: [
         InkWell(
-          onTap: () => _viewModel.openSocialLink(index),
+          onTap: () => _onSocialTap(title),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             child: Row(
@@ -238,7 +268,11 @@ class _SupportScreenState extends State<SupportScreen> {
                     ),
                   ),
                 ),
-                const Icon(Icons.open_in_new, color: AppColors.grey, size: 20),
+                Icon(
+                  title == 'Zalo' ? Icons.qr_code : Icons.open_in_new,
+                  color: AppColors.grey,
+                  size: 20,
+                ),
               ],
             ),
           ),
@@ -258,7 +292,7 @@ class _SupportScreenState extends State<SupportScreen> {
     const logoMap = {
       'Facebook': 'assets/logo/logo-facebook.webp',
       'Zalo': 'assets/logo/zalo-logo.png',
-      'Messenger': 'assets/logo/messenger-logo.png',
+      'TikTok': 'assets/logo/logo-tiktok.webp',
     };
 
     final logoPath = logoMap[title];

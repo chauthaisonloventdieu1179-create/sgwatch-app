@@ -37,6 +37,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   OrderDetailModel? _detail;
   bool _isLoading = true;
   String? _error;
+  bool _isCancelling = false;
 
   @override
   void initState() {
@@ -175,6 +176,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             if (d.status == OrderStatus.completed) ...[
               const SizedBox(height: 16),
               _buildInvoiceButton(d),
+            ],
+            if (d.status == OrderStatus.pending) ...[
+              const SizedBox(height: 16),
+              _buildCancelOrderButton(d),
             ],
             const SizedBox(height: 24),
           ],
@@ -657,6 +662,88 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   bool _isDownloadingInvoice = false;
+
+  // ── Cancel order button ────────────────────────────────────
+
+  Widget _buildCancelOrderButton(OrderDetailModel d) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: OutlinedButton.icon(
+        onPressed: _isCancelling ? null : () => _cancelOrder(d),
+        icon: _isCancelling
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: AppColors.primary),
+              )
+            : const Icon(Icons.cancel_outlined, size: 20, color: AppColors.primary),
+        label: Text(
+          _isCancelling ? 'Đang hủy...' : 'Hủy đơn hàng',
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: AppColors.primary),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _cancelOrder(OrderDetailModel d) async {
+    // Confirm dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Hủy đơn hàng'),
+        content: const Text('Bạn có chắc muốn hủy đơn hàng này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Không'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              'Hủy đơn',
+              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isCancelling = true);
+    try {
+      final endpoint = Endpoints.cancelOrder.replaceFirst('{id}', d.id.toString());
+      await ApiClient().post(endpoint);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Đã hủy đơn hàng thành công'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.of(context).pop(); // quay về danh sách
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isCancelling = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Không thể hủy đơn hàng: ${e.toString()}'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    }
+  }
 
   Future<void> _downloadInvoice(OrderDetailModel d) async {
     setState(() => _isDownloadingInvoice = true);
