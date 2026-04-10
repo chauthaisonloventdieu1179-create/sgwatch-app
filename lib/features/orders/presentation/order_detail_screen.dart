@@ -732,7 +732,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.of(context).pop(); // quay về danh sách
+      Navigator.of(context).pop(true); // pop(true) → orders_screen refresh
     } catch (e) {
       if (!mounted) return;
       setState(() => _isCancelling = false);

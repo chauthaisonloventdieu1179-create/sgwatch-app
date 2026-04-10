@@ -219,7 +219,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   bool _needsPayment(OrderListItem order) =>
-      order.paymentStatus == 'pending' && order.paymentMethod != 'stripe';
+      order.status == OrderStatus.pending &&
+      order.paymentStatus == 'pending' &&
+      order.paymentMethod != 'stripe';
 
   void _navigateToDetail(OrderListItem order) {
     Navigator.push(
@@ -231,7 +233,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
           viewModel: _viewModel,
         ),
       ),
-    );
+    ).then((cancelled) {
+      if (cancelled == true) {
+        _viewModel.refreshCurrentTab();
+      }
+    });
   }
 
   Widget _buildOrderCard(OrderListItem order) {
