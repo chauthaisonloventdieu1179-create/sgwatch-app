@@ -215,8 +215,20 @@ class ProductDetailViewModel extends ChangeNotifier {
     if (p.attributes != null) {
       for (final entry in p.attributes!.entries) {
         if (_skipAttributeKeys.contains(entry.key)) continue;
-        final value = entry.value?.toString();
-        if (value == null || value.isEmpty) continue;
+        final raw = entry.value;
+        if (raw == null) continue;
+        final String value;
+        if (entry.key == 'battery') {
+          final num? n = raw is num ? raw : num.tryParse(raw.toString());
+          if (n != null && n <= 1) {
+            value = '${(n * 100).round()}%';
+          } else {
+            value = raw.toString();
+          }
+        } else {
+          value = raw.toString();
+        }
+        if (value.isEmpty) continue;
         specs.add([_mapAttributeKey(entry.key), value]);
       }
     }

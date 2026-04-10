@@ -355,7 +355,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                '+${p.points} đ',
+                '+${p.points} point',
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -451,6 +451,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget _buildDescriptionBox() {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       color: AppColors.white,
       child: Column(
@@ -494,6 +495,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget _buildShortDescriptionBox() {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       color: AppColors.white,
       child: Column(

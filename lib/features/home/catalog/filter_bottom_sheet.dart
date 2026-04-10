@@ -76,8 +76,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   ];
 
   static const _stockTypes = [
-    _FilterOption(value: 'in_stock', label: 'Có sẵn'),
-    _FilterOption(value: 'pre_order', label: 'Đặt trước'),
+    _FilterOption(value: 'in_stock', label: 'Hàng có sẵn'),
+    _FilterOption(value: 'pre_order', label: 'Hàng order'),
   ];
 
   @override

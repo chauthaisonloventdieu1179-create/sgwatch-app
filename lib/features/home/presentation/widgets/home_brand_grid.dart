@@ -71,7 +71,9 @@ class _BrandItem extends StatelessWidget {
             // Logo
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 8, 6, 4),
+                padding: brand.id == 3
+                    ? const EdgeInsets.fromLTRB(2, 4, 2, 2)
+                    : const EdgeInsets.fromLTRB(6, 8, 6, 4),
                 child: assetPath != null
                     ? Image.asset(
                         assetPath,
@@ -87,7 +89,7 @@ class _BrandItem extends StatelessWidget {
               child: Text(
                 brand.name,
                 style: const TextStyle(
-                  fontSize: 9,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: AppColors.black,
                   height: 1.2,

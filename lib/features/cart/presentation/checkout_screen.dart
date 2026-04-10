@@ -844,6 +844,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   color: AppColors.black,
                 ),
               ),
+              const SizedBox(width: 4),
+              const Text(
+                '(Thời gian nhận hàng mong muốn)',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.grey,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
