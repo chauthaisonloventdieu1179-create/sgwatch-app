@@ -1223,20 +1223,36 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 110,
             child: Text(
               label,
               style: const TextStyle(fontSize: 13, color: AppColors.grey),
             ),
           ),
           Expanded(
-            child: SelectableText(
+            child: Text(
               value,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: highlight ? FontWeight.bold : FontWeight.w600,
                 color: highlight ? AppColors.primary : AppColors.black,
               ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: value));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Đã copy: $value'),
+                  duration: const Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(left: 6),
+              child: Icon(Icons.copy_rounded, size: 16, color: AppColors.grey),
             ),
           ),
         ],
