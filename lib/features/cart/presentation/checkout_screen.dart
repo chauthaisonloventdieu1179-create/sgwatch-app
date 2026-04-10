@@ -1313,6 +1313,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ],
           ),
+          if (_selectedAddress?.isVn == true) ...[
+            const SizedBox(height: 10),
+            const Text(
+              '🚚 Thời gian ship là 5 đến 7 ngày',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.grey,
+              ),
+            ),
+          ],
         ],
       ),
     );
