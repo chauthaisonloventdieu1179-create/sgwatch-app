@@ -380,13 +380,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
-                PriceFormatter.formatJPY(d.totalAmount),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    PriceFormatter.formatJPY(d.totalAmount),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  Text(
+                    '≈ ${PriceFormatter.formatVND(d.totalAmount * 175)}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.grey,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

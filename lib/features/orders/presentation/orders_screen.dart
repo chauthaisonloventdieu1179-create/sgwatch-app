@@ -385,6 +385,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               color: AppColors.primary,
                             ),
                           ),
+                          Text(
+                            '≈ ${PriceFormatter.formatVND(order.totalAmount * 175)}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.grey,
+                            ),
+                          ),
                         ],
                       ),
                     ],
