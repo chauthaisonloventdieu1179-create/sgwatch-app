@@ -1,12 +1,14 @@
 class BannerModel {
   final int id;
   final String imageUrl;
+  final String? link;
   final int sortOrder;
   final bool isActive;
 
   const BannerModel({
     required this.id,
     required this.imageUrl,
+    this.link,
     this.sortOrder = 0,
     this.isActive = true,
   });
@@ -22,6 +24,7 @@ class BannerModel {
     return BannerModel(
       id: json['id'] as int,
       imageUrl: (json['media_url'] ?? json['image_url'])?.toString() ?? '',
+      link: json['link']?.toString(),
       sortOrder: json['sort_order'] as int? ?? 0,
       isActive: json['is_active'] as bool? ?? true,
     );

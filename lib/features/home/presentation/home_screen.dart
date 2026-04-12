@@ -13,6 +13,8 @@ import 'package:sgwatch_app/features/favorites/presentation/favorite_viewmodel.d
 import 'package:sgwatch_app/features/home/presentation/widgets/home_section_header.dart';
 import 'package:sgwatch_app/features/big_sale/presentation/big_sale_screen.dart';
 import 'package:sgwatch_app/features/guide/presentation/guide_screen.dart';
+import 'package:sgwatch_app/features/home/presentation/banner_webview_screen.dart';
+import 'package:sgwatch_app/features/home/presentation/blog_list_screen.dart';
 import 'package:sgwatch_app/features/store_info/presentation/store_info_screen.dart';
 import 'package:sgwatch_app/features/about/presentation/about_screen.dart';
 import 'package:sgwatch_app/features/refund_policy/presentation/refund_policy_screen.dart';
@@ -192,6 +194,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildQuickButton(
+                      label: 'BLOG',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const BlogListScreen()),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -201,6 +213,14 @@ class _HomeScreenState extends State<HomeScreen> {
             HomeBannerSlider(
               banners: _viewModel.banners,
               onPageChanged: _viewModel.setBannerIndex,
+              onBannerTap: (banner) {
+                final link = banner.link;
+                if (link != null && link.isNotEmpty) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => BannerWebViewScreen(url: link),
+                  ));
+                }
+              },
             ),
             const SizedBox(height: 10),
 

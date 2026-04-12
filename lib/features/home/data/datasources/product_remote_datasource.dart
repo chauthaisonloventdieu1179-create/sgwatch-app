@@ -5,6 +5,7 @@ import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/features/home/data/models/banner_model.dart';
 import 'package:sgwatch_app/features/home/data/models/brand_model.dart';
 import 'package:sgwatch_app/features/home/data/models/product_model.dart';
+import 'package:sgwatch_app/features/home/data/models/post_model.dart';
 import 'package:sgwatch_app/features/home/data/models/review_model.dart';
 
 class ProductRemoteDatasource {
@@ -18,6 +19,15 @@ class ProductRemoteDatasource {
     final list = response.data['data']['banners'] as List;
     return list
         .map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// GET /posts (no token required)
+  Future<List<PostModel>> getPosts() async {
+    final response = await _apiClient.get(Endpoints.posts);
+    final list = response.data['data']['posts'] as List;
+    return list
+        .map((e) => PostModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 

@@ -79,9 +79,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       body: Column(
         children: [
           _buildAppBar(context),
-          Expanded(
-            child: SelectionArea(
-              child: SingleChildScrollView(
+          if (_viewModel.isLoading)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            )
+          else
+            Expanded(
+              child: SelectionArea(
+                child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

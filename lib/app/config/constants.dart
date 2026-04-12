@@ -74,6 +74,7 @@ class Endpoints {
 
   // Misc
   static const String banners = '/banners';
+  static const String posts = '/posts';
   static const String settings = '/settings';
 }
 
