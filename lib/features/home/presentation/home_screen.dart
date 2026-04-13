@@ -260,6 +260,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
+            // 4a. Collections section
+            if (_viewModel.collections.isNotEmpty) ...[
+              for (final collection in _viewModel.collections) ...[
+                HomeSectionHeader(
+                  title: 'BST Đồng hồ nội địa bán chạy 2026',
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 15),
+                HomeProductHorizontalList(
+                  products: collection.products,
+                  favoriteViewModel: _favoriteVM,
+                  onProductTap: (product) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                          builder: (_) => ProductDetailScreen(product: product),
+                        ))
+                        .then((_) => _viewModel.refreshBanners());
+                  },
+                  onBuyTap: (product) => _onBuyTap(product),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ],
+
             // 4. Watch products section
             HomeSectionHeader(
               title: 'Đồng hồ',
@@ -289,29 +313,6 @@ class _HomeScreenState extends State<HomeScreen> {
               onBuyTap: (product) => _onBuyTap(product),
             ),
             const SizedBox(height: 24),
-
-            // 4b. Collections section
-            if (_viewModel.collections.isNotEmpty) ...[
-              for (final collection in _viewModel.collections) ...[
-                HomeSectionHeader(
-                  title: 'BỘ SƯU TẬP ĐỒNG HỒ NỘI ĐỊA BÁN CHẠY 2026',
-                ),
-                const SizedBox(height: 15),
-                HomeProductHorizontalList(
-                  products: collection.products,
-                  favoriteViewModel: _favoriteVM,
-                  onProductTap: (product) {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(
-                          builder: (_) => ProductDetailScreen(product: product),
-                        ))
-                        .then((_) => _viewModel.refreshBanners());
-                  },
-                  onBuyTap: (product) => _onBuyTap(product),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ],
 
             // 5. Laptop section
             HomeSectionHeader(

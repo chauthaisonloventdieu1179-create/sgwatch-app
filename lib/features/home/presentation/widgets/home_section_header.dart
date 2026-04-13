@@ -5,12 +5,14 @@ class HomeSectionHeader extends StatelessWidget {
   final String title;
   final String? actionText;
   final VoidCallback? onActionTap;
+  final double fontSize;
 
   const HomeSectionHeader({
     super.key,
     required this.title,
     this.actionText,
     this.onActionTap,
+    this.fontSize = 16,
   });
 
   @override
@@ -22,8 +24,8 @@ class HomeSectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: fontSize,
               fontWeight: FontWeight.bold,
               color: AppColors.black,
             ),
