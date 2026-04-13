@@ -7,7 +7,7 @@ import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/price_formatter.dart';
 import 'package:sgwatch_app/features/address/data/datasources/address_remote_datasource.dart';
 import 'package:sgwatch_app/features/address/data/models/address_model.dart';
-import 'package:sgwatch_app/features/address/presentation/add_address_screen.dart';
+import 'package:sgwatch_app/features/address/presentation/address_list_screen.dart';
 import 'package:sgwatch_app/features/address/presentation/address_viewmodel.dart';
 import 'package:sgwatch_app/features/cart/data/models/cart_item_model.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
@@ -36,7 +36,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Discount code
   bool _isApplyingDiscount = false;
   String? _appliedDiscountCode;
-  int _discountPercentage = 0;
+  int _discountAmount = 0; // Fixed JPY amount
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ];
     }
     return [
-      'Chuyển khoản ngân hàng',
+      'Chuyển khoản toàn bộ',
       'Daibiki (代引き)',
       'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
     ];
@@ -112,9 +112,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   /// Maps display label → API value for payment_method field.
   static const _paymentMethodApiMap = <String, String>{
-    'Cọc 1 triệu + Ship COD': 'deposit_transfer',
+    'Cọc 1 triệu (Thanh toán khi nhận hàng)': 'deposit_transfer',
     'Chuyển khoản toàn bộ': 'bank_transfer',
-    'Chuyển khoản ngân hàng': 'bank_transfer',
     'Daibiki (代引き)': 'cod',
     'Stripe (Visa, Mastercard, AmEx, JCB, Discover)': 'stripe',
   };
@@ -135,14 +134,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
     return 0;
   }
-  double get _discount =>
-      _discountPercentage > 0 ? _subtotal * _discountPercentage / 100 : 0;
+  bool get _isDaibiki => _selectedPaymentMethod == 'Daibiki (代引き)';
+  bool get _isStripe =>
+      _selectedPaymentMethod != null &&
+      _selectedPaymentMethod!.startsWith('Stripe');
+  double get _daibikiFee => _isDaibiki ? 1500 : 0;
+  double get _stripeFee {
+    if (!_isStripe) return 0;
+    if (_subtotal < 50000) return 1500;
+    if (_subtotal < 100000) return 3000;
+    return 5000;
+  }
+  double get _serviceFee => _daibikiFee + _stripeFee;
+  double get _discount => _discountAmount > 0 ? _discountAmount.toDouble() : 0;
   double get _pointDiscount => _usePoint ? _profileVM.point.toDouble() : 0;
   double get _grandTotal =>
-      (_subtotal + _shippingFee - _discount - _pointDiscount).clamp(
-        0,
-        double.infinity,
-      );
+      (_subtotal + _shippingFee + _serviceFee - _discount - _pointDiscount)
+          .clamp(0, double.infinity);
 
   @override
   Widget build(BuildContext context) {
@@ -162,8 +170,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: Column(
                 children: [
                   _buildAddressSection(),
-                  const SizedBox(height: 8),
-                  _buildShippingNote(),
                   const SizedBox(height: 12),
                   _buildProductList(),
                   const SizedBox(height: 12),
@@ -176,6 +182,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   _buildPointSection(),
                   const SizedBox(height: 12),
                   _buildPaymentMethodSection(),
+                  const SizedBox(height: 8),
+                  _buildShippingNote(),
                   const SizedBox(height: 12),
                   _buildOrderSummary(),
                 ],
@@ -383,196 +391,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  void _showAddressPicker() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+  Future<void> _showAddressPicker() async {
+    final result = await Navigator.push<AddressModel>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddressListScreen(
+          selectionMode: true,
+          selectedAddressId: _selectedAddress?.id,
+        ),
       ),
-      builder: (ctx) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          maxChildSize: 0.8,
-          minChildSize: 0.3,
-          expand: false,
-          builder: (_, scrollController) {
-            return Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 8),
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.greyLight,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'Chọn địa chỉ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: () async {
-                          Navigator.pop(ctx);
-                          final beforeCount = _addressVM.addresses.length;
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => AddAddressScreen(viewModel: _addressVM),
-                            ),
-                          );
-                          if (_addressVM.addresses.length > beforeCount) {
-                            setState(() {
-                              _selectedAddress = _addressVM.addresses.last;
-                              _selectedPaymentMethod = null;
-                            });
-                          }
-                        },
-                        child: const Row(
-                          children: [
-                            Icon(Icons.add, size: 16, color: AppColors.primary),
-                            SizedBox(width: 4),
-                            Text(
-                              'Thêm mới',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                Expanded(
-                  child: _addressVM.addresses.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'Chưa có địa chỉ nào',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        )
-                      : ListView.separated(
-                          controller: scrollController,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _addressVM.addresses.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 8),
-                          itemBuilder: (_, index) {
-                            final address = _addressVM.addresses[index];
-                            final isSelected =
-                                address.id == _selectedAddress?.id;
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.pop(ctx);
-                                _selectAddress(address);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? AppColors.primary
-                                        : AppColors.greyLight,
-                                    width: isSelected ? 1.5 : 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                address.label,
-                                                style: const TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.black,
-                                                ),
-                                              ),
-                                              if (address.isDefault) ...[
-                                                const SizedBox(width: 8),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.primary
-                                                        .withValues(alpha: 0.1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          4,
-                                                        ),
-                                                  ),
-                                                  child: const Text(
-                                                    'Mặc định',
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: AppColors.primary,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            address.fullAddress,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (isSelected)
-                                      const Icon(
-                                        Icons.check_circle,
-                                        color: AppColors.primary,
-                                        size: 22,
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
+    if (result != null && mounted) {
+      await _selectAddress(result);
+    }
   }
 
   // ─── Discount Code Logic ───────────────────────────────────
@@ -591,7 +422,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       final discountCode =
           response.data['data']['discount_code'] as Map<String, dynamic>;
       final available = discountCode['available'] as bool;
-      final percentage = discountCode['percentage'] as int;
+      final amount = (discountCode['amount'] as num?)?.toInt() ?? 0;
 
       if (!available) {
         setState(() => _isApplyingDiscount = false);
@@ -604,7 +435,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         setState(() {
           _isApplyingDiscount = false;
           _appliedDiscountCode = code;
-          _discountPercentage = percentage;
+          _discountAmount = amount;
         });
       }
     } catch (_) {
@@ -621,7 +452,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _clearDiscountCode() {
     setState(() {
       _appliedDiscountCode = null;
-      _discountPercentage = 0;
+      _discountAmount = 0;
       _discountController.clear();
     });
   }
@@ -966,7 +797,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
-                                    '-$_discountPercentage%',
+                                    '-${PriceFormatter.formatJPY(_discountAmount.toDouble())}',
                                     style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
@@ -1044,7 +875,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 const Icon(Icons.check_circle, size: 14, color: Colors.green),
                 const SizedBox(width: 4),
                 Text(
-                  'Đã áp dụng mã "$_appliedDiscountCode" — giảm $_discountPercentage%',
+                  'Đã áp dụng mã "$_appliedDiscountCode" — giảm ${PriceFormatter.formatJPY(_discountAmount.toDouble())}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: Colors.green,
@@ -1150,66 +981,103 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           else
             ...methods.map((method) {
               final isSelected = _selectedPaymentMethod == method;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedPaymentMethod = method),
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: methods.indexOf(method) > 0 ? 8 : 0,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.greyLight,
-                      width: isSelected ? 1.5 : 1,
+              final isDaibikiMethod = method == 'Daibiki (代引き)';
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () =>
+                        setState(() => _selectedPaymentMethod = method),
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        top: methods.indexOf(method) > 0 ? 8 : 0,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.greyLight,
+                          width: isSelected ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isSelected
+                                ? Icons.radio_button_checked
+                                : Icons.radio_button_off,
+                            size: 20,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.greyPlaceholder,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  method,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: isSelected
+                                        ? AppColors.black
+                                        : AppColors.grey,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
+                                ),
+                                if (isDaibikiMethod) ...[
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    'Thanh toán khi nhận hàng',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          if (method.contains('Stripe'))
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildCardIcon('Visa'),
+                                const SizedBox(width: 4),
+                                _buildCardIcon('MC'),
+                                const SizedBox(width: 4),
+                                _buildCardIcon('JCB'),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        isSelected
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_off,
-                        size: 20,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.greyPlaceholder,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          method,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: isSelected
-                                ? AppColors.black
-                                : AppColors.grey,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
+                  if (isSelected && isDaibikiMethod) ...[
+                    const SizedBox(height: 6),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Text(
+                        'Phí dịch vụ +1,500¥',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (method.contains('Stripe'))
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildCardIcon('Visa'),
-                            const SizedBox(width: 4),
-                            _buildCardIcon('MC'),
-                            const SizedBox(width: 4),
-                            _buildCardIcon('JCB'),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
+                  ],
+                ],
               );
             }),
         ],
@@ -1259,6 +1127,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ? '${PriceFormatter.formatJPY(_shippingFee)} (≈ ${PriceFormatter.formatVND(_shippingFee * 175)})'
                 : 'Miễn phí',
           ),
+          if (_serviceFee > 0) ...[
+            const SizedBox(height: 8),
+            _buildSummaryRow(
+              _isDaibiki ? 'Phí dịch vụ Daibiki' : 'Phí dịch vụ Stripe',
+              '+${PriceFormatter.formatJPY(_serviceFee)}',
+              valueColor: AppColors.primary,
+            ),
+          ],
           if (_discount > 0) ...[
             const SizedBox(height: 8),
             _buildSummaryRow(

@@ -12,7 +12,7 @@ import 'package:sgwatch_app/features/home/catalog/product_list_screen.dart';
 import 'package:sgwatch_app/features/home/product_detail/product_detail_screen.dart';
 import 'package:sgwatch_app/features/favorites/presentation/favorite_viewmodel.dart';
 import 'package:sgwatch_app/features/home/presentation/widgets/home_section_header.dart';
-import 'package:sgwatch_app/features/big_sale/presentation/big_sale_screen.dart';
+import 'package:sgwatch_app/features/big_sale/presentation/big_sale_list_screen.dart';
 import 'package:sgwatch_app/features/guide/presentation/guide_screen.dart';
 import 'package:sgwatch_app/features/home/presentation/banner_webview_screen.dart';
 import 'package:sgwatch_app/features/home/presentation/blog_list_screen.dart';
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: 'BIG SALE',
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => const BigSaleScreen()),
+                            builder: (_) => const BigSaleListScreen()),
                       ),
                     ),
                   ),

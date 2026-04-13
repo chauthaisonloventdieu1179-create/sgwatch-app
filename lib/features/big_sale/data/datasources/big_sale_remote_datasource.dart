@@ -7,6 +7,15 @@ class BigSaleRemoteDatasource {
 
   BigSaleRemoteDatasource(this._apiClient);
 
+  /// GET /big-sales
+  Future<List<BigSaleModel>> getBigSales() async {
+    final response = await _apiClient.get(Endpoints.bigSale);
+    final list = response.data['data']['big_sales'] as List;
+    return list
+        .map((e) => BigSaleModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   /// GET /big-sales/{id}
   Future<BigSaleModel> getBigSale(int id) async {
     final response = await _apiClient.get('${Endpoints.bigSale}/$id');

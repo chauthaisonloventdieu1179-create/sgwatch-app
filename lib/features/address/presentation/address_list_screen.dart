@@ -7,7 +7,14 @@ import 'package:sgwatch_app/features/address/presentation/address_viewmodel.dart
 import 'package:sgwatch_app/features/address/presentation/widgets/address_card.dart';
 
 class AddressListScreen extends StatefulWidget {
-  const AddressListScreen({super.key});
+  final bool selectionMode;
+  final int? selectedAddressId;
+
+  const AddressListScreen({
+    super.key,
+    this.selectionMode = false,
+    this.selectedAddressId,
+  });
 
   @override
   State<AddressListScreen> createState() => _AddressListScreenState();
@@ -15,10 +22,12 @@ class AddressListScreen extends StatefulWidget {
 
 class _AddressListScreenState extends State<AddressListScreen> {
   late final AddressViewModel _viewModel;
+  int? _selectedId;
 
   @override
   void initState() {
     super.initState();
+    _selectedId = widget.selectedAddressId;
     final datasource = AddressRemoteDatasource(ApiClient());
     _viewModel = AddressViewModel(datasource);
     _viewModel.addListener(_onChanged);
@@ -43,8 +52,12 @@ class _AddressListScreenState extends State<AddressListScreen> {
         builder: (_) => AddAddressScreen(viewModel: _viewModel),
       ),
     );
-    if (result == true) {
-      // Address was added, list auto-updates via viewModel
+    if (result == true && widget.selectionMode) {
+      // In selection mode: auto-select the newly added address
+      if (_viewModel.addresses.isNotEmpty) {
+        final newAddr = _viewModel.addresses.last;
+        if (mounted) Navigator.pop(context, newAddr);
+      }
     }
   }
 
@@ -184,9 +197,9 @@ class _AddressListScreenState extends State<AddressListScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Địa chỉ',
-          style: TextStyle(
+        title: Text(
+          widget.selectionMode ? 'Chọn địa chỉ' : 'Địa chỉ',
+          style: const TextStyle(
             color: AppColors.black,
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -251,12 +264,19 @@ class _AddressListScreenState extends State<AddressListScreen> {
     return _viewModel.addresses.asMap().entries.map((entry) {
       final index = entry.key;
       final address = entry.value;
+      final isSelected = _selectedId != null && address.id == _selectedId;
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: AddressCard(
           address: address,
-          onTap: () => _navigateToEditAddress(index),
-          onDelete: () => _confirmDelete(index),
+          selected: isSelected,
+          onTap: widget.selectionMode
+              ? () {
+                  setState(() => _selectedId = address.id);
+                  Navigator.pop(context, address);
+                }
+              : () => _navigateToEditAddress(index),
+          onDelete: widget.selectionMode ? null : () => _confirmDelete(index),
         ),
       );
     }).toList();

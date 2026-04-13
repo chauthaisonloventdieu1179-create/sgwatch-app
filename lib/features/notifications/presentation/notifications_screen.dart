@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/services/notification_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/features/notifications/data/models/notification_model.dart';
@@ -22,6 +23,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     _viewModel.addListener(_onChanged);
     _scrollController.addListener(_onScroll);
     _viewModel.loadNotifications();
+    // User đã vào trang thông báo → xóa badge
+    NotificationUnreadService.instance.clearAll();
   }
 
   void _onChanged() {
@@ -209,6 +212,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildNotificationCard(NotificationModel notification) {
     return GestureDetector(
       onTap: () {
+        _viewModel.markAsRead(notification.id);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) =>

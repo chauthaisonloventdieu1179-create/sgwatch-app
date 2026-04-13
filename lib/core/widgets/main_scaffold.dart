@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/services/notification_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/auth_guard.dart';
 import 'package:sgwatch_app/core/widgets/floating_social_buttons.dart';
@@ -68,7 +69,13 @@ class _MainScaffoldState extends State<MainScaffold> {
               children: [
                 _buildNavItem(Icons.home_outlined, 'Trang chủ', 0),
                 _buildNavItem(Icons.favorite_outline, 'Yêu thích', 1),
-                _buildNavItem(Icons.notifications_none, 'Thông báo', 2),
+                ValueListenableBuilder<int>(
+                  valueListenable:
+                      NotificationUnreadService.instance.unreadCount,
+                  builder: (_, count, __) =>
+                      _buildNavItem(Icons.notifications_none, 'Thông báo', 2,
+                          badge: count),
+                ),
                 _buildNavItem(Icons.person_outline, 'Tài khoản', 3),
               ],
             ),
@@ -78,7 +85,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(IconData icon, String label, int index, {int badge = 0}) {
     final isSelected = _currentIndex == index;
     final color = isSelected ? AppColors.black : AppColors.grey;
 
@@ -90,7 +97,37 @@ class _MainScaffoldState extends State<MainScaffold> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 26, color: color),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(icon, size: 26, color: color),
+                if (badge > 0)
+                  Positioned(
+                    top: -4,
+                    right: -6,
+                    child: Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        badge > 99 ? '99+' : '$badge',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: 2),
             Text(
               label,

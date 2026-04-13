@@ -103,6 +103,7 @@ class CartViewModel extends ChangeNotifier {
       // Reload cart to get fresh totalItems for badge
       await _reloadCartSilently();
       _isAdding = false;
+      _error = null;
       notifyListeners();
       return true;
     } catch (e) {
@@ -112,6 +113,20 @@ class CartViewModel extends ChangeNotifier {
         debugPrint('[CartVM] responseData=${e.response?.data}');
         debugPrint('[CartVM] requestUrl=${e.requestOptions.uri}');
         debugPrint('[CartVM] requestData=${e.requestOptions.data}');
+        final data = e.response?.data;
+        if (data is Map && data['message'] != null) {
+          final msg = data['message'] as String;
+          if (msg.toLowerCase().contains('insufficient stock') ||
+              msg.toLowerCase().contains('available: 0')) {
+            _error = 'Sản phẩm đã hết hàng.';
+          } else {
+            _error = msg;
+          }
+        } else {
+          _error = 'Không thể thêm vào giỏ hàng.';
+        }
+      } else {
+        _error = 'Không thể thêm vào giỏ hàng.';
       }
       _isAdding = false;
       notifyListeners();

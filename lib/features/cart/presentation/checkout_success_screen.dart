@@ -35,6 +35,8 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
     _order = OrderDetailModel.fromJson(widget.orderJson);
   }
 
+  bool get _isDaibiki => _order.paymentMethod == 'cod';
+
   bool get _isVN {
     final lower = _order.shippingCountry.toLowerCase();
     return lower.contains('vn') ||
@@ -126,10 +128,12 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                       _buildSuccessHeader(),
                       const SizedBox(height: 16),
                       _buildOrderSummary(),
-                      const SizedBox(height: 16),
-                      _buildBankInfoCard(),
-                      const SizedBox(height: 16),
-                      _buildUploadSection(),
+                      if (!_isDaibiki) ...[
+                        const SizedBox(height: 16),
+                        _buildBankInfoCard(),
+                        const SizedBox(height: 16),
+                        _buildUploadSection(),
+                      ],
                       const SizedBox(height: 24),
                       _buildBackButton(),
                       const SizedBox(height: 24),
@@ -217,31 +221,32 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orange.shade300),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.warning_amber_rounded,
-                    size: 18, color: Colors.orange.shade700),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Vui lòng chuyển khoản và tải lên biên lai để xác nhận đơn hàng',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.orange.shade700,
+          if (!_isDaibiki)
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF3E0),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded,
+                      size: 18, color: Colors.orange.shade700),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Vui lòng chuyển khoản và tải lên biên lai để xác nhận đơn hàng',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange.shade700,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

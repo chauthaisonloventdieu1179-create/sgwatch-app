@@ -8,7 +8,9 @@ import 'package:sgwatch_app/features/home/presentation/widgets/home_product_card
 import 'package:sgwatch_app/features/home/product_detail/product_detail_screen.dart';
 
 class BigSaleScreen extends StatefulWidget {
-  const BigSaleScreen({super.key});
+  final int id;
+
+  const BigSaleScreen({super.key, required this.id});
 
   @override
   State<BigSaleScreen> createState() => _BigSaleScreenState();
@@ -25,7 +27,7 @@ class _BigSaleScreenState extends State<BigSaleScreen> {
     _viewModel.addListener(_onChanged);
     _favoriteVM.addListener(_onChanged);
     _cartVM.addListener(_onChanged);
-    _viewModel.loadBigSale(1);
+    _viewModel.loadBigSale(widget.id);
   }
 
   void _onChanged() {
@@ -104,7 +106,7 @@ class _BigSaleScreenState extends State<BigSaleScreen> {
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () => _viewModel.loadBigSale(1),
+              onPressed: () => _viewModel.loadBigSale(widget.id),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.white,

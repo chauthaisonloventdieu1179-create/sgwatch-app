@@ -11,8 +11,9 @@ import 'package:sgwatch_app/features/auth/presentation/register_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 import 'package:sgwatch_app/features/home/presentation/home_viewmodel.dart';
 import 'package:sgwatch_app/features/profile/presentation/profile_viewmodel.dart';
-import 'package:sgwatch_app/core/widgets/main_scaffold.dart';
 import 'package:sgwatch_app/core/services/firebase_notification_service.dart';
+import 'package:sgwatch_app/core/services/notification_unread_service.dart';
+import 'package:sgwatch_app/core/widgets/main_scaffold.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -67,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ProfileViewModel.prefetchUserInfo(),
         CartViewModel().loadCart(),
         FirebaseNotificationService.registerToken(),
+        NotificationUnreadService.prefetchUnreadCount(),
       ]);
 
       if (!mounted) return;

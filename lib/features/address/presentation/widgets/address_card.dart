@@ -6,12 +6,14 @@ class AddressCard extends StatelessWidget {
   final AddressModel address;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
+  final bool selected;
 
   const AddressCard({
     super.key,
     required this.address,
     this.onTap,
     this.onDelete,
+    this.selected = false,
   });
 
   @override
@@ -25,6 +27,9 @@ class AddressCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(10),
+          border: selected
+              ? Border.all(color: AppColors.primary, width: 1.5)
+              : null,
           boxShadow: const [
             BoxShadow(
               color: Color(0x0D000000),
@@ -77,19 +82,29 @@ class AddressCard extends StatelessWidget {
                 ],
               ),
             ),
-            // Delete button
-            GestureDetector(
-              onTap: onDelete,
-              behavior: HitTestBehavior.opaque,
-              child: const Padding(
+            // Selected checkmark or delete button
+            if (selected)
+              const Padding(
                 padding: EdgeInsets.all(8),
                 child: Icon(
-                  Icons.delete_outline,
+                  Icons.check_circle,
                   size: 24,
                   color: AppColors.primary,
                 ),
+              )
+            else
+              GestureDetector(
+                onTap: onDelete,
+                behavior: HitTestBehavior.opaque,
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 24,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),

@@ -67,7 +67,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Không thể thêm vào giỏ hàng.')),
+        SnackBar(content: Text(_cartVM.error ?? 'Không thể thêm vào giỏ hàng.')),
       );
     }
   }

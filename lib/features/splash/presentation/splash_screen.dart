@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/storage/local_storage.dart';
 import 'package:sgwatch_app/core/widgets/main_scaffold.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
+import 'package:sgwatch_app/core/services/notification_unread_service.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 
 import 'package:sgwatch_app/features/home/presentation/home_viewmodel.dart';
@@ -36,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
       futures.add(ProfileViewModel.prefetchUserInfo());
       futures.add(CartViewModel.prefetchCart());
       futures.add(ChatUnreadService.prefetchUnreadCount());
+      futures.add(NotificationUnreadService.prefetchUnreadCount());
       futures.add(FirebaseNotificationService.registerToken());
     }
 
