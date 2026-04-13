@@ -72,6 +72,9 @@ class Endpoints {
   static const String fcmToken = '/fcm_token';
   static const String withdraw = '/withdraw';
 
+  // Collections
+  static const String collections = '/shop/collections';
+
   // Misc
   static const String banners = '/banners';
   static const String posts = '/posts';

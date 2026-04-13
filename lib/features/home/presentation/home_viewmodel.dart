@@ -5,6 +5,7 @@ import 'package:sgwatch_app/features/home/data/datasources/product_remote_dataso
 import 'package:sgwatch_app/features/home/data/models/banner_model.dart';
 import 'package:sgwatch_app/features/home/data/models/brand_model.dart';
 import 'package:sgwatch_app/features/home/data/models/category_model.dart';
+import 'package:sgwatch_app/features/home/data/models/collection_model.dart';
 import 'package:sgwatch_app/features/home/data/models/product_model.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -15,6 +16,7 @@ class HomeViewModel extends ChangeNotifier {
   static List<ProductModel> _cachedLaptops = [];
   static List<ProductModel> _cachedMacbooks = [];
   static List<ProductModel> _cachedIpads = [];
+  static List<CollectionModel> _cachedCollections = [];
 
   static bool get hasCachedFeatured => _cachedFeatured.isNotEmpty;
   static bool get hasCachedBanners => _cachedBanners.isNotEmpty;
@@ -66,7 +68,14 @@ class HomeViewModel extends ChangeNotifier {
       _fetchCategoryProducts(datasource, 2, _cachedLaptops, (v) => _cachedLaptops = v),
       _fetchCategoryProducts(datasource, 3, _cachedMacbooks, (v) => _cachedMacbooks = v),
       _fetchCategoryProducts(datasource, 4, _cachedIpads, (v) => _cachedIpads = v),
+      _fetchCollections(datasource),
     ]);
+  }
+
+  static Future<void> _fetchCollections(ProductRemoteDatasource ds) async {
+    try {
+      _cachedCollections = await ds.getCollections();
+    } catch (_) {}
   }
 
   static Future<void> _fetchFeatured(ProductRemoteDatasource ds) async {
@@ -115,6 +124,7 @@ class HomeViewModel extends ChangeNotifier {
   List<ProductModel> _laptops = [];
   List<ProductModel> _macbooks = [];
   List<ProductModel> _ipads = [];
+  List<CollectionModel> _collections = [];
   int _currentBannerIndex = 0;
 
   bool get isLoading => _isLoading;
@@ -126,6 +136,7 @@ class HomeViewModel extends ChangeNotifier {
   List<ProductModel> get laptops => _laptops;
   List<ProductModel> get macbooks => _macbooks;
   List<ProductModel> get ipads => _ipads;
+  List<CollectionModel> get collections => _collections;
 
   int get currentBannerIndex => _currentBannerIndex;
 
@@ -146,6 +157,7 @@ class HomeViewModel extends ChangeNotifier {
       _laptops = _cachedLaptops;
       _macbooks = _cachedMacbooks;
       _ipads = _cachedIpads;
+      _collections = _cachedCollections;
       _isLoading = false;
       _error = null;
       notifyListeners();
@@ -196,6 +208,11 @@ class HomeViewModel extends ChangeNotifier {
       _ipads = catResults[2].products;
       _cachedIpads = _ipads;
 
+      try {
+        _collections = await datasource.getCollections();
+        _cachedCollections = _collections;
+      } catch (_) {}
+
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -214,7 +231,17 @@ class HomeViewModel extends ChangeNotifier {
       _refreshCategory(datasource, 2, () => _laptops, (v) { _laptops = v; _cachedLaptops = v; }),
       _refreshCategory(datasource, 3, () => _macbooks, (v) { _macbooks = v; _cachedMacbooks = v; }),
       _refreshCategory(datasource, 4, () => _ipads, (v) { _ipads = v; _cachedIpads = v; }),
+      _refreshCollections(datasource),
     ]);
+  }
+
+  Future<void> _refreshCollections(ProductRemoteDatasource ds) async {
+    try {
+      final fresh = await ds.getCollections();
+      _collections = fresh;
+      _cachedCollections = fresh;
+      notifyListeners();
+    } catch (_) {}
   }
 
   Future<void> _refreshBanners(ProductRemoteDatasource ds) async {

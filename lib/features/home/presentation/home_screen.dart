@@ -5,6 +5,7 @@ import 'package:sgwatch_app/features/home/presentation/widgets/home_banner_slide
 import 'package:sgwatch_app/features/home/presentation/widgets/home_brand_grid.dart';
 import 'package:sgwatch_app/features/home/presentation/widgets/home_header.dart';
 import 'package:sgwatch_app/features/home/presentation/widgets/home_product_grid.dart';
+import 'package:sgwatch_app/features/home/presentation/widgets/home_product_horizontal_list.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 import 'package:sgwatch_app/features/home/catalog/product_list_screen.dart';
@@ -288,6 +289,29 @@ class _HomeScreenState extends State<HomeScreen> {
               onBuyTap: (product) => _onBuyTap(product),
             ),
             const SizedBox(height: 24),
+
+            // 4b. Collections section
+            if (_viewModel.collections.isNotEmpty) ...[
+              for (final collection in _viewModel.collections) ...[
+                HomeSectionHeader(
+                  title: 'BỘ SƯU TẬP ĐỒNG HỒ NỘI ĐỊA BÁN CHẠY 2026',
+                ),
+                const SizedBox(height: 15),
+                HomeProductHorizontalList(
+                  products: collection.products,
+                  favoriteViewModel: _favoriteVM,
+                  onProductTap: (product) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                          builder: (_) => ProductDetailScreen(product: product),
+                        ))
+                        .then((_) => _viewModel.refreshBanners());
+                  },
+                  onBuyTap: (product) => _onBuyTap(product),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ],
 
             // 5. Laptop section
             HomeSectionHeader(

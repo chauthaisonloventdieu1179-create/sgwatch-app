@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/features/home/data/models/banner_model.dart';
+import 'package:sgwatch_app/features/home/data/models/collection_model.dart';
 import 'package:sgwatch_app/features/home/data/models/brand_model.dart';
 import 'package:sgwatch_app/features/home/data/models/product_model.dart';
 import 'package:sgwatch_app/features/home/data/models/post_model.dart';
@@ -19,6 +20,15 @@ class ProductRemoteDatasource {
     final list = response.data['data']['banners'] as List;
     return list
         .map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// GET /shop/collections
+  Future<List<CollectionModel>> getCollections() async {
+    final response = await _apiClient.get(Endpoints.collections);
+    final list = response.data['data']['collections'] as List;
+    return list
+        .map((e) => CollectionModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
