@@ -932,15 +932,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             'Bạn có $availablePoint point${_usePoint ? ' (Sử dụng $usablePoint point)' : ''}',
             style: const TextStyle(fontSize: 12, color: AppColors.grey),
           ),
-          const SizedBox(height: 4),
-          const Text(
-            'Sử dụng không quá 50% giá trị đơn hàng',
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.greyPlaceholder,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
         ],
       ),
     );

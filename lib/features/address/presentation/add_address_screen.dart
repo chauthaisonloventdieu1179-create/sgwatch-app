@@ -1073,10 +1073,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         const SizedBox(height: 16),
         _buildField(
           label: 'Số điện thoại',
-          required: true,
           controller: _phoneController,
           keyboardType: TextInputType.phone,
-          validator: (v) => v == null || v.trim().isEmpty ? 'Bắt buộc' : null,
         ),
       ],
     );
