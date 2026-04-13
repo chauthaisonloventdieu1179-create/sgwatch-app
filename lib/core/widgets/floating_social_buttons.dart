@@ -189,7 +189,6 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
                             width: 48,
                             height: 48,
                             decoration: const BoxDecoration(
-                              color: AppColors.primary,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -199,11 +198,12 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
                                 ),
                               ],
                             ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.headset_mic,
-                                size: 22,
-                                color: AppColors.white,
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/logo/messenger-logo.png',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

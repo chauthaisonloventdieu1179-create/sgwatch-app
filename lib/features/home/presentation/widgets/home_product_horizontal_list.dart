@@ -8,6 +8,7 @@ class HomeProductHorizontalList extends StatelessWidget {
   final ValueChanged<ProductModel>? onProductTap;
   final ValueChanged<ProductModel>? onBuyTap;
   final FavoriteViewModel favoriteViewModel;
+  final double? cardWidth;
 
   const HomeProductHorizontalList({
     super.key,
@@ -15,11 +16,16 @@ class HomeProductHorizontalList extends StatelessWidget {
     required this.favoriteViewModel,
     this.onProductTap,
     this.onBuyTap,
+    this.cardWidth,
   });
 
   @override
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox.shrink();
+
+    // cardWidth từ ngoài truyền vào hoặc mặc định 170
+    final double itemWidth = cardWidth ??
+        170;
 
     return SizedBox(
       height: 340,
@@ -31,7 +37,7 @@ class HomeProductHorizontalList extends StatelessWidget {
         itemBuilder: (context, index) {
           final product = products[index];
           return SizedBox(
-            width: 170,
+            width: itemWidth,
             child: HomeProductCard(
               product: product,
               isFavorite: favoriteViewModel.isFavorite(product.id),
