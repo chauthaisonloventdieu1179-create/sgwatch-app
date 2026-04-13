@@ -271,8 +271,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 HomeProductHorizontalList(
                   products: collection.products,
                   favoriteViewModel: _favoriteVM,
-                  // 2 card đầy + card thứ 3 lấp ló ~10px
-                  cardWidth: (MediaQuery.of(context).size.width - 16 * 2 - 12 - 10) / 2,
+                  // 2 card đầy + card thứ 3 lấp ló ~5px
+                  cardWidth: (MediaQuery.of(context).size.width - 16 * 2 - 12 - 5) / 2,
                   onProductTap: (product) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
