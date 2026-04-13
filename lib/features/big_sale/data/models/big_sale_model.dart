@@ -6,6 +6,7 @@ class BigSaleModel {
   final String? description;
   final String? mediaUrl;
   final String? mediaType;
+  final String? thumbnailUrl;
   final String? saleStartDate;
   final String? saleEndDate;
   final int? salePercentage;
@@ -18,6 +19,7 @@ class BigSaleModel {
     this.description,
     this.mediaUrl,
     this.mediaType,
+    this.thumbnailUrl,
     this.saleStartDate,
     this.saleEndDate,
     this.salePercentage,
@@ -33,6 +35,7 @@ class BigSaleModel {
       description: json['description']?.toString(),
       mediaUrl: json['media_url']?.toString(),
       mediaType: json['media_type']?.toString(),
+      thumbnailUrl: json['thumbnail_url']?.toString(),
       saleStartDate: json['sale_start_date']?.toString(),
       saleEndDate: json['sale_end_date']?.toString(),
       salePercentage: json['sale_percentage'] as int?,

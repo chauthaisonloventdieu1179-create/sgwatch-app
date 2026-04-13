@@ -169,6 +169,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             _buildShippingCard(d),
             const SizedBox(height: 12),
             _buildPaymentCard(d),
+            if (d.needsPayment) ...[
+              const SizedBox(height: 12),
+              _buildBankInfoButton(d),
+            ],
             if (d.cancelReason != null) ...[
               const SizedBox(height: 12),
               _buildCancelCard(d),
@@ -362,8 +366,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           _priceRow('Tạm tính', d.subtotal),
           if (d.shippingFee > 0) _priceRow('Phí vận chuyển', d.shippingFee),
           if (d.codFee > 0) _priceRow('Phí COD', d.codFee),
+          if (d.stripeFee > 0) _priceRow('Phí Stripe', d.stripeFee),
           if (d.discountAmount > 0)
             _priceRow('Giảm giá', -d.discountAmount, highlight: true),
+          if (d.pointsUsed > 0)
+            _priceRow('Điểm sử dụng', -d.pointsUsed.toDouble(), highlight: true),
           if (d.depositAmount > 0) _priceRow('Đặt cọc', d.depositAmount),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
@@ -518,7 +525,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             _paymentStatusLabel(d.paymentStatus),
           ),
           // ── Payment receipt image ──
-          if (d.status == OrderStatus.pending) ...[
+          if (d.needsPayment) ...[
             const SizedBox(height: 12),
             const Text(
               'Biên lai thanh toán',
@@ -815,6 +822,40 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
+  // ── Bank info button ────────────────────────────────────────
+
+  Widget _buildBankInfoButton(OrderDetailModel d) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: ElevatedButton.icon(
+        onPressed: () => _showBankInfoSheet(d),
+        icon: const Icon(Icons.account_balance_outlined, size: 20),
+        label: const Text(
+          'Thông tin chuyển khoản',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF1565C0),
+          foregroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+        ),
+      ),
+    );
+  }
+
+  void _showBankInfoSheet(OrderDetailModel d) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _BankInfoSheet(order: d),
+    );
+  }
+
   // ── Cancel reason card ───────────────────────────────────────
 
   Widget _buildCancelCard(OrderDetailModel d) {
@@ -914,6 +955,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         return 'Thanh toán khi nhận hàng (COD)';
       case 'bank_transfer':
         return 'Chuyển khoản ngân hàng';
+      case 'deposit_transfer':
+        return 'Cọc 1 triệu (Thanh toán khi nhận hàng)';
       default:
         return method;
     }
@@ -1380,4 +1423,186 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
       ],
     );
   }
+}
+
+// ─── Bank Info Bottom Sheet ─────────────────────────────────
+class _BankInfoSheet extends StatelessWidget {
+  final OrderDetailModel order;
+
+  const _BankInfoSheet({required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 80),
+      decoration: const BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Close button
+          Padding(
+            padding: const EdgeInsets.only(top: 8, right: 8),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: AppColors.backgroundGrey,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close, size: 20, color: AppColors.grey),
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.account_balance, size: 20, color: Color(0xFF1565C0)),
+                      SizedBox(width: 8),
+                      Text(
+                        'Thông tin chuyển khoản',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // ── STK Việt Nam ────────────────────────────
+                  _sectionHeader('🇻🇳  Tài khoản Việt Nam'),
+                  const SizedBox(height: 10),
+                  _bankBlock(context, [
+                    _BankEntry('Ngân hàng', 'VIETCOMBANK'),
+                    _BankEntry('Số tài khoản', '9042628888'),
+                    _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
+                    _BankEntry('Nội dung CK', order.orderNumber),
+                  ]),
+                  const SizedBox(height: 16),
+                  // ── STK Nhật Bản ────────────────────────────
+                  _sectionHeader('🇯🇵  Tài khoản Nhật Bản'),
+                  const SizedBox(height: 10),
+                  _bankBlock(context, [
+                    _BankEntry('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+                    _BankEntry('Chi nhánh', '天満橋支店 (Temmabashi)'),
+                    _BankEntry('Loại TK', '普通 (Futsu)'),
+                    _BankEntry('Số tài khoản', '3061217'),
+                    _BankEntry('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+                    _BankEntry('Nội dung CK', order.orderNumber),
+                  ]),
+                  const SizedBox(height: 12),
+                  // Tips box JP
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF3E0),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFFCC02)),
+                    ),
+                    child: const Text(
+                      'Cách tìm chi nhánh: Gõ chữ テ rồi chọn 天満橋支店',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFE65100),
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: AppColors.black,
+      ),
+    );
+  }
+
+  Widget _bankBlock(BuildContext context, List<_BankEntry> entries) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F7FF),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFB3D4F5)),
+      ),
+      child: Column(
+        children: entries.map((e) => _bankRow(context, e.label, e.value)).toList(),
+      ),
+    );
+  }
+
+  Widget _bankRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 13, color: AppColors.grey),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: value));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Đã copy: $value'),
+                  duration: const Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(left: 6),
+              child: Icon(Icons.copy_rounded, size: 16, color: AppColors.grey),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BankEntry {
+  final String label;
+  final String value;
+  const _BankEntry(this.label, this.value);
 }

@@ -22,6 +22,7 @@ class ProductListScreen extends StatefulWidget {
   final int? isDomestic;
   final int? isNew;
   final String initialSortBy;
+  final String? groupBy;
 
   const ProductListScreen({
     super.key,
@@ -35,6 +36,7 @@ class ProductListScreen extends StatefulWidget {
     this.isDomestic,
     this.isNew,
     this.initialSortBy = 'newest',
+    this.groupBy,
   });
 
   @override
@@ -70,6 +72,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       isDomestic: widget.isDomestic,
       isNew: widget.isNew,
       sortBy: widget.initialSortBy,
+      groupBy: widget.groupBy,
     );
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
       _searchController.text = widget.searchQuery!;
@@ -441,21 +444,35 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => ProductDetailScreen(product: product),
+                        builder: (_) => ProductDetailScreen(
+                          product: product,
+                          groupedProducts: product.groupedProducts,
+                        ),
                       ),
                     );
                   },
                   onBuyTap: () => _onBuyTap(product),
                   onFavoriteTap: () => _favoriteVM.toggle(product),
+                  groupedProducts: product.groupedProducts,
+                  onGroupedTap: (grouped) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailScreen(
+                          product: grouped.toProductModel(),
+                          groupedProducts: product.groupedProducts,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
               childCount: _viewModel.products.length,
             ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.495,
+              childAspectRatio: widget.groupBy != null ? 0.45 : 0.495,
             ),
           ),
         ),

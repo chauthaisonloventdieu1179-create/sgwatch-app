@@ -177,6 +177,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       selectedValue: _selectedBrandId?.toString(),
                       onSelect: (v) => setState(() {
                         _selectedBrandId = v != null ? int.parse(v) : null;
+                        if (_selectedBrandId == 5) _selectedStockType = null;
                       }),
                     ),
                     const SizedBox(height: 24),
@@ -221,8 +222,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     const SizedBox(height: 24),
                   ],
 
-                  // ── Tình trạng kho (chỉ hiện khi đồng hồ) ──
-                  if (_isWatchCategory) ...[
+                  // ── Tình trạng kho (chỉ hiện khi đồng hồ, ẩn với Carnival) ──
+                  if (_isWatchCategory && _selectedBrandId != 5) ...[
                     _buildSectionTitle('Tình trạng'),
                     const SizedBox(height: 12),
                     _buildPillGroup(

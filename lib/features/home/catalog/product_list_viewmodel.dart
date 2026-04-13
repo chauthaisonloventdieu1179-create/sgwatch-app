@@ -21,6 +21,7 @@ class ProductListViewModel extends ChangeNotifier {
     String? initialGender,
     String? initialStockType,
     String sortBy = 'newest',
+    String? groupBy,
   })  : _initialCategorySlug = categorySlug,
         _initialCategoryId = categoryId {
     _filterCategoryId = categoryId;
@@ -29,6 +30,7 @@ class ProductListViewModel extends ChangeNotifier {
     _filterGender = initialGender;
     _filterStockType = initialStockType;
     _sortBy = sortBy;
+    _groupBy = groupBy;
   }
 
   final _datasource = ProductRemoteDatasource(ApiClient());
@@ -51,6 +53,7 @@ class ProductListViewModel extends ChangeNotifier {
   String? _filterStockType;
   int? _filterIsNew;
   String _sortBy = 'newest';
+  String? _groupBy;
 
   Timer? _debounce;
 
@@ -175,6 +178,7 @@ class ProductListViewModel extends ChangeNotifier {
       stockType: _filterStockType,
       isDomestic: isDomestic,
       isNew: _filterIsNew ?? isNew,
+      groupBy: _groupBy,
       page: page,
       perPage: _perPage,
     );

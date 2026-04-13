@@ -148,6 +148,7 @@ class OrderDetailModel {
   final double subtotal;
   final double shippingFee;
   final double codFee;
+  final double stripeFee;
   final double depositAmount;
   final double discountAmount;
   final int pointsUsed;
@@ -169,7 +170,9 @@ class OrderDetailModel {
   }
 
   bool get needsPayment =>
-      paymentStatus == 'pending' && paymentMethod != 'stripe';
+      paymentStatus == 'pending' &&
+      (paymentMethod == 'bank_transfer' ||
+          paymentMethod == 'deposit_transfer');
   final String? note;
   final String? trackingNumber;
   final String? shippingCarrier;
@@ -193,6 +196,7 @@ class OrderDetailModel {
     required this.subtotal,
     required this.shippingFee,
     required this.codFee,
+    required this.stripeFee,
     required this.depositAmount,
     required this.discountAmount,
     required this.pointsUsed,
@@ -233,6 +237,7 @@ class OrderDetailModel {
       subtotal: double.tryParse(json['subtotal'].toString()) ?? 0.0,
       shippingFee: double.tryParse(json['shipping_fee'].toString()) ?? 0.0,
       codFee: double.tryParse(json['cod_fee'].toString()) ?? 0.0,
+      stripeFee: (json['stripe_fee'] as num?)?.toDouble() ?? 0.0,
       depositAmount: double.tryParse(json['deposit_amount'].toString()) ?? 0.0,
       discountAmount:
           double.tryParse(json['discount_amount'].toString()) ?? 0.0,

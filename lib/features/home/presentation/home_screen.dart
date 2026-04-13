@@ -252,6 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           brandId: brand.id,
                           categoryId: 1,
                           initialSortBy: 'display_order',
+                          groupBy: brand.id == 5 ? 'name' : null,
                         ),
                       ))
                       .then((_) => _viewModel.refreshBanners());
@@ -287,19 +288,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
 
             // 4. Watch products section
-            HomeSectionHeader(
-              title: 'Đồng hồ',
-              actionText: 'Xem thêm',
-              onActionTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(
-                      builder: (_) => const ProductListScreen(
-                        title: 'Đồng hồ có sẵn',
-                        categoryId: 1,
-                      ),
-                    ))
-                    .then((_) => _viewModel.refreshBanners());
-              },
+            const HomeSectionHeader(
+              title: 'Đồng hồ nổi bật',
             ),
             const SizedBox(height: 15),
             HomeProductGrid(

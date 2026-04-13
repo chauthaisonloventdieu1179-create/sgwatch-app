@@ -15,8 +15,13 @@ import 'package:sgwatch_app/features/home/product_detail/write_review_screen.dar
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
+  final List<GroupedProduct>? groupedProducts;
 
-  const ProductDetailScreen({super.key, required this.product});
+  const ProductDetailScreen({
+    super.key,
+    required this.product,
+    this.groupedProducts,
+  });
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -383,8 +388,102 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ],
+          if (widget.groupedProducts != null &&
+              widget.groupedProducts!.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            const Divider(height: 1, color: AppColors.greyLight),
+            const SizedBox(height: 14),
+            _buildVariantSection(),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildVariantSection() {
+    final variants = widget.groupedProducts!;
+    final currentSku = _viewModel.product.sku;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Màu sắc',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: AppColors.black,
+          ),
+        ),
+        const SizedBox(height: 10),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 3.2,
+          ),
+          itemCount: variants.length,
+          itemBuilder: (context, index) {
+            final v = variants[index];
+            final isSelected = v.sku == currentSku;
+            return GestureDetector(
+              onTap: isSelected
+                  ? null
+                  : () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailScreen(
+                            product: v.toProductModel(),
+                            groupedProducts: widget.groupedProducts,
+                          ),
+                        ),
+                      );
+                    },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color:
+                        isSelected ? AppColors.primary : AppColors.greyLight,
+                    width: isSelected ? 1.5 : 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        v.sku ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (isSelected)
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 

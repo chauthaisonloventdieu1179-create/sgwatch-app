@@ -33,6 +33,7 @@ class ProductModel {
   final double? salePercent;
   final Map<String, dynamic>? attributes;
   final String? stockType;
+  final List<GroupedProduct>? groupedProducts;
 
   const ProductModel({
     required this.id,
@@ -69,6 +70,7 @@ class ProductModel {
     this.salePercent,
     this.attributes,
     this.stockType,
+    this.groupedProducts,
   });
 
   bool get isPreOrder => stockType == 'pre_order';
@@ -127,6 +129,9 @@ class ProductModel {
       salePercent: _parseNullableDouble(json['sale_percent']),
       attributes: json['attributes'] as Map<String, dynamic>?,
       stockType: json['stock_type']?.toString(),
+      groupedProducts: (json['grouped_products'] as List?)
+          ?.map((e) => GroupedProduct.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -203,4 +208,46 @@ class ProductImage {
       sortOrder: json['sort_order'] as int? ?? 0,
     );
   }
+}
+
+class GroupedProduct {
+  final int id;
+  final String name;
+  final String? slug;
+  final String? sku;
+  final String imageUrl;
+  final double price;
+  final String? color;
+
+  const GroupedProduct({
+    required this.id,
+    required this.name,
+    required this.imageUrl,
+    required this.price,
+    this.slug,
+    this.sku,
+    this.color,
+  });
+
+  factory GroupedProduct.fromJson(Map<String, dynamic> json) {
+    final attrs = json['attributes'] as Map<String, dynamic>?;
+    return GroupedProduct(
+      id: json['id'] as int,
+      name: json['name']?.toString() ?? '',
+      slug: json['slug']?.toString(),
+      sku: json['sku']?.toString(),
+      imageUrl: json['primary_image_url']?.toString() ?? '',
+      price: ProductModel._parseDouble(json['price_jpy'] ?? json['price']),
+      color: attrs?['color']?.toString(),
+    );
+  }
+
+  ProductModel toProductModel() => ProductModel(
+        id: id,
+        name: name,
+        slug: slug,
+        sku: sku,
+        imageUrl: imageUrl,
+        price: price,
+      );
 }

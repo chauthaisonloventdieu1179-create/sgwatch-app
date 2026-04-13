@@ -226,25 +226,40 @@ class _BigSaleCard extends StatelessWidget {
   }
 
   Widget _buildBanner() {
+    final thumbUrl = sale.thumbnailUrl?.isNotEmpty == true
+        ? sale.thumbnailUrl!
+        : (sale.mediaType != 'video' ? sale.mediaUrl : null);
+
     if (sale.mediaType == 'video') {
       return Stack(
         alignment: Alignment.center,
         children: [
+          if (thumbUrl != null)
+            Image.network(
+              thumbUrl,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: double.infinity,
+                height: 180,
+                color: Colors.black87,
+              ),
+            )
+          else
+            Container(width: double.infinity, height: 180, color: Colors.black87),
           Container(
             width: double.infinity,
             height: 180,
-            color: Colors.black87,
+            color: Colors.black38,
           ),
-          const Icon(
-            Icons.play_circle_outline,
-            size: 56,
-            color: AppColors.white,
-          ),
+          const Icon(Icons.play_circle_outline, size: 56, color: AppColors.white),
         ],
       );
     }
+
     return Image.network(
-      sale.mediaUrl!,
+      thumbUrl ?? sale.mediaUrl!,
       width: double.infinity,
       height: 180,
       fit: BoxFit.cover,

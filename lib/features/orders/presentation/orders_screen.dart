@@ -221,7 +221,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   bool _needsPayment(OrderListItem order) =>
       order.status == OrderStatus.pending &&
       order.paymentStatus == 'pending' &&
-      order.paymentMethod != 'stripe';
+      (order.paymentMethod == 'bank_transfer' ||
+          order.paymentMethod == 'deposit_transfer');
 
   void _navigateToDetail(OrderListItem order) {
     Navigator.push(

@@ -71,6 +71,7 @@ class ProductRemoteDatasource {
     String? stockType,
     int? isDomestic,
     int? isNew,
+    String? groupBy,
     int page = 1,
     int perPage = 10,
   }) async {
@@ -94,6 +95,7 @@ class ProductRemoteDatasource {
     }
     if (isDomestic != null) params['is_domestic'] = isDomestic;
     if (isNew != null) params['is_new'] = isNew;
+    if (groupBy != null && groupBy.isNotEmpty) params['group_by'] = groupBy;
 
     debugPrint('[Datasource] GET ${Endpoints.shopProducts} params=$params');
     final response = await _apiClient.get(
