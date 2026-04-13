@@ -52,17 +52,27 @@ class _AddressListScreenState extends State<AddressListScreen> {
     final address = _viewModel.addresses[index];
     if (address.id == null) return;
 
-    // Fetch full detail from API
+    // Show loading spinner while fetching detail
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
+
     final detail = await _viewModel.getAddressDetail(address.id!);
-    if (!mounted || detail == null) {
-      if (mounted && _viewModel.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_viewModel.error!),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+
+    if (!mounted) return;
+    Navigator.of(context).pop(); // dismiss spinner
+
+    if (detail == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_viewModel.error ?? 'Không thể tải chi tiết địa chỉ.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
@@ -76,7 +86,6 @@ class _AddressListScreenState extends State<AddressListScreen> {
       ),
     );
     if (result == true) {
-      // Address was updated, reload list
       _viewModel.loadAddresses();
     }
   }

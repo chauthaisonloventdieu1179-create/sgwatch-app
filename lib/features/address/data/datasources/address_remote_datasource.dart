@@ -76,7 +76,9 @@ class AddressRemoteDatasource {
       'is_default': address.isDefault ? 1 : 0,
     };
 
-    if (address.postalCode != null && address.postalCode!.isNotEmpty) {
+    if (address.countryCode == 'JP' &&
+        address.postalCode != null &&
+        address.postalCode!.isNotEmpty) {
       map['postal_code'] = address.postalCode;
     }
     if (address.phone != null && address.phone!.isNotEmpty) {
@@ -103,10 +105,6 @@ class AddressRemoteDatasource {
     if (address.vnDetail != null) {
       final vn = address.vnDetail!;
       map['vn_detail[province_city]'] = vn.provinceCity;
-      map['vn_detail[district]'] = vn.district;
-      if (vn.wardCommune.isNotEmpty) {
-        map['vn_detail[ward_commune]'] = vn.wardCommune;
-      }
       if (vn.detailAddress.isNotEmpty) {
         map['vn_detail[detail_address]'] = vn.detailAddress;
       }

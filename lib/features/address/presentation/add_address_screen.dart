@@ -278,9 +278,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
   // VN provinces API data
   List<Map<String, dynamic>> _vnProvinces = [];
-  List<Map<String, dynamic>> _vnWards = [];
   int? _selectedProvinceCode;
-  int? _selectedWardCode;
   bool _isLoadingVn = false;
 
   void _onPostalCodeChanged() {
@@ -365,11 +363,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   }
 
   Future<void> _preSelectVnAddress() async {
-    final provinceRaw = _field1Controller.text
-        .trim(); // could be code ("8") or name
-    final wardRaw = _field2Controller.text
-        .trim(); // could be code ("700") or name
-    final wardName = _field3Controller.text.trim();
+    final provinceRaw = _field1Controller.text.trim();
     if (provinceRaw.isEmpty) return;
 
     // Match province by code first, then by name as fallback
@@ -381,71 +375,16 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     pMatch ??= _vnProvinces.where((p) => p['name'] == provinceRaw).firstOrNull;
     if (pMatch == null) return;
 
-    _selectedProvinceCode = pMatch['code'] as int;
-    // Update field1 to show province name instead of code
-    _field1Controller.text = pMatch['name'] as String;
-
-    // Fetch wards (v2 depth=2 returns flat wards under province)
-    try {
-      final resp = await Dio().get(
-        'https://provinces.open-api.vn/api/v2/p/$_selectedProvinceCode?depth=2',
-      );
-      if (!mounted) return;
-      final wards = (resp.data['wards'] as List).cast<Map<String, dynamic>>();
-      setState(() => _vnWards = wards);
-    } catch (_) {
-      return;
-    }
-
-    // Match ward by code first, then by name as fallback
-    final wardCode = int.tryParse(wardRaw);
-    Map<String, dynamic>? wMatch;
-    if (wardCode != null) {
-      wMatch = _vnWards.where((w) => w['code'] == wardCode).firstOrNull;
-    }
-    if (wMatch == null && wardName.isNotEmpty) {
-      wMatch = _vnWards.where((w) => w['name'] == wardName).firstOrNull;
-    }
-    if (wMatch != null) {
-      _selectedWardCode = wMatch['code'] as int;
-      // Update field3 to show ward name
-      _field3Controller.text = wMatch['name'] as String;
-    }
+    setState(() {
+      _selectedProvinceCode = pMatch!['code'] as int;
+      _field1Controller.text = pMatch['name'] as String;
+    });
   }
 
   void _onProvinceSelected(Map<String, dynamic> province) {
-    final code = province['code'] as int;
     setState(() {
-      _selectedProvinceCode = code;
-      _selectedWardCode = null;
+      _selectedProvinceCode = province['code'] as int;
       _field1Controller.text = province['name'] as String;
-      _field2Controller.clear(); // district
-      _field3Controller.clear();
-      _vnWards = [];
-      _isLoadingVn = true;
-    });
-    // Fetch wards (v2 depth=2 returns flat wards under province)
-    Dio()
-        .get('https://provinces.open-api.vn/api/v2/p/$code?depth=2')
-        .then((resp) {
-          if (!mounted) return;
-          final wards = (resp.data['wards'] as List)
-              .cast<Map<String, dynamic>>();
-          setState(() {
-            _vnWards = wards;
-            _isLoadingVn = false;
-          });
-        })
-        .catchError((e) {
-          debugPrint('[Address] Fetch VN wards error: $e');
-          if (mounted) setState(() => _isLoadingVn = false);
-        });
-  }
-
-  void _onWardSelected(Map<String, dynamic> ward) {
-    setState(() {
-      _selectedWardCode = ward['code'] as int;
-      _field3Controller.text = ward['name'] as String;
     });
   }
 
@@ -587,8 +526,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       _field4Controller.clear();
       // Reset VN state
       _selectedProvinceCode = null;
-      _selectedWardCode = null;
-      _vnWards = [];
       // Reset JP state
       _selectedPrefectureId = null;
       if (code == 'VN') {
@@ -630,8 +567,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       } else {
         vnDetail = VnDetail(
           provinceCity: _selectedProvinceCode?.toString() ?? '',
-          district: _selectedWardCode?.toString() ?? '',
-          wardCommune: _field3Controller.text.trim(),
+          district: '',
+          wardCommune: '',
           detailAddress: _field4Controller.text.trim(),
           buildingName: _buildingNameController.text.trim().isEmpty
               ? null
@@ -682,12 +619,12 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       return;
     }
 
-    // VN → require province + ward selection
+    // VN → require province selection
     if (!_isJp && _showDetailFields) {
-      if (_field1Controller.text.isEmpty || _field3Controller.text.isEmpty) {
+      if (_field1Controller.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Vui lòng chọn đầy đủ Tỉnh/Thành phố và Phường/Xã.'),
+            content: Text('Vui lòng chọn Tỉnh/Thành phố.'),
           ),
         );
         return;
@@ -706,6 +643,14 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
     final address = _buildModel();
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
+
     final success = _isEditing
         ? await widget.viewModel.updateAddress(
             widget.editAddress!.id!,
@@ -718,6 +663,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           );
 
     if (!mounted) return;
+    Navigator.of(context).pop(); // dismiss spinner
 
     if (success) {
       Navigator.pop(context, true);
@@ -1066,10 +1012,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         const SizedBox(height: 16),
         _buildField(
           label: 'Số điện thoại',
-          required: true,
           controller: _phoneController,
           keyboardType: TextInputType.phone,
-          validator: (v) => v == null || v.trim().isEmpty ? 'Bắt buộc' : null,
         ),
       ],
     );
@@ -1089,31 +1033,12 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           onSelected: _onProvinceSelected,
         ),
         const SizedBox(height: 16),
-        // Phường / Xã (includes district prefix for clarity)
-        _buildVnDropdownField(
-          label: 'Phường / Xã',
-          controller: _field3Controller,
-          items: _vnWards,
-          selectedCode: _selectedWardCode,
-          emptyHint: _selectedProvinceCode == null
-              ? 'Chọn tỉnh/thành phố trước'
-              : (_isLoadingVn ? 'Đang tải...' : 'Chọn phường/xã'),
-          onSelected: _onWardSelected,
-        ),
-        const SizedBox(height: 16),
         // Địa chỉ chi tiết
         _buildField(
           label: 'Địa chỉ chi tiết',
           required: true,
           controller: _field4Controller,
           validator: (v) => v == null || v.trim().isEmpty ? 'Bắt buộc' : null,
-        ),
-        const SizedBox(height: 16),
-        // Mã bưu điện (optional for VN)
-        _buildField(
-          label: 'Mã bưu điện',
-          controller: _postalCodeController,
-          keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 16),
         _buildField(label: 'Tên tòa nhà', controller: _buildingNameController),
