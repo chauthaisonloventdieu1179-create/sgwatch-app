@@ -387,7 +387,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   Future<void> _pickImage(ImageSource source) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 80);
     if (picked != null) {
-      setState(() => _newImages.add(File(picked.path)));
+      setState(() {
+        _newImages.add(File(picked.path));
+        _imagesTouched = true;
+      });
     }
   }
 
@@ -396,6 +399,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     if (picked.isNotEmpty) {
       setState(() {
         _newImages.addAll(picked.map((x) => File(x.path)));
+        _imagesTouched = true;
       });
     }
   }
