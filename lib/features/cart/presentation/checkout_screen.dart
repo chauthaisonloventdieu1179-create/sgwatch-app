@@ -1421,7 +1421,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
       setState(() => _isPlacingOrder = false);
       if (e.error.code == FailureCode.Canceled) {
-        // Order đã được tạo nhưng chưa thanh toán → cho phép retry
+        // Order đã được tạo nhưng chưa thanh toán → xóa cart và cho phép retry
+        _cartVM.clearCache();
         _showStripeRetrySheet(orderId: orderId, orderNumber: orderNumber);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
