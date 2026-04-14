@@ -65,10 +65,10 @@ class ProductDetailViewModel extends ChangeNotifier {
     _currentImageIndex = 0;
     _specs = _buildSpecsFromProduct(product);
     notifyListeners();
-    loadProductDetail();
+    loadProductDetail(silent: true);
   }
 
-  Future<void> loadProductDetail() async {
+  Future<void> loadProductDetail({bool silent = false}) async {
     if (product.slug == null || product.slug!.isEmpty) {
       _images = [product.imageUrl];
       _specs = _buildSpecsFromProduct(product);
@@ -76,9 +76,11 @@ class ProductDetailViewModel extends ChangeNotifier {
       return;
     }
 
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+    if (!silent) {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+    }
 
     try {
       // Build parallel calls: detail + reviews + (Carnival grouped if needed)
@@ -121,11 +123,13 @@ class ProductDetailViewModel extends ChangeNotifier {
       _specs = _buildSpecsFromProduct(detail);
       _reviews = reviewResponse.reviews;
 
-      _isLoading = false;
+      if (!silent) _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _isLoading = false;
-      _error = 'Không thể tải chi tiết sản phẩm.';
+      if (!silent) {
+        _isLoading = false;
+        _error = 'Không thể tải chi tiết sản phẩm.';
+      }
       notifyListeners();
     }
   }

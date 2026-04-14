@@ -32,6 +32,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final _favoriteVM = FavoriteViewModel();
   final _cartVM = CartViewModel();
   bool _isDescriptionExpanded = false;
+  final _variantStripController = ScrollController();
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _viewModel = ProductDetailViewModel(widget.product, groupedProducts: widget.groupedProducts);
     _viewModel.addListener(_onChanged);
     _favoriteVM.addListener(_onChanged);
+    _cartVM.addListener(_onChanged);
     _viewModel.loadProductDetail();
   }
 
@@ -50,8 +52,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void dispose() {
     _viewModel.removeListener(_onChanged);
     _favoriteVM.removeListener(_onChanged);
+    _cartVM.removeListener(_onChanged);
+    _variantStripController.dispose();
     _viewModel.dispose();
     super.dispose();
+  }
+
+  void _selectVariant(GroupedProduct v, int index) {
+    _viewModel.selectVariant(v);
+    // Scroll strip to show selected thumbnail
+    const itemWidth = 64.0;
+    const spacing = 8.0;
+    const sidePadding = 16.0;
+    final targetOffset = sidePadding + index * (itemWidth + spacing);
+    if (_variantStripController.hasClients) {
+      _variantStripController.animateTo(
+        targetOffset.clamp(0.0, _variantStripController.position.maxScrollExtent),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Future<void> _onBuyTap() async {
@@ -164,17 +184,49 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const Spacer(),
           GestureDetector(
             onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CartScreen()),
+              );
             },
-            child: const SizedBox(
-              width: 30,
-              height: 30,
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                size: 24,
-                color: AppColors.black,
+            child: SizedBox(
+              width: 36,
+              height: 36,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Center(
+                    child: Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 24,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  if (_cartVM.totalItems > 0)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Text(
+                          '${_cartVM.totalItems}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppColors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -250,6 +302,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return SizedBox(
       height: 80,
       child: ListView.separated(
+        controller: _variantStripController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: variants.length,
@@ -258,7 +311,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           final v = variants[index];
           final isSelected = v.id == _viewModel.product.id;
           return GestureDetector(
-            onTap: isSelected ? null : () => _viewModel.selectVariant(v),
+            onTap: isSelected ? null : () => _selectVariant(v, index),
             child: Container(
               width: 64,
               height: 64,
@@ -486,7 +539,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             final v = variants[index];
             final isSelected = v.id == _viewModel.product.id;
             return GestureDetector(
-              onTap: isSelected ? null : () => _viewModel.selectVariant(v),
+              onTap: isSelected ? null : () => _selectVariant(v, index),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
