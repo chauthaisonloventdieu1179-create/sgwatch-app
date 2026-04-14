@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sgwatch_app/app/config/env.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/core/utils/price_formatter.dart';
@@ -1005,6 +1004,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 DateFormatter.formatDateTime(review.createdAt),
                 style: const TextStyle(fontSize: 14, color: AppColors.grey),
               ),
+              if (review.isOwner) ...[
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () => _confirmDeleteReview(review),
+                  child: const Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: AppColors.grey,
+                  ),
+                ),
+              ],
             ],
           ),
           // Title
@@ -1041,7 +1051,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 itemCount: review.imageUrls.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
-                  final url = _buildImageUrl(review.imageUrls[index]);
+                  final url = review.imageUrls[index];
                   return GestureDetector(
                     onTap: () => _showFullImage(url),
                     child: ClipRRect(
@@ -1085,10 +1095,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  String _buildImageUrl(String path) {
-    if (path.startsWith('http')) return path;
-    return '${Env.baseURL}/storage/$path';
+  Future<void> _confirmDeleteReview(ReviewModel review) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Xóa đánh giá'),
+        content: const Text('Bạn có chắc muốn xóa đánh giá này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Xóa', style: TextStyle(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      final success = await _viewModel.deleteReview(review.id);
+      if (mounted && !success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không thể xóa đánh giá.')),
+        );
+      }
+    }
   }
+
 
   void _showFullImage(String url) {
     showDialog(

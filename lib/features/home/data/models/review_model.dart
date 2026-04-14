@@ -6,6 +6,7 @@ class ReviewModel {
   final String? comment;
   final List<String> imageUrls;
   final bool isApproved;
+  final bool isOwner;
   final String userName;
   final DateTime createdAt;
 
@@ -17,6 +18,7 @@ class ReviewModel {
     this.comment,
     required this.imageUrls,
     required this.isApproved,
+    required this.isOwner,
     required this.userName,
     required this.createdAt,
   });
@@ -27,17 +29,22 @@ class ReviewModel {
     final lastName = user?['last_name']?.toString() ?? '';
     final name = '$firstName $lastName'.trim();
 
+    final baseUrl = json['image_base_url']?.toString() ?? '';
+    final rawUrls = (json['image_urls'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    final fullImageUrls = rawUrls.map((path) {
+      if (path.startsWith('http')) return path;
+      return '$baseUrl$path';
+    }).toList();
+
     return ReviewModel(
       id: json['id'] as int,
       productId: json['product_id'] as int,
       rating: json['rating'] as int? ?? 5,
       title: json['title']?.toString(),
       comment: json['comment']?.toString(),
-      imageUrls: (json['image_urls'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
+      imageUrls: fullImageUrls,
       isApproved: json['is_approved'] as bool? ?? false,
+      isOwner: json['is_owner'] as bool? ?? false,
       userName: name.isNotEmpty ? name : 'Ẩn danh',
       createdAt: DateTime.parse(json['created_at'] as String),
     );
