@@ -439,22 +439,42 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget _buildVariantSection() {
     final variants = _viewModel.groupedProducts!;
+    final selected = variants.where((v) => v.id == _viewModel.product.id).firstOrNull;
+    final selectedColor = selected?.color ?? '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Màu sắc',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: AppColors.black,
+        RichText(
+          softWrap: true,
+          overflow: TextOverflow.visible,
+          text: TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Màu sắc',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
+                ),
+              ),
+              if (selectedColor.isNotEmpty)
+                TextSpan(
+                  text: ': $selectedColor',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.grey,
+                  ),
+                ),
+            ],
           ),
         ),
         const SizedBox(height: 6),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10,
