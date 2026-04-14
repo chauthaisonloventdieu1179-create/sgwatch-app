@@ -568,8 +568,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildDescriptionBox() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
+      child: Container(
       padding: const EdgeInsets.all(20),
       color: AppColors.white,
       child: Column(
@@ -608,12 +609,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildShortDescriptionBox() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
+      child: Container(
       padding: const EdgeInsets.all(20),
       color: AppColors.white,
       child: Column(
@@ -637,6 +640,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

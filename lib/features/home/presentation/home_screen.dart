@@ -21,6 +21,8 @@ import 'package:sgwatch_app/features/about/presentation/about_screen.dart';
 import 'package:sgwatch_app/features/refund_policy/presentation/refund_policy_screen.dart';
 import 'package:sgwatch_app/features/warranty/presentation/warranty_policy_screen.dart';
 import 'package:sgwatch_app/features/warranty/presentation/laptop_warranty_screen.dart';
+import 'package:sgwatch_app/features/guide/presentation/watch_size_guide_screen.dart';
+import 'package:sgwatch_app/features/buyback_policy/presentation/buyback_policy_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -489,6 +491,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const RefundPolicyScreen()));
+              },
+            ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.watch_outlined,
+              label: 'Hướng dẫn chọn đồng hồ',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const WatchSizeGuideScreen()));
+              },
+            ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.recycling,
+              label: 'Chính sách thu mua lại',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const BuybackPolicyScreen()));
               },
             ),
           ],
