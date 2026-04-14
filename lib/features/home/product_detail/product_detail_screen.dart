@@ -993,7 +993,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         (i) => Icon(
                           i < review.rating ? Icons.star : Icons.star_border,
                           size: 16,
-                          color: Colors.amber,
+                          color: i < review.rating
+                              ? Colors.amber
+                              : AppColors.greyPlaceholder,
                         ),
                       ),
                     ),

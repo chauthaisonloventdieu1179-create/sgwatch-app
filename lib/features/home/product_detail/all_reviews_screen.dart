@@ -233,7 +233,9 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
                         (i) => Icon(
                           i < review.rating ? Icons.star : Icons.star_border,
                           size: 16,
-                          color: Colors.amber,
+                          color: i < review.rating
+                              ? Colors.amber
+                              : AppColors.greyPlaceholder,
                         ),
                       ),
                     ),
