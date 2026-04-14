@@ -131,16 +131,6 @@ class HomeProductCard extends StatelessWidget {
                                     height: 1.3,
                                   ),
                                 ),
-                              if (product.sku != null && product.sku!.isNotEmpty)
-                                TextSpan(
-                                  text: '  #${product.sku}',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.black,
-                                    height: 1.3,
-                                  ),
-                                ),
                             ],
                           ),
                         ),
@@ -166,9 +156,6 @@ class HomeProductCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                        if (groupedProducts != null &&
-                            groupedProducts!.isNotEmpty)
-                          _buildVariantSwatches(),
                       ],
                     ),
                     // Buy button + Favorite (spacer pushes buttons to bottom)
@@ -232,49 +219,4 @@ class HomeProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVariantSwatches() {
-    const maxShow = 5;
-    final variants = groupedProducts!;
-    final shown = variants.take(maxShow).toList();
-    final remaining = variants.length - maxShow;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 6),
-      child: Row(
-        children: [
-          ...shown.map((v) => GestureDetector(
-                onTap: () => onGroupedTap?.call(v),
-                child: Container(
-                  width: 22,
-                  height: 22,
-                  margin: const EdgeInsets.only(right: 4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        color: AppColors.greyLight, width: 1.5),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: v.imageUrl.isNotEmpty
-                      ? Image.network(
-                          v.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                              Container(color: AppColors.greyLight),
-                        )
-                      : Container(color: AppColors.greyLight),
-                ),
-              )),
-          if (remaining > 0)
-            Text(
-              '+$remaining',
-              style: const TextStyle(
-                fontSize: 11,
-                color: AppColors.grey,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 }

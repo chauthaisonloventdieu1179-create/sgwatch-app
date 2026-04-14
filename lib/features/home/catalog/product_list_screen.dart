@@ -472,7 +472,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: widget.groupBy != null ? 0.45 : 0.495,
+              childAspectRatio: 0.495,
             ),
           ),
         ),
