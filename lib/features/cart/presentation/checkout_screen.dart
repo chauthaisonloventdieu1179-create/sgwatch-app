@@ -1628,7 +1628,7 @@ class _StripeRetrySheetState extends State<_StripeRetrySheet> {
                       setState(() => _isRetrying = true);
                       final nav = Navigator.of(context);
                       await widget.onRetry(widget.orderId, widget.orderNumber);
-                      if (mounted) nav.pop();
+                      if (mounted && nav.canPop()) nav.pop();
                     },
               icon: _isRetrying
                   ? const SizedBox(

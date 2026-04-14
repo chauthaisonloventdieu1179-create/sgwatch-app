@@ -53,6 +53,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       _error = null;
     });
     final result = await widget.viewModel.loadOrderDetail(widget.orderId);
+    debugPrint('[OrderDetail] loaded: ${result?.id}, paymentMethod=${result?.paymentMethod}, paymentStatus=${result?.paymentStatus}, needsStripeRetry=${result?.needsStripeRetry}');
     if (!mounted) return;
     if (result == null) {
       setState(() {
