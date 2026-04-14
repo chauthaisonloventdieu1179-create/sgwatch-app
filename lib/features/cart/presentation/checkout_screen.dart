@@ -1447,7 +1447,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         orderNumber: orderNumber,
         onRetry: (newOrderId, newOrderNumber) =>
             _retryStripePayment(newOrderId, newOrderNumber),
-        onClose: () => Navigator.of(context).pop(),
+        onClose: () => Navigator.of(context).popUntil((route) => route.isFirst),
       ),
     );
   }
@@ -1489,7 +1489,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     } on StripeException catch (e) {
       if (!mounted) return;
       if (e.error.code == FailureCode.Canceled) {
-        // Vẫn còn trong sheet → sheet tự quản lý, không làm gì thêm
+        // Hủy thanh toán lần 2 → đóng tất cả và về home
+        Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
