@@ -106,11 +106,18 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
                   height: 48,
                   child: ElevatedButton.icon(
                     onPressed: _onWriteReview,
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    label: const Text(
-                      'Viết đánh giá',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    icon: Icon(
+                      widget.viewModel.myReview != null
+                          ? Icons.edit
+                          : Icons.edit_outlined,
+                      size: 18,
+                    ),
+                    label: Text(
+                      widget.viewModel.myReview != null
+                          ? 'Sửa đánh giá của bạn'
+                          : 'Viết đánh giá',
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -397,12 +404,14 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
   }
 
   Future<void> _onWriteReview() async {
+    final existing = widget.viewModel.myReview;
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => WriteReviewScreen(
           productId: widget.productId,
           productName: widget.productName,
           viewModel: widget.viewModel,
+          existingReview: existing,
         ),
       ),
     );

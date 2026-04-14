@@ -191,21 +191,28 @@ class ProductRemoteDatasource {
     required int rating,
     String? title,
     String? content,
-    List<String>? existingImages,
+    List<String>? existingImages, // null = Case5, [] = Case3, [...] = Case1/2/4
     List<String>? newImagePaths,
   }) async {
-    final map = <String, dynamic>{
+    final formData = FormData.fromMap({
       'rating': rating,
       if (title != null && title.isNotEmpty) 'title': title,
       if (content != null && content.isNotEmpty) 'content': content,
-    };
-    // Keep old images
-    if (existingImages != null && existingImages.isNotEmpty) {
-      for (int i = 0; i < existingImages.length; i++) {
-        map['existing_images[$i]'] = existingImages[i];
+    });
+
+    if (existingImages != null) {
+      if (existingImages.isEmpty) {
+        // Case 3: xóa hết ảnh — gửi field rỗng để server biết existing_images tồn tại
+        formData.fields.add(const MapEntry('existing_images', ''));
+      } else {
+        // Case 1/2/4: giữ các ảnh được chỉ định (gửi relative path)
+        for (final urlOrPath in existingImages) {
+          formData.fields.add(MapEntry('existing_images[]', _toRelativePath(urlOrPath)));
+        }
       }
     }
-    final formData = FormData.fromMap(map);
+    // Case 5: existingImages == null → không gửi gì → ảnh không bị đụng
+
     // New images
     if (newImagePaths != null) {
       for (final path in newImagePaths) {
@@ -217,6 +224,14 @@ class ProductRemoteDatasource {
     }
     await _apiClient.post('${Endpoints.reviews}/$reviewId', data: formData);
     return true;
+  }
+
+  /// Chuyển full URL thành relative path để gửi lên API
+  /// vd: "http://api.sgwatch.jp/storage/reviews/1/abc.jpg" → "reviews/1/abc.jpg"
+  String _toRelativePath(String urlOrPath) {
+    if (!urlOrPath.startsWith('http')) return urlOrPath;
+    final idx = urlOrPath.indexOf('/storage/');
+    return idx >= 0 ? urlOrPath.substring(idx + 9) : urlOrPath;
   }
 
   /// DELETE /shop/reviews/{id}

@@ -34,6 +34,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   List<String> _existingImages = []; // URLs of old images to keep
   List<File> _newImages = []; // New images picked from gallery/camera
   bool _isSubmitting = false;
+  bool _imagesTouched = false; // true khi user xóa/thêm ảnh cũ
 
   bool get _isEditing => widget.existingReview != null;
 
@@ -169,7 +170,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               child: TextField(
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  hintText: 'Tiêu đề đánh giá (tùy chọn)',
+                  hintText: 'Tiêu đề đánh giá *',
                   hintStyle:
                       TextStyle(fontSize: 14, color: AppColors.greyPlaceholder),
                   border: InputBorder.none,
@@ -192,7 +193,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 controller: _contentController,
                 maxLines: 5,
                 decoration: const InputDecoration(
-                  hintText: 'Chia sẻ trải nghiệm của bạn về sản phẩm...',
+                  hintText: 'Chia sẻ trải nghiệm của bạn về sản phẩm... *',
                   hintStyle:
                       TextStyle(fontSize: 14, color: AppColors.greyPlaceholder),
                   border: InputBorder.none,
@@ -281,7 +282,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         color: AppColors.grey);
                   }),
                   onRemove: () {
-                    setState(() => _existingImages.removeAt(entry.key));
+                    setState(() {
+                      _existingImages.removeAt(entry.key);
+                      _imagesTouched = true;
+                    });
                   },
                 );
               }),
@@ -397,6 +401,22 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   Future<void> _onSubmit() async {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập tiêu đề đánh giá.')),
+      );
+      return;
+    }
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập nội dung đánh giá.')),
+      );
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     bool success;
@@ -404,25 +424,18 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       success = await widget.viewModel.updateReview(
         reviewId: widget.existingReview!.id,
         rating: _rating,
-        title: _titleController.text.trim().isEmpty
-            ? null
-            : _titleController.text.trim(),
-        content: _contentController.text.trim().isEmpty
-            ? null
-            : _contentController.text.trim(),
-        existingImages: _existingImages.isEmpty ? null : _existingImages,
+        title: title,
+        content: content,
+        // null = Case 5 (không đụng ảnh), [] = Case 3 (xóa hết), [...] = Case 1/2/4
+        existingImages: _imagesTouched ? _existingImages : null,
         newImagePaths:
             _newImages.isEmpty ? null : _newImages.map((f) => f.path).toList(),
       );
     } else {
       success = await widget.viewModel.createReview(
         rating: _rating,
-        title: _titleController.text.trim().isEmpty
-            ? null
-            : _titleController.text.trim(),
-        content: _contentController.text.trim().isEmpty
-            ? null
-            : _contentController.text.trim(),
+        title: title,
+        content: content,
         imagePaths:
             _newImages.isEmpty ? null : _newImages.map((f) => f.path).toList(),
       );

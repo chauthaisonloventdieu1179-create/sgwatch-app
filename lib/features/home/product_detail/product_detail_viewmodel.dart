@@ -48,6 +48,10 @@ class ProductDetailViewModel extends ChangeNotifier {
   List<ReviewModel> get reviews => _reviews;
   bool get isReviewsLoading => _isReviewsLoading;
   bool get isPurchased => product.isPurchased == true;
+  ReviewModel? get myReview {
+    final idx = _reviews.indexWhere((r) => r.isOwner);
+    return idx >= 0 ? _reviews[idx] : null;
+  }
 
   void setImageIndex(int index) {
     _currentImageIndex = index;

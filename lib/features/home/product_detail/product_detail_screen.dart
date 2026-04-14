@@ -912,7 +912,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             const Divider(height: 1, color: AppColors.greyLight),
             ...reviews.take(2).map((r) => _buildReviewItem(r)),
           ],
-          // Write review button
+          // Write / Edit review button
           if (_viewModel.isPurchased) ...[
             const SizedBox(height: 16),
             SizedBox(
@@ -920,12 +920,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               height: 44,
               child: OutlinedButton.icon(
                 onPressed: () async {
+                  final existing = _viewModel.myReview;
                   final result = await Navigator.of(context).push<bool>(
                     MaterialPageRoute(
                       builder: (_) => WriteReviewScreen(
                         productId: _viewModel.product.id,
                         productName: _viewModel.product.name,
                         viewModel: _viewModel,
+                        existingReview: existing,
                       ),
                     ),
                   );
@@ -933,8 +935,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     _viewModel.reloadReviews();
                   }
                 },
-                icon: const Icon(Icons.edit_outlined, size: 18),
-                label: const Text('Viết đánh giá'),
+                icon: Icon(
+                  _viewModel.myReview != null
+                      ? Icons.edit
+                      : Icons.edit_outlined,
+                  size: 18,
+                ),
+                label: Text(
+                  _viewModel.myReview != null
+                      ? 'Sửa đánh giá của bạn'
+                      : 'Viết đánh giá',
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: const BorderSide(color: AppColors.primary),
