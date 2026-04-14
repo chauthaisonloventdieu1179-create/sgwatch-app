@@ -171,7 +171,7 @@ class ProductRemoteDatasource {
       'product_id': productId,
       'rating': rating,
       if (title != null && title.isNotEmpty) 'title': title,
-      if (content != null && content.isNotEmpty) 'content': content,
+      if (content != null && content.isNotEmpty) 'comment': content,
     });
     if (imagePaths != null) {
       for (final path in imagePaths) {
@@ -197,7 +197,7 @@ class ProductRemoteDatasource {
     final formData = FormData.fromMap({
       'rating': rating,
       if (title != null && title.isNotEmpty) 'title': title,
-      if (content != null && content.isNotEmpty) 'content': content,
+      if (content != null && content.isNotEmpty) 'comment': content,
     });
 
     if (existingImages != null) {
