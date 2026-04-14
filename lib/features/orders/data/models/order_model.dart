@@ -173,6 +173,9 @@ class OrderDetailModel {
       paymentStatus == 'pending' &&
       (paymentMethod == 'bank_transfer' ||
           paymentMethod == 'deposit_transfer');
+
+  bool get needsStripeRetry =>
+      paymentMethod == 'stripe' && paymentStatus == 'pending';
   final String? note;
   final String? trackingNumber;
   final String? shippingCarrier;

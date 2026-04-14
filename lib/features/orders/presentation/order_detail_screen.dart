@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,6 +39,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   bool _isLoading = true;
   String? _error;
   bool _isCancelling = false;
+  bool _isRetryingPayment = false;
 
   @override
   void initState() {
@@ -172,6 +174,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             if (d.needsPayment) ...[
               const SizedBox(height: 12),
               _buildBankInfoButton(d),
+            ],
+            if (d.needsStripeRetry) ...[
+              const SizedBox(height: 12),
+              _buildRetryPaymentButton(d),
             ],
             if (d.cancelReason != null) ...[
               const SizedBox(height: 12),
@@ -681,6 +687,108 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   bool _isDownloadingInvoice = false;
+
+  // ── Stripe retry payment button ───────────────────────────
+
+  Widget _buildRetryPaymentButton(OrderDetailModel d) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: ElevatedButton.icon(
+        onPressed: _isRetryingPayment ? null : () => _retryStripePayment(d),
+        icon: _isRetryingPayment
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: AppColors.white),
+              )
+            : const Icon(Icons.credit_card_outlined, size: 20),
+        label: Text(
+          _isRetryingPayment ? 'Đang xử lý...' : 'Thanh toán lại',
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.white,
+          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _retryStripePayment(OrderDetailModel d) async {
+    setState(() => _isRetryingPayment = true);
+    try {
+      final endpoint =
+          Endpoints.retryPayment.replaceFirst('{id}', d.id.toString());
+      final response = await ApiClient().post(endpoint);
+      if (!mounted) return;
+
+      final data = response.data['data'] as Map<String, dynamic>?;
+      final clientSecret = data?['stripe_client_secret'] as String?;
+      final publicKey = data?['stripe_public_key'] as String?;
+
+      if (clientSecret == null || publicKey == null) {
+        setState(() => _isRetryingPayment = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Không nhận được thông tin thanh toán.')),
+        );
+        return;
+      }
+
+      Stripe.publishableKey = publicKey;
+      await Stripe.instance.applySettings();
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: 'SGWatch',
+          style: ThemeMode.light,
+        ),
+      );
+      await Stripe.instance.presentPaymentSheet();
+
+      // Thanh toán thành công
+      if (!mounted) return;
+      setState(() => _isRetryingPayment = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Thanh toán thành công!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      _load(); // Reload lại order detail
+      widget.viewModel.refreshCurrentTab();
+    } on StripeException catch (e) {
+      if (!mounted) return;
+      setState(() => _isRetryingPayment = false);
+      if (e.error.code == FailureCode.Canceled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Thanh toán đã bị hủy.')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Thanh toán thất bại: ${e.error.localizedMessage ?? e.error.message}',
+            ),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isRetryingPayment = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại.')),
+      );
+    }
+  }
 
   // ── Cancel order button ────────────────────────────────────
 

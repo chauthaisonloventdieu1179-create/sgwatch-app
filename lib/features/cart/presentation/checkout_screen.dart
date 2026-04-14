@@ -1421,9 +1421,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
       setState(() => _isPlacingOrder = false);
       if (e.error.code == FailureCode.Canceled) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Thanh toán đã bị hủy.')));
+        // Order đã được tạo nhưng chưa thanh toán → cho phép retry
+        _showStripeRetrySheet(orderId: orderId, orderNumber: orderNumber);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -1434,6 +1433,78 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         );
       }
+    }
+  }
+
+  void _showStripeRetrySheet({int? orderId, String? orderNumber}) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _StripeRetrySheet(
+        orderId: orderId,
+        orderNumber: orderNumber,
+        onRetry: (newOrderId, newOrderNumber) =>
+            _retryStripePayment(newOrderId, newOrderNumber),
+        onClose: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  Future<void> _retryStripePayment(int? orderId, String? orderNumber) async {
+    if (orderId == null) return;
+    try {
+      final endpoint =
+          Endpoints.retryPayment.replaceFirst('{id}', orderId.toString());
+      final response = await ApiClient().post(endpoint);
+      if (!mounted) return;
+
+      final data = response.data['data'] as Map<String, dynamic>?;
+      final clientSecret = data?['stripe_client_secret'] as String?;
+      final publicKey = data?['stripe_public_key'] as String?;
+
+      if (clientSecret == null || publicKey == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Không nhận được thông tin thanh toán.')),
+        );
+        return;
+      }
+
+      Stripe.publishableKey = publicKey;
+      await Stripe.instance.applySettings();
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: 'SGWatch',
+          style: ThemeMode.light,
+        ),
+      );
+      await Stripe.instance.presentPaymentSheet();
+
+      if (!mounted) return;
+      _onOrderSuccess(orderId: orderId, orderNumber: orderNumber);
+    } on StripeException catch (e) {
+      if (!mounted) return;
+      if (e.error.code == FailureCode.Canceled) {
+        // Vẫn còn trong sheet → sheet tự quản lý, không làm gì thêm
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Thanh toán thất bại: ${e.error.localizedMessage ?? e.error.message}',
+            ),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại.')),
+      );
     }
   }
 
@@ -1482,6 +1553,131 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ],
       ),
       child: child,
+    );
+  }
+}
+
+// ── Stripe retry bottom sheet ─────────────────────────────────────────────────
+
+class _StripeRetrySheet extends StatefulWidget {
+  final int? orderId;
+  final String? orderNumber;
+  final Future<void> Function(int? orderId, String? orderNumber) onRetry;
+  final VoidCallback onClose;
+
+  const _StripeRetrySheet({
+    required this.orderId,
+    required this.orderNumber,
+    required this.onRetry,
+    required this.onClose,
+  });
+
+  @override
+  State<_StripeRetrySheet> createState() => _StripeRetrySheetState();
+}
+
+class _StripeRetrySheetState extends State<_StripeRetrySheet> {
+  bool _isRetrying = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.payment_outlined,
+                size: 28, color: Colors.orange.shade700),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Thanh toán bị hủy',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.black,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Đơn hàng ${widget.orderNumber ?? ''} đã được tạo nhưng chưa thanh toán.\nBạn có muốn thanh toán lại không?',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13, color: AppColors.grey, height: 1.5),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: _isRetrying
+                  ? null
+                  : () async {
+                      setState(() => _isRetrying = true);
+                      final nav = Navigator.of(context);
+                      await widget.onRetry(widget.orderId, widget.orderNumber);
+                      if (mounted) nav.pop();
+                    },
+              icon: _isRetrying
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: AppColors.white),
+                    )
+                  : const Icon(Icons.credit_card_outlined, size: 18),
+              label: Text(
+                _isRetrying ? 'Đang xử lý...' : 'Thanh toán lại',
+                style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.white,
+                disabledBackgroundColor:
+                    AppColors.primary.withValues(alpha: 0.6),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: OutlinedButton(
+              onPressed: _isRetrying ? null : widget.onClose,
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppColors.greyLight),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Đóng',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.grey),
+              ),
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+        ],
+      ),
     );
   }
 }

@@ -47,6 +47,7 @@ class Endpoints {
   static const String orders = '/shop/orders';
   static const String checkout = '/shop/orders/checkout';
   static const String cancelOrder = '/shop/orders/{id}/cancel';
+  static const String retryPayment = '/shop/orders/{id}/retry-payment';
   static const String paymentReceipt = '/shop/orders/{id}/payment-receipt';
   static const String orderInvoice = '/shop/orders/{id}/invoice';
 
