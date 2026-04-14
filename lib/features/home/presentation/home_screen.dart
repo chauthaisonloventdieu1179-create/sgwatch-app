@@ -52,7 +52,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onBuyTap(product) async {
-    // Show loading
+    if (product.isCarnival == true) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ProductDetailScreen(
+          product: product,
+          groupedProducts: product.groupedProducts,
+        ),
+      ));
+      return;
+    }
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -62,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final success = await _cartVM.addToCart(product.id);
 
     if (!mounted) return;
-    Navigator.of(context).pop(); // dismiss loading
+    Navigator.of(context).pop();
 
     if (success) {
       Navigator.of(context)

@@ -74,6 +74,7 @@ class ProductModel {
   });
 
   bool get isPreOrder => stockType == 'pre_order';
+  bool get isCarnival => brandName == 'Carnival' || brandSlug == 'Carnival';
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     final brand = json['brand'] as Map<String, dynamic>?;

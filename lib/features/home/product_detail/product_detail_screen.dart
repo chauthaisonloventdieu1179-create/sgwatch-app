@@ -36,7 +36,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _viewModel = ProductDetailViewModel(widget.product);
+    _viewModel = ProductDetailViewModel(widget.product, groupedProducts: widget.groupedProducts);
     _viewModel.addListener(_onChanged);
     _favoriteVM.addListener(_onChanged);
     _viewModel.loadProductDetail();
@@ -234,8 +234,55 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ],
+          if (_viewModel.groupedProducts != null &&
+              _viewModel.groupedProducts!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _buildVariantImageStrip(),
+          ],
           const SizedBox(height: 12),
         ],
+      ),
+    );
+  }
+
+  Widget _buildVariantImageStrip() {
+    final variants = _viewModel.groupedProducts!;
+    return SizedBox(
+      height: 80,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: variants.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final v = variants[index];
+          final isSelected = v.id == _viewModel.product.id;
+          return GestureDetector(
+            onTap: isSelected ? null : () => _viewModel.selectVariant(v),
+            child: Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isSelected ? AppColors.primary : AppColors.greyLight,
+                  width: isSelected ? 2 : 1,
+                ),
+                color: AppColors.white,
+              ),
+              padding: const EdgeInsets.all(4),
+              child: Image.network(
+                v.imageUrl,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.watch,
+                  size: 32,
+                  color: AppColors.greyLight,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -267,16 +314,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
-                      height: 1.4,
-                    ),
-                  ),
-                if (p.sku != null && p.sku!.isNotEmpty)
-                  TextSpan(
-                    text: '  #${p.sku}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: AppColors.black,
-                      fontWeight: FontWeight.w600,
                       height: 1.4,
                     ),
                   ),
@@ -388,8 +425,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ],
-          if (widget.groupedProducts != null &&
-              widget.groupedProducts!.isNotEmpty) ...[
+          if (_viewModel.groupedProducts != null &&
+              _viewModel.groupedProducts!.isNotEmpty) ...[
             const SizedBox(height: 14),
             const Divider(height: 1, color: AppColors.greyLight),
             const SizedBox(height: 14),
@@ -401,8 +438,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildVariantSection() {
-    final variants = widget.groupedProducts!;
-    final currentSku = _viewModel.product.sku;
+    final variants = _viewModel.groupedProducts!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +451,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             color: AppColors.black,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 6),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -423,55 +459,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             crossAxisCount: 2,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
-            childAspectRatio: 3.2,
+            childAspectRatio: 2.6,
           ),
           itemCount: variants.length,
           itemBuilder: (context, index) {
             final v = variants[index];
-            final isSelected = v.sku == currentSku;
+            final isSelected = v.id == _viewModel.product.id;
             return GestureDetector(
-              onTap: isSelected
-                  ? null
-                  : () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => ProductDetailScreen(
-                            product: v.toProductModel(),
-                            groupedProducts: widget.groupedProducts,
-                          ),
-                        ),
-                      );
-                    },
+              onTap: isSelected ? null : () => _viewModel.selectVariant(v),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color:
-                        isSelected ? AppColors.primary : AppColors.greyLight,
+                    color: isSelected ? AppColors.primary : AppColors.greyLight,
                     width: isSelected ? 1.5 : 1,
                   ),
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Text(
-                        v.sku ?? '',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: isSelected
-                              ? AppColors.primary
-                              : AppColors.black,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if ((v.color ?? '').isNotEmpty)
+                            Text(
+                              v.color!,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected ? AppColors.primary : AppColors.grey,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          Text(
+                            v.sku ?? v.name,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: isSelected ? AppColors.primary : AppColors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                     if (isSelected)
                       Container(
-                        width: 12,
-                        height: 12,
+                        width: 10,
+                        height: 10,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.primary,

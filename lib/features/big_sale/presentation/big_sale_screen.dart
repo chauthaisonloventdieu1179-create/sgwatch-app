@@ -38,6 +38,15 @@ class _BigSaleScreenState extends State<BigSaleScreen> {
   }
 
   Future<void> _onBuyTap(product) async {
+    if (product.isCarnival == true) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ProductDetailScreen(
+          product: product,
+          groupedProducts: product.groupedProducts,
+        ),
+      ));
+      return;
+    }
     showDialog(
       context: context,
       barrierDismissible: false,

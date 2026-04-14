@@ -6,8 +6,10 @@ import 'package:sgwatch_app/features/home/data/models/review_model.dart';
 
 class ProductDetailViewModel extends ChangeNotifier {
   ProductModel product;
+  List<GroupedProduct>? _groupedProducts;
 
-  ProductDetailViewModel(this.product);
+  ProductDetailViewModel(this.product, {List<GroupedProduct>? groupedProducts})
+      : _groupedProducts = groupedProducts;
 
   final _datasource = ProductRemoteDatasource(ApiClient());
 
@@ -38,6 +40,10 @@ class ProductDetailViewModel extends ChangeNotifier {
   String? get description => _description;
   bool get isWatch => product.categorySlug == null || product.categorySlug == 'dong-ho';
   String? get shortDescription => isWatch ? null : product.shortDescription;
+  List<GroupedProduct>? get groupedProducts => _groupedProducts;
+
+  bool get _isCarnival =>
+      product.brandName == 'Carnival' || product.brandSlug == 'Carnival';
 
   List<ReviewModel> get reviews => _reviews;
   bool get isReviewsLoading => _isReviewsLoading;
@@ -53,6 +59,15 @@ class ProductDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selectVariant(GroupedProduct v) {
+    product = v.toProductModel();
+    _images = v.imageUrl.isNotEmpty ? [v.imageUrl] : [product.imageUrl];
+    _currentImageIndex = 0;
+    _specs = _buildSpecsFromProduct(product);
+    notifyListeners();
+    loadProductDetail();
+  }
+
   Future<void> loadProductDetail() async {
     if (product.slug == null || product.slug!.isEmpty) {
       _images = [product.imageUrl];
@@ -66,14 +81,21 @@ class ProductDetailViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Call detail + reviews in parallel
-      final results = await Future.wait([
+      // Build parallel calls: detail + reviews + (Carnival grouped if needed)
+      final fetchCarnival = _groupedProducts == null && _isCarnival;
+      final futures = <Future>[
         _datasource.getProductDetail(product.slug!),
         _datasource.getProductReviews(product.id),
-      ]);
+        if (fetchCarnival)
+          _datasource.getCarnivalGroupedProducts(product.name),
+      ];
+      final results = await Future.wait(futures);
 
       final detail = results[0] as ProductModel;
       final reviewResponse = results[1] as ReviewListResponse;
+      if (fetchCarnival && results.length > 2) {
+        _groupedProducts = results[2] as List<GroupedProduct>?;
+      }
 
       product = detail;
 

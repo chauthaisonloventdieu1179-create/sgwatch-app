@@ -31,6 +31,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Future<void> _onBuyTap(ProductModel product) async {
+    if (product.isCarnival) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ProductDetailScreen(
+          product: product,
+          groupedProducts: product.groupedProducts,
+        ),
+      ));
+      return;
+    }
     showDialog(
       context: context,
       barrierDismissible: false,

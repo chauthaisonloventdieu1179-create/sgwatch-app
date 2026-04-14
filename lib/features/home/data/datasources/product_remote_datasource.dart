@@ -122,6 +122,20 @@ class ProductRemoteDatasource {
     );
   }
 
+  /// GET /shop/products?keyword={name}&brand_id=5&group_by=name
+  /// Dùng cho Carnival: lấy grouped_products (tất cả variants cùng tên)
+  Future<List<GroupedProduct>?> getCarnivalGroupedProducts(
+      String productName) async {
+    final result = await getProducts(
+      keyword: productName,
+      brandId: 5,
+      groupBy: 'name',
+      perPage: 1,
+    );
+    if (result.products.isEmpty) return null;
+    return result.products.first.groupedProducts;
+  }
+
   /// GET /shop/products/{slug}
   Future<ProductModel> getProductDetail(String slug) async {
     final response = await _apiClient.get('${Endpoints.productDetail}/$slug');
