@@ -8,6 +8,7 @@ import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/app/app.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
+import 'package:sgwatch_app/features/admin/presentation/admin_scaffold.dart';
 import 'package:sgwatch_app/features/admin/presentation/chat/admin_chat_list_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_all_orders_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_manager_screen.dart';
@@ -183,7 +184,7 @@ class FirebaseNotificationService {
 
     if (redirectType == 'chat') {
       if (isAdmin) {
-        _navigateToAdminChatList();
+        _navigateToAdminChatList(data: data);
       } else {
         _navigateToChat();
       }
@@ -208,15 +209,24 @@ class FirebaseNotificationService {
     debugPrint('[FCM] Navigated to ChatScreen');
   }
 
-  /// Navigate vào AdminChatListScreen (admin)
-  static void _navigateToAdminChatList() {
-    final context = navigatorKey.currentContext;
-    if (context == null) return;
-
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const AdminChatListScreen()),
-    );
-    debugPrint('[FCM] Navigated to AdminChatListScreen');
+  /// Navigate vào AdminChatListScreen (admin) - chuyển tab thay vì push route
+  /// Nếu có senderId trong data → mở thẳng room chat của user đó
+  static void _navigateToAdminChatList({Map<String, dynamic>? data}) {
+    if (data != null) {
+      final senderId = int.tryParse(data['user_id']?.toString() ?? '');
+      final senderName = data['user_name']?.toString()
+          ?? data['sender_name']?.toString()
+          ?? 'Người dùng';
+      if (senderId != null) {
+        AdminChatListScreen.openRoomNotifier.value = {
+          'receiverId': senderId,
+          'userName': senderName,
+        };
+        debugPrint('[FCM] Will open chat room for userId=$senderId name=$senderName');
+      }
+    }
+    AdminScaffold.navigateToTabNotifier.value = 2;
+    debugPrint('[FCM] Navigated to AdminChatListScreen via tab switch');
   }
 
   /// Navigate vào AdminManagerScreen → AdminAllOrdersScreen (admin)

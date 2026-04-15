@@ -8,6 +8,11 @@ import 'package:sgwatch_app/features/admin/presentation/chat/admin_chat_room_scr
 class AdminChatListScreen extends StatefulWidget {
   const AdminChatListScreen({super.key});
 
+  /// Notification service set cái này để mở thẳng room chat
+  /// Map: {'receiverId': int, 'userName': String}
+  static final ValueNotifier<Map<String, dynamic>?> openRoomNotifier =
+      ValueNotifier<Map<String, dynamic>?>(null);
+
   @override
   State<AdminChatListScreen> createState() => _AdminChatListScreenState();
 }
@@ -26,11 +31,33 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _loadConversations();
+    AdminChatListScreen.openRoomNotifier.addListener(_onExternalOpenRoom);
+    // Xử lý trường hợp notifier đã được set trước khi widget mount
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onExternalOpenRoom());
+  }
+
+  void _onExternalOpenRoom() {
+    final req = AdminChatListScreen.openRoomNotifier.value;
+    if (req != null && mounted) {
+      AdminChatListScreen.openRoomNotifier.value = null;
+      final receiverId = req['receiverId'] as int;
+      final userName = req['userName'] as String;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AdminChatRoomScreen(
+            receiverId: receiverId,
+            userName: userName,
+          ),
+        ),
+      ).then((_) => _loadConversations());
+    }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    AdminChatListScreen.openRoomNotifier.removeListener(_onExternalOpenRoom);
     super.dispose();
   }
 

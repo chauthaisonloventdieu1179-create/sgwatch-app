@@ -12,6 +12,10 @@ import 'package:sgwatch_app/features/profile/presentation/profile_screen.dart';
 class AdminScaffold extends StatefulWidget {
   const AdminScaffold({super.key});
 
+  /// Notification service dùng cái này để chuyển tab từ bên ngoài
+  static final ValueNotifier<int?> navigateToTabNotifier =
+      ValueNotifier<int?>(null);
+
   @override
   State<AdminScaffold> createState() => _AdminScaffoldState();
 }
@@ -30,6 +34,17 @@ class _AdminScaffoldState extends State<AdminScaffold> {
       const Duration(minutes: 2),
       (_) => _fetchUnread(),
     );
+    AdminScaffold.navigateToTabNotifier.addListener(_onExternalTabNavigate);
+    // Xử lý trường hợp notification tap khi app đang terminated
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onExternalTabNavigate());
+  }
+
+  void _onExternalTabNavigate() {
+    final index = AdminScaffold.navigateToTabNotifier.value;
+    if (index != null) {
+      _onTabTap(index);
+      AdminScaffold.navigateToTabNotifier.value = null;
+    }
   }
 
   Future<void> _fetchUnread() async {
@@ -43,6 +58,7 @@ class _AdminScaffoldState extends State<AdminScaffold> {
   void dispose() {
     _unreadTimer?.cancel();
     _chatUnread.dispose();
+    AdminScaffold.navigateToTabNotifier.removeListener(_onExternalTabNavigate);
     super.dispose();
   }
 
