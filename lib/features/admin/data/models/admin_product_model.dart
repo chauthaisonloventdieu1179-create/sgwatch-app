@@ -5,6 +5,13 @@ int _parseProdInt(dynamic v) {
   return 0;
 }
 
+bool _parseProdBool(dynamic v) {
+  if (v is bool) return v;
+  if (v is int) return v == 1;
+  if (v is String) return v == '1' || v == 'true';
+  return false;
+}
+
 class AdminProductModel {
   final int id;
   final String name;
@@ -27,6 +34,8 @@ class AdminProductModel {
   final String? movementType;
   final int? warrantyMonths;
   final Map<String, dynamic>? attributes;
+  final String? shortDescription;
+  final String? condition;
   final String? description;
   final String? productInfo;
   final String? dealInfo;
@@ -54,6 +63,8 @@ class AdminProductModel {
     this.movementType,
     this.warrantyMonths,
     this.attributes,
+    this.shortDescription,
+    this.condition,
     this.description,
     this.productInfo,
     this.dealInfo,
@@ -88,14 +99,16 @@ class AdminProductModel {
           .toList(),
       stockQuantity: _parseProdInt(json['stock_quantity']),
       stockType: json['stock_type']?.toString() ?? 'in_stock',
-      isNew: json['is_new'] as bool? ?? true,
-      isDomestic: json['is_domestic'] as bool? ?? false,
+      isNew: _parseProdBool(json['is_new']),
+      isDomestic: _parseProdBool(json['is_domestic']),
       gender: json['gender']?.toString(),
       movementType: json['movement_type']?.toString(),
       warrantyMonths: json['warranty_months'] != null
           ? _parseProdInt(json['warranty_months'])
           : null,
       attributes: json['attributes'] as Map<String, dynamic>?,
+      shortDescription: json['short_description']?.toString(),
+      condition: json['condition']?.toString(),
       description: json['description']?.toString(),
       productInfo: json['product_info']?.toString(),
       dealInfo: json['deal_info']?.toString(),

@@ -46,6 +46,15 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
   final _colorCodeCtrl = TextEditingController();
   final _colorCtrl = TextEditingController();
   final _displayOrderCtrl = TextEditingController();
+  final _shortDescCtrl = TextEditingController();
+  // Electronics attributes
+  final _yearCtrl = TextEditingController();
+  final _gpuCtrl = TextEditingController();
+  final _designCtrl = TextEditingController();
+  final _batteryCtrl = TextEditingController();
+  final _portsCtrl = TextEditingController();
+  final _targetCustomerCtrl = TextEditingController();
+  final _securityCtrl = TextEditingController();
 
   // State
   String _stockType = 'in_stock';
@@ -53,12 +62,18 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
   bool _isDomestic = false;
   String? _gender;
   String? _movementType;
+  String? _condition;
   int? _selectedBrandId;
 
   List<AdminBrandModel> _brands = [];
+
+  // Primary image
+  File? _newPrimaryImage;
+  String? _existingPrimaryImageUrl;
+
+  // Additional images
   final List<File> _newImages = [];
   List<AdminProductImageModel> _existingImages = [];
-  final List<int> _deletedImageIds = [];
 
   bool _isLoading = false;
   bool _isSaving = false;
@@ -69,6 +84,8 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       widget.categoryId == 1;
 
   bool get _isCarnival => _selectedBrandId == 5;
+  bool get _isLaptopOrMacBook => widget.categoryId == 2 || widget.categoryId == 3;
+  bool get _isIPad => widget.categoryId == 4;
 
   @override
   void initState() {
@@ -94,6 +111,14 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
     _colorCodeCtrl.dispose();
     _colorCtrl.dispose();
     _displayOrderCtrl.dispose();
+    _shortDescCtrl.dispose();
+    _yearCtrl.dispose();
+    _gpuCtrl.dispose();
+    _designCtrl.dispose();
+    _batteryCtrl.dispose();
+    _portsCtrl.dispose();
+    _targetCustomerCtrl.dispose();
+    _securityCtrl.dispose();
     super.dispose();
   }
 
@@ -123,19 +148,46 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       _colorCodeCtrl.text = p.attributes?['color_code']?.toString() ?? '';
       _colorCtrl.text = p.attributes?['color']?.toString() ?? '';
       _displayOrderCtrl.text = p.displayOrder?.toString() ?? '';
+      _shortDescCtrl.text = p.shortDescription ?? '';
+      _yearCtrl.text = p.attributes?['year']?.toString() ?? '';
+      _gpuCtrl.text = p.attributes?['gpu']?.toString() ?? '';
+      _designCtrl.text = p.attributes?['design']?.toString() ?? '';
+      final rawBattery = p.attributes?['battery']?.toString() ?? '';
+      if (rawBattery.isNotEmpty) {
+        final batNum = double.tryParse(rawBattery);
+        if (batNum != null && batNum > 0 && batNum <= 1) {
+          _batteryCtrl.text = '${(batNum * 100).round()}%';
+        } else {
+          _batteryCtrl.text = rawBattery;
+        }
+      } else {
+        _batteryCtrl.text = '';
+      }
+      _portsCtrl.text = p.attributes?['ports']?.toString() ?? '';
+      _targetCustomerCtrl.text = p.attributes?['target_customer']?.toString() ?? '';
+      _securityCtrl.text = p.attributes?['security']?.toString() ?? '';
       setState(() {
         _stockType = p.stockType;
         _isNew = p.isNew;
         _isDomestic = p.isDomestic;
+        _condition = p.condition;
         _gender = p.gender;
         _movementType = p.movementType;
         _selectedBrandId = p.brandId;
+        _existingPrimaryImageUrl = p.primaryImageUrl;
         _existingImages = p.images;
       });
     } catch (_) {
     } finally {
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _pickPrimaryImage() async {
+    final picked = await _picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 80);
+    if (picked == null) return;
+    setState(() => _newPrimaryImage = File(picked.path));
   }
 
   Future<void> _pickImages() async {
@@ -158,12 +210,17 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
         'category_id': widget.categoryId,
         'stock_quantity': _stockCtrl.text.trim(),
         'stock_type': _stockType,
-        'is_new': _isNew ? 1 : 0,
-        'is_domestic': _isDomestic ? 1 : 0,
       };
+      if (!_isIPad) {
+        map['is_new'] = _isNew ? 1 : 0;
+        map['is_domestic'] = _isDomestic ? 1 : 0;
+      }
 
       if (_skuCtrl.text.trim().isNotEmpty) {
         map['sku'] = _skuCtrl.text.trim();
+      }
+      if (_shortDescCtrl.text.trim().isNotEmpty) {
+        map['short_description'] = _shortDescCtrl.text.trim();
       }
       if (_priceCtrl.text.trim().isNotEmpty) {
         map['price_jpy'] = _priceCtrl.text.trim();
@@ -183,6 +240,9 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       if (_warrantyCtrl.text.trim().isNotEmpty) {
         map['warranty_months'] = _warrantyCtrl.text.trim();
       }
+      if (_condition != null && !_isWatch) {
+        map['condition'] = _condition;
+      }
       if (_thongSoCtrl.text.trim().isNotEmpty) {
         map['attributes[thong_so_ky_thuat]'] = _thongSoCtrl.text.trim();
       }
@@ -192,6 +252,29 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
         }
         if (_colorCtrl.text.trim().isNotEmpty) {
           map['attributes[color]'] = _colorCtrl.text.trim();
+        }
+      }
+      if (_isLaptopOrMacBook) {
+        if (_yearCtrl.text.trim().isNotEmpty) map['attributes[year]'] = _yearCtrl.text.trim();
+        if (_colorCtrl.text.trim().isNotEmpty) map['attributes[color]'] = _colorCtrl.text.trim();
+        if (_gpuCtrl.text.trim().isNotEmpty) map['attributes[gpu]'] = _gpuCtrl.text.trim();
+        if (_designCtrl.text.trim().isNotEmpty) map['attributes[design]'] = _designCtrl.text.trim();
+        if (_batteryCtrl.text.trim().isNotEmpty) {
+          final bVal = _batteryCtrl.text.trim().replaceAll('%', '').trim();
+          final bNum = double.tryParse(bVal);
+          map['attributes[battery]'] = (bNum != null && bNum > 1) ? (bNum / 100).toString() : _batteryCtrl.text.trim();
+        }
+        if (_portsCtrl.text.trim().isNotEmpty) map['attributes[ports]'] = _portsCtrl.text.trim();
+        if (_targetCustomerCtrl.text.trim().isNotEmpty) map['attributes[target_customer]'] = _targetCustomerCtrl.text.trim();
+      }
+      if (_isIPad) {
+        if (_yearCtrl.text.trim().isNotEmpty) map['attributes[year]'] = _yearCtrl.text.trim();
+        if (_colorCtrl.text.trim().isNotEmpty) map['attributes[color]'] = _colorCtrl.text.trim();
+        if (_securityCtrl.text.trim().isNotEmpty) map['attributes[security]'] = _securityCtrl.text.trim();
+        if (_batteryCtrl.text.trim().isNotEmpty) {
+          final bVal = _batteryCtrl.text.trim().replaceAll('%', '').trim();
+          final bNum = double.tryParse(bVal);
+          map['attributes[battery]'] = (bNum != null && bNum > 1) ? (bNum / 100).toString() : _batteryCtrl.text.trim();
         }
       }
       if (_descCtrl.text.trim().isNotEmpty) {
@@ -207,7 +290,15 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
         map['display_order'] = _displayOrderCtrl.text.trim();
       }
 
-      // New images
+      // Primary image (new upload)
+      if (_newPrimaryImage != null) {
+        map['primary_image'] = await MultipartFile.fromFile(
+          _newPrimaryImage!.path,
+          filename: _newPrimaryImage!.path.split('/').last,
+        );
+      }
+
+      // New additional images
       for (int i = 0; i < _newImages.length; i++) {
         map['images[$i]'] = await MultipartFile.fromFile(
           _newImages[i].path,
@@ -215,12 +306,15 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
         );
       }
 
-      // Deleted images (edit mode)
-      for (int i = 0; i < _deletedImageIds.length; i++) {
-        map['delete_images[$i]'] = _deletedImageIds[i];
-      }
-
       final formData = FormData.fromMap(map);
+
+      // Existing image IDs to keep (edit mode) — backend deletes the rest
+      if (widget.productId != null) {
+        for (final img in _existingImages) {
+          formData.fields
+              .add(MapEntry('existing_image_ids[]', img.id.toString()));
+        }
+      }
 
       if (widget.productId != null) {
         await _ds.updateProduct(widget.productId!, formData);
@@ -333,6 +427,10 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                       ),
                       const SizedBox(height: 12),
                     ],
+                    if (!_isWatch) ...[
+                      const SizedBox(height: 12),
+                      _buildTextField(_shortDescCtrl, 'Mô tả ngắn', maxLines: 2),
+                    ],
                   ]),
                   const SizedBox(height: 12),
                   _buildSection('Giá', [
@@ -384,11 +482,44 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                       onChanged: (v) =>
                           setState(() => _stockType = v ?? 'in_stock'),
                     ),
-                    const SizedBox(height: 12),
-                    _buildSwitch('Hàng mới', _isNew,
-                        (v) => setState(() => _isNew = v)),
-                    _buildSwitch('Hàng nội địa Nhật', _isDomestic,
-                        (v) => setState(() => _isDomestic = v)),
+                    if (!_isIPad) ...[
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<bool>(
+                        value: _isNew,
+                        decoration: _inputDecoration('Tình trạng'),
+                        items: const [
+                          DropdownMenuItem(value: true, child: Text('Hàng mới')),
+                          DropdownMenuItem(value: false, child: Text('Hàng cũ')),
+                        ],
+                        onChanged: (v) => setState(() => _isNew = v ?? true),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<bool>(
+                        value: _isDomestic,
+                        decoration: _inputDecoration('Loại hàng'),
+                        items: const [
+                          DropdownMenuItem(
+                              value: false, child: Text('Hàng quốc tế')),
+                          DropdownMenuItem(
+                              value: true, child: Text('Hàng nội địa Nhật')),
+                        ],
+                        onChanged: (v) => setState(() => _isDomestic = v ?? false),
+                      ),
+                    ],
+                    if (!_isWatch) ...[
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String?>(
+                        value: _condition,
+                        decoration: _inputDecoration('Tình trạng máy'),
+                        items: const [
+                          DropdownMenuItem<String?>(value: null, child: Text('-- Chọn --')),
+                          DropdownMenuItem(value: 'new', child: Text('Mới')),
+                          DropdownMenuItem(value: 'like_new', child: Text('Like New')),
+                          DropdownMenuItem(value: 'used', child: Text('Đã sử dụng')),
+                        ],
+                        onChanged: (v) => setState(() => _condition = v),
+                      ),
+                    ],
                   ]),
                   if (_isWatch) ...[
                     const SizedBox(height: 12),
@@ -406,8 +537,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                           DropdownMenuItem(
                               value: 'couple',
                               child: Text('Đồng hồ cặp')),
-                          DropdownMenuItem(
-                              value: 'unisex', child: Text('Unisex')),
                         ],
                         onChanged: (v) => setState(() => _gender = v),
                       ),
@@ -419,15 +548,11 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                           DropdownMenuItem<String?>(
                               value: null, child: Text('-- Chọn --')),
                           DropdownMenuItem(
-                              value: 'automatic',
-                              child: Text('Automatic')),
-                          DropdownMenuItem(
                               value: 'quartz',
                               child: Text('Quartz (Pin)')),
                           DropdownMenuItem(
-                              value: 'manual', child: Text('Manual')),
-                          DropdownMenuItem(
-                              value: 'solar', child: Text('Solar')),
+                              value: 'automatic',
+                              child: Text('Automatic')),
                         ],
                         onChanged: (v) =>
                             setState(() => _movementType = v),
@@ -453,6 +578,42 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                           _colorCodeCtrl, 'Mã màu (Color Code)'),
                       const SizedBox(height: 12),
                       _buildTextField(_colorCtrl, 'Màu (mô tả)'),
+                    ]),
+                  ],
+                  if (_isLaptopOrMacBook) ...[
+                    const SizedBox(height: 12),
+                    _buildSection('Đặc tính', [
+                      _buildTextField(_warrantyCtrl, 'Bảo hành (tháng)',
+                          keyboardType: TextInputType.number),
+                      const SizedBox(height: 12),
+                      _buildTextField(_yearCtrl, 'Năm sản xuất'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_colorCtrl, 'Màu sắc'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_gpuCtrl, 'GPU'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_designCtrl, 'Thiết kế / Trọng lượng'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_batteryCtrl, 'Pin'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_portsCtrl, 'Cổng kết nối', maxLines: 3),
+                      const SizedBox(height: 12),
+                      _buildTextField(_targetCustomerCtrl, 'Đối tượng khách hàng', maxLines: 3),
+                    ]),
+                  ],
+                  if (_isIPad) ...[
+                    const SizedBox(height: 12),
+                    _buildSection('Đặc tính', [
+                      _buildTextField(_warrantyCtrl, 'Bảo hành (tháng)',
+                          keyboardType: TextInputType.number),
+                      const SizedBox(height: 12),
+                      _buildTextField(_yearCtrl, 'Năm sản xuất'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_colorCtrl, 'Màu sắc'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_securityCtrl, 'Bảo mật'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_batteryCtrl, 'Pin'),
                     ]),
                   ],
                   const SizedBox(height: 12),
@@ -556,7 +717,56 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Hình ảnh',
+          // ── Primary image ──────────────────────────────────────────
+          const Text('Ảnh đại diện',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black)),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: _pickPrimaryImage,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: AppColors.backgroundGrey,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: _newPrimaryImage != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(_newPrimaryImage!,
+                          fit: BoxFit.cover),
+                    )
+                  : _existingPrimaryImageUrl != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            _existingPrimaryImageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const Icon(
+                                Icons.broken_image,
+                                color: AppColors.grey),
+                          ),
+                        )
+                      : const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_photo_alternate_outlined,
+                                color: AppColors.grey),
+                            SizedBox(height: 4),
+                            Text('Chọn ảnh',
+                                style: TextStyle(
+                                    fontSize: 11, color: AppColors.grey)),
+                          ],
+                        ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // ── Additional images ──────────────────────────────────────
+          const Text('Hình ảnh khác',
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -590,10 +800,7 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                         right: 0,
                         child: GestureDetector(
                           onTap: () {
-                            setState(() {
-                              _deletedImageIds.add(img.id);
-                              _existingImages.remove(img);
-                            });
+                            setState(() => _existingImages.remove(img));
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -678,22 +885,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       keyboardType: keyboardType,
       validator: validator,
       decoration: _inputDecoration(label),
-    );
-  }
-
-  Widget _buildSwitch(String label, bool value, Function(bool) onChanged) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(label,
-              style: const TextStyle(fontSize: 13, color: AppColors.black)),
-        ),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: AppColors.primary,
-        ),
-      ],
     );
   }
 
