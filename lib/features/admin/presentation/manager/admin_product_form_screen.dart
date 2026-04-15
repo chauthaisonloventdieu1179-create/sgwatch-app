@@ -881,8 +881,11 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
   }) {
     return TextFormField(
       controller: ctrl,
+      minLines: maxLines,
       maxLines: maxLines,
-      keyboardType: keyboardType,
+      keyboardType: maxLines > 1
+          ? TextInputType.multiline
+          : keyboardType,
       validator: validator,
       decoration: _inputDecoration(label),
     );
@@ -893,12 +896,16 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       labelText: label,
       labelStyle: const TextStyle(color: AppColors.grey, fontSize: 13),
       filled: true,
-      fillColor: AppColors.backgroundGrey,
+      fillColor: AppColors.white,
       contentPadding:
-          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide.none,
+        borderSide: const BorderSide(color: Color(0xFFDDDDDD)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0xFFDDDDDD)),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
