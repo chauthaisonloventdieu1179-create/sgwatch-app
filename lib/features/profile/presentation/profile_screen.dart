@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
+import 'package:sgwatch_app/features/admin/admin_mode.dart';
 import 'package:sgwatch_app/features/auth/presentation/login_screen.dart';
 import 'package:sgwatch_app/features/profile/presentation/edit_profile_screen.dart';
 import 'package:sgwatch_app/features/profile/presentation/profile_viewmodel.dart';
@@ -90,6 +91,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildMenuCard(),
               const SizedBox(height: 24),
               _buildAppSettings(),
+              if (_viewModel.user?.role == 'admin') ...[
+                const SizedBox(height: 24),
+                _buildAdminToggle(),
+              ],
               const SizedBox(height: 24),
               _buildLogout(),
               const SizedBox(height: 12),
@@ -509,6 +514,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Text(
               'Xóa tài khoản',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdminToggle() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: AdminMode.notifier,
+      builder: (_, isAdmin, __) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+                color: Color(0x0D000000),
+                blurRadius: 4,
+                offset: Offset(1, 2)),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.admin_panel_settings_outlined,
+                  color: AppColors.primary, size: 20),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text('Chế độ Admin',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black)),
+            ),
+            Switch(
+              value: isAdmin,
+              onChanged: (v) => AdminMode.setAdminMode(v),
+              activeColor: AppColors.primary,
             ),
           ],
         ),

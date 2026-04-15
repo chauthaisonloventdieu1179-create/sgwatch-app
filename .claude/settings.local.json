@@ -15,7 +15,8 @@
       "Bash(find /e/JANPAN_CHAUTHAISON_SOURCE/DU_AN_FREELANCER/SGWatch/App/sgwatch_app/lib/app -type f -name \"*.dart\" -exec basename {} ;)",
       "Bash(python3 -c \"import sys; s = sys.stdin.read\\(\\); print\\(s[:5000]\\)\")",
       "Bash(ls -la \"C:\\\\Users\\\\SONCT9\\\\.claude\\\\projects\\\\e--JANPAN-CHAUTHAISON-SOURCE-DU-AN-FREELANCER-SGWatch-App-sgwatch-app\"\"*.jsonl 2>/dev/null || dir \"C:UsersSONCT9.claudeprojectse--JANPAN-CHAUTHAISON-SOURCE-DU-AN-FREELANCER-SGWatch-App-sgwatch-app\"\")",
-      "WebFetch(domain:provinces.open-api.vn)"
+      "WebFetch(domain:provinces.open-api.vn)",
+      "Bash(wc -l /e/JANPAN_CHAUTHAISON_SOURCE/DU_AN_FREELANCER/SGWatch/sgwatch-app/lib/features/**/*.dart)"
     ]
   }
 }

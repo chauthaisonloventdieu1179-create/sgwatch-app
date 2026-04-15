@@ -1,0 +1,2701 @@
+nên tạo 1 folder admin rồi copy qua: đừng để lỗi tới user.
+LÀM CHẬM MÀ CHẮC. PHẦN TÍCH TỪNG YÊU CẦU. NHỚ CÂU LÀM CHẬM MÀ CHẮC
+bây giờ muốn tách app thành 1 phần admin riêng. khi login hoặc ở splash có token call api /user-info
+sẽ có 2 role
+{
+    "message": "Success",
+    "status_code": 200,
+    "data": {
+        "user": {
+            "id": 9,
+            "first_name": "Account",
+            "last_name": "TestDelete",
+            "avatar_url": "https://api.sgwatch.jp/storage/avatars/OofRkmso2GHWYLIMLXMRps2vNOLvvhkOM0rHoSWZ.png",
+            "gender": "male",
+            "birthday": null,
+            "role": "user", //admin
+            "email": "account_delete@gmail.com",
+            "push_notification_enabled": true
+        }
+    }
+}
+
+//admin sẽ là các menu khác
+hiện tại app đang dành cho user
+còn bây giờ làm thêm các chức năng app là cho admin
+khi user thì vào như hiện tại  còn admin thì sẽ vào  các màn hình khác , màn hình profile vẫn giữ như hiện tại
+cho admin nhưng có 1 button hay gì đó để chuyển đổi qua lại giữa admin và user.
+admin thì ở menu bottom có các chức năng.
+nên tạo 1 folder admin rồi copy qua: đừng để lỗi tới user.
+I. Home: giống user, vào product detail giống user,...
+II. Manager
+    1. đơn đang xử lý / đơn đã xác nhận
+      1.1 đơn đang xử lý : api get /admin/shop/orders?page=1&per_page=20&status=processing
+     {
+    "message": "Orders retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "orders": [
+            {
+                "id": 45,
+                "order_number": "SG26040043",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "processing",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "73000",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:51:17+09:00",
+                "items": [
+                    {
+                        "id": 52,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 20,
+            "total": 1
+        }
+    }
+}
+
+  1.2 đơn đã xác nhận : /admin/shop/orders?page=1&per_page=20&status=confirmed
+    api get: /admin/shop/orders?page=1&per_page=20&status=confirmed
+    response
+    {
+    "message": "Orders retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "orders": [
+            {
+                "id": 28,
+                "order_number": "SG26040026",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "confirmed",
+                "payment_status": "pending",
+                "payment_method": "cod",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "0",
+                "cod_fee": "1200",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "30200",
+                "currency": "JPY",
+                "shipping_name": "duc thuc nguyen",
+                "shipping_phone": "07085293799",
+                "shipping_address": "神奈川県 横須賀市佐原 1丁目10番21 shinei 108",
+                "shipping_city": "神奈川県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "2390835",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": "2026-04-13T20:42:10+09:00",
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-13T08:22:13+09:00",
+                "items": [
+                    {
+                        "id": 34,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 92,
+                    "uuid": "e25050a1-8603-4b40-8166-52cec0dc31a1",
+                    "first_name": "duc",
+                    "last_name": "thuc nguyen",
+                    "full_name": "duc thuc nguyen",
+                    "email": "ducthuc34@gmail.com"
+                }
+            },
+            {
+                "id": 20,
+                "order_number": "SG26040018",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "confirmed",
+                "payment_status": "pending",
+                "payment_method": "bank_transfer",
+                "payment_receipt": "https://api.sgwatch.jp/storage/orders/receipts/84/9CqkHkEQeXxViFUHmNcrkYZXOPEr7UlCLSzoRq3D.png",
+                "shipping_method": "standard",
+                "subtotal": "42000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "42000",
+                "currency": "JPY",
+                "shipping_name": "Trọng Thắng Trần",
+                "shipping_phone": "07066679456",
+                "shipping_address": "愛知県 海部郡蟹江町今 字川東下5-1 第5ハセビル 308号",
+                "shipping_city": "愛知県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "4970032",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": "2026-04-13T21:34:57+09:00",
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-12T21:05:49+09:00",
+                "items": [
+                    {
+                        "id": 24,
+                        "product_id": 231,
+                        "product_name": "Đồng hồ nam Citizen Tsuyosa Automatic NJ0151-53L",
+                        "product_sku": "NJ0150-81E",
+                        "product_image": "https://api.sgwatch.jp/storage/products/231/kmybCD5Tg6y6oj7xY4ZTyhfEYzPH0ng4n8n2C3Mp.jpg",
+                        "quantity": 1,
+                        "unit_price": "42000",
+                        "total_price": "42000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 3,
+                            "name": "Citizen",
+                            "slug": "Citizen"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 84,
+                    "uuid": "0ea16839-f771-4bed-8522-a7a840f3550f",
+                    "first_name": "Trọng",
+                    "last_name": "Thắng Trần",
+                    "full_name": "Trọng Thắng Trần",
+                    "email": "trongthang1907@gmail.com"
+                }
+            },
+            {
+                "id": 19,
+                "order_number": "SG26040017",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "confirmed",
+                "payment_status": "pending",
+                "payment_method": "bank_transfer",
+                "payment_receipt": "https://api.sgwatch.jp/storage/orders/receipts/84/PjYrStfehTxnhKtxpwjT0pwT1b4qlAaPpnIt9VY5.png",
+                "shipping_method": "standard",
+                "subtotal": "42000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "42000",
+                "currency": "JPY",
+                "shipping_name": "Trọng Thắng Trần",
+                "shipping_phone": "07066679456",
+                "shipping_address": "愛知県 海部郡蟹江町今 字川東下5-1 第5ハセビル 308号",
+                "shipping_city": "愛知県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "4970032",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": "2026-04-13T21:32:56+09:00",
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-12T18:36:42+09:00",
+                "items": [
+                    {
+                        "id": 23,
+                        "product_id": 231,
+                        "product_name": "Đồng hồ nam Citizen Tsuyosa Automatic NJ0151-53L",
+                        "product_sku": "NJ0150-81E",
+                        "product_image": "https://api.sgwatch.jp/storage/products/231/kmybCD5Tg6y6oj7xY4ZTyhfEYzPH0ng4n8n2C3Mp.jpg",
+                        "quantity": 1,
+                        "unit_price": "42000",
+                        "total_price": "42000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 3,
+                            "name": "Citizen",
+                            "slug": "Citizen"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 84,
+                    "uuid": "0ea16839-f771-4bed-8522-a7a840f3550f",
+                    "first_name": "Trọng",
+                    "last_name": "Thắng Trần",
+                    "full_name": "Trọng Thắng Trần",
+                    "email": "trongthang1907@gmail.com"
+                }
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 20,
+            "total": 3
+        }
+    }
+}
+    2. Quản lý hàng tồn ( Hàng đi và hàng nhập)
+      2.1 hàng đi :
+       api get : /admin/shop/inventory-histories?date=2026-04-15&page=1&per_page=20&type=export
+       {
+    "message": "Inventory history retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "records": [
+            {
+                "id": 4,
+                "type": "export",
+                "quantity": 1,
+                "stock_before": 1,
+                "stock_after": 0,
+                "reference_type": "order",
+                "reference_id": 27,
+                "note": "Order #SG26040025",
+                "created_at": "2026-04-15 00:00:19",
+                "product": {
+                    "id": 89,
+                    "name": "ORIENT STAR SKELETON AUTOMATIC RE-AV0003L (Made in Japan)",
+                    "sku": "RE-AV0003L",
+                    "primary_image_url": "https://api.sgwatch.jp/storage/products/89/SzFaAbu0NUa0mEAq2m6R5x99LffJUsYi4Tyuu0kU.jpg"
+                },
+                "product_color": null
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 20,
+            "total": 1
+        }
+    }
+}
+      2.2 hàng nhập api get : /admin/shop/inventory-histories?date=2026-04-14&page=1&per_page=20&type=import
+      {
+    "message": "Inventory history retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "records": [
+            {
+                "id": 3,
+                "type": "import",
+                "quantity": 5,
+                "stock_before": 0,
+                "stock_after": 5,
+                "reference_type": "admin_update",
+                "reference_id": null,
+                "note": null,
+                "created_at": "2026-04-14 03:14:12",
+                "product": {
+                    "id": 139,
+                    "name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                    "sku": "RN-AA0B02J",
+                    "primary_image_url": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg"
+                },
+                "product_color": null
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 20,
+            "total": 1
+        }
+    }
+}
+    - chức năng thông báo: thêm thông báo
+      api post : /admin/notices
+      form-data :
+        - title, content, image
+  3. đơn hàng : get /admin/shop/orders?page=1&per_page=20
+  {
+    "message": "Orders retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "orders": [
+            {
+                "id": 50,
+                "order_number": "SG26040048",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "72000",
+                "currency": "JPY",
+                "shipping_name": "THANH LONG CAO",
+                "shipping_phone": "07092123680",
+                "shipping_address": "愛知県 知立市西町 宮後31-1 ロイヤルマンション 307",
+                "shipping_city": "愛知県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "4720023",
+                "note": "giao hàng 18-20h",
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-15T10:39:39+09:00",
+                "items": [
+                    {
+                        "id": 57,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 70,
+                    "uuid": "b384654c-c30a-4921-b40b-c1ac8999288f",
+                    "first_name": "THANH",
+                    "last_name": "LONG CAO",
+                    "full_name": "THANH LONG CAO",
+                    "email": "caolong07072000@gmail.com"
+                }
+            },
+            {
+                "id": 49,
+                "order_number": "SG26040047",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "72000",
+                "currency": "JPY",
+                "shipping_name": "THANH LONG CAO",
+                "shipping_phone": "07092123680",
+                "shipping_address": "愛知県 知立市西町 宮後31-1 ロイヤルマンション 307",
+                "shipping_city": "愛知県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "4720023",
+                "note": "giao hàng 18-20h",
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-15T10:33:40+09:00",
+                "items": [
+                    {
+                        "id": 56,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 70,
+                    "uuid": "b384654c-c30a-4921-b40b-c1ac8999288f",
+                    "first_name": "THANH",
+                    "last_name": "LONG CAO",
+                    "full_name": "THANH LONG CAO",
+                    "email": "caolong07072000@gmail.com"
+                }
+            },
+            {
+                "id": 48,
+                "order_number": "SG26040046",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "55000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "58000",
+                "currency": "JPY",
+                "shipping_name": "Kim Ngân Trương",
+                "shipping_phone": "07091291388",
+                "shipping_address": "大阪府 羽曳野市西浦 1192-1ハイツ 水守 1-202",
+                "shipping_city": "大阪府",
+                "shipping_country": "JP",
+                "shipping_postal_code": "5830861",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-15T03:49:20+09:00",
+                "items": [
+                    {
+                        "id": 55,
+                        "product_id": 18,
+                        "product_name": "Orient Star Automatic Open Heart Brown RE-AT0007N (Made In Japan)",
+                        "product_sku": "RE-AT0007N",
+                        "product_image": "https://api.sgwatch.jp/storage/products/18/IgNLBeUwhtkI6Bf1F9PFcRfsHHJCiQgut1kJf4SE.jpg",
+                        "quantity": 1,
+                        "unit_price": "55000",
+                        "total_price": "55000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 119,
+                    "uuid": "1047e880-0f1e-4b58-b519-6a9de4eaa44a",
+                    "first_name": "Kim",
+                    "last_name": "Ngân Trương",
+                    "full_name": "Kim Ngân Trương",
+                    "email": "kimngan25041995@gmail.com"
+                }
+            },
+            {
+                "id": 47,
+                "order_number": "SG26040045",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "72000",
+                "currency": "JPY",
+                "shipping_name": "THANH LONG CAO",
+                "shipping_phone": "07092123680",
+                "shipping_address": "愛知県 知立市西町 宮後31-1 ロイヤルマンション 307",
+                "shipping_city": "愛知県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "4720023",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-15T00:44:53+09:00",
+                "items": [
+                    {
+                        "id": 54,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 70,
+                    "uuid": "b384654c-c30a-4921-b40b-c1ac8999288f",
+                    "first_name": "THANH",
+                    "last_name": "LONG CAO",
+                    "full_name": "THANH LONG CAO",
+                    "email": "caolong07072000@gmail.com"
+                }
+            },
+            {
+                "id": 46,
+                "order_number": "SG26040044",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "49000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "53000",
+                "currency": "JPY",
+                "shipping_name": "Hữu Tùng Hoàng",
+                "shipping_phone": "0929441333",
+                "shipping_address": "844/6 phạm văn thuận,kp3, Phường Tam Hiệp, 26017, 75",
+                "shipping_city": "75",
+                "shipping_country": "VN",
+                "shipping_postal_code": null,
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T20:56:11+09:00",
+                "items": [
+                    {
+                        "id": 53,
+                        "product_id": 725,
+                        "product_name": "Đồng hồ nữ Orient Sakura Automatic RN-AG0730J (Made in Japan, Nội địa Nhật)",
+                        "product_sku": "RN-AG0730J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/725/5YNpAa9Fr5yCzpdWwnTDVL4KWHLEgRz1IsztUzsL.png",
+                        "quantity": 1,
+                        "unit_price": "49000",
+                        "total_price": "49000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 122,
+                    "uuid": "9d306176-b126-4a7b-b62f-0ee7f59aaed8",
+                    "first_name": "Hữu",
+                    "last_name": "Tùng Hoàng",
+                    "full_name": "Hữu Tùng Hoàng",
+                    "email": "huutung232z30a@gmail.com"
+                }
+            },
+            {
+                "id": 45,
+                "order_number": "SG26040043",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "processing",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 3000,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "73000",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:51:17+09:00",
+                "items": [
+                    {
+                        "id": 52,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 44,
+                "order_number": "SG26040042",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:43:26+09:00",
+                "items": [
+                    {
+                        "id": 51,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 43,
+                "order_number": "SG26040041",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:42:49+09:00",
+                "items": [
+                    {
+                        "id": 50,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 42,
+                "order_number": "SG26040040",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "paid",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": "2026-04-14T18:39:51+09:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:29:53+09:00",
+                "items": [
+                    {
+                        "id": 49,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 41,
+                "order_number": "SG26040039",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:14:52+09:00",
+                "items": [
+                    {
+                        "id": 48,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 40,
+                "order_number": "SG26040038",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "waiting_order",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:10:35+09:00",
+                "items": [
+                    {
+                        "id": 47,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 39,
+                "order_number": "SG26040037",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "paid",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": "2026-04-14T18:09:54+09:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:09:02+09:00",
+                "items": [
+                    {
+                        "id": 46,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 38,
+                "order_number": "SG26040036",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": "12h dem",
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T18:01:06+09:00",
+                "items": [
+                    {
+                        "id": 45,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 37,
+                "order_number": "SG26040035",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T16:56:41+09:00",
+                "items": [
+                    {
+                        "id": 44,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 36,
+                "order_number": "SG26040034",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "bank_transfer",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "30000",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": "11h đêm",
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T16:46:21+09:00",
+                "items": [
+                    {
+                        "id": 43,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 35,
+                "order_number": "SG26040033",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "cod",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "1500",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "1000",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "30500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0440100",
+                "note": "12h đêm",
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T16:42:08+09:00",
+                "items": [
+                    {
+                        "id": 42,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật, Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 34,
+                "order_number": "SG26040032",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "39800",
+                "shipping_fee": "0",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "41300",
+                "currency": "JPY",
+                "shipping_name": "nhuc hao nguyen",
+                "shipping_phone": "07091052309",
+                "shipping_address": "三重県 鈴鹿市自由ヶ丘 一丁目18番21 号 ロイヤルシャルマン 203",
+                "shipping_city": "三重県",
+                "shipping_country": "JP",
+                "shipping_postal_code": "5131124",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T04:11:55+09:00",
+                "items": [
+                    {
+                        "id": 41,
+                        "product_id": 3,
+                        "product_name": "Macbook Air 2019 USED. Core i5,  Ram 8Gb, SSD 256Gb 13.3Inch. Touch ID",
+                        "product_sku": "MBA19582561",
+                        "product_image": "https://api.sgwatch.jp/storage/products/3/WBZOWv7iF83GxbRVERyvB42D6KtzzfWBqaOAYkHH.jpg",
+                        "quantity": 1,
+                        "unit_price": "39800",
+                        "total_price": "39800",
+                        "category": {
+                            "id": 3,
+                            "name": "macbook",
+                            "slug": "macbook"
+                        },
+                        "is_new": false,
+                        "brand": null
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 113,
+                    "uuid": "06c59e9d-08b4-4110-94ea-a36a81970c56",
+                    "first_name": "nhuc",
+                    "last_name": "hao nguyen",
+                    "full_name": "nhuc hao nguyen",
+                    "email": "nguyenhao030997@gmail.com"
+                }
+            },
+            {
+                "id": 33,
+                "order_number": "SG26040031",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "49000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "1000",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "50500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡豊浦町 ooooo",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0495400",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-14T00:04:48+09:00",
+                "items": [
+                    {
+                        "id": 40,
+                        "product_id": 147,
+                        "product_name": "Orient Sun And Moon Gen 4 RN-AS0003J (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RN-AS0002J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/147/NrUtAYAGOApPkcZrkqR4A3YBaBr06Dp1r8Bbp7E3.jpg",
+                        "quantity": 1,
+                        "unit_price": "49000",
+                        "total_price": "49000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 32,
+                "order_number": "SG26040030",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "cod",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "69000",
+                "shipping_fee": "1000",
+                "cod_fee": "1500",
+                "stripe_fee": 0,
+                "deposit_amount": "0",
+                "discount_amount": "1000",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "70500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "",
+                "shipping_address": "北海道 虻田郡豊浦町 ooooo",
+                "shipping_city": "北海道",
+                "shipping_country": "JP",
+                "shipping_postal_code": "0495400",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-13T23:58:57+09:00",
+                "items": [
+                    {
+                        "id": 39,
+                        "product_id": 91,
+                        "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RK-AV0007S",
+                        "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                        "quantity": 1,
+                        "unit_price": "69000",
+                        "total_price": "69000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 1,
+                            "name": "Orient Star ",
+                            "slug": "OrientStar "
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            },
+            {
+                "id": 31,
+                "order_number": "SG26040029",
+                "order_type": "online",
+                "customer_name": null,
+                "status": "pending",
+                "payment_status": "pending",
+                "payment_method": "stripe",
+                "payment_receipt": null,
+                "shipping_method": "standard",
+                "subtotal": "29000",
+                "shipping_fee": "1000",
+                "cod_fee": "0",
+                "stripe_fee": 1500,
+                "deposit_amount": "0",
+                "discount_amount": "0",
+                "points_used": 0,
+                "points_earned": 0,
+                "total_amount": "31500",
+                "currency": "JPY",
+                "shipping_name": "Account TestDelete",
+                "shipping_phone": "0343059474",
+                "shipping_address": "oooooo, Phường Hồng Châu, 11980, 33",
+                "shipping_city": "33",
+                "shipping_country": "VN",
+                "shipping_postal_code": "oooo",
+                "note": null,
+                "tracking_number": null,
+                "shipping_carrier": null,
+                "cancel_reason": null,
+                "confirmed_at": null,
+                "paid_at": null,
+                "shipped_at": null,
+                "delivered_at": null,
+                "cancelled_at": null,
+                "created_at": "2026-04-13T23:45:52+09:00",
+                "items": [
+                    {
+                        "id": 38,
+                        "product_id": 139,
+                        "product_name": "Orient SK Mặt Lửa RN-AA0B02J (Nội Địa Nhật Made in Japan)",
+                        "product_sku": "RN-AA0B02J",
+                        "product_image": "https://api.sgwatch.jp/storage/products/139/OKDi7Wk9mKbrms4Osqa9GjXt56r1j1ctYtPNu5ZU.jpg",
+                        "quantity": 1,
+                        "unit_price": "29000",
+                        "total_price": "29000",
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        },
+                        "is_new": true,
+                        "brand": {
+                            "id": 2,
+                            "name": "Orient",
+                            "slug": "Orient"
+                        }
+                    }
+                ],
+                "admin_note": null,
+                "user": {
+                    "id": 9,
+                    "uuid": "111111222",
+                    "first_name": "Account",
+                    "last_name": "TestDelete",
+                    "full_name": "Account TestDelete",
+                    "email": "account_delete@gmail.com"
+                }
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 3,
+            "per_page": 20,
+            "total": 50
+        }
+    }
+}
+có các param : keyword, order_number, user_keyword, product_keyword, status ( pending, confirmed, processing, shipping, delivered, completed, cancelled, refunded),  category_id , brand_id, order_type: online, walk_in 
+để lấy được các category_id call api get: /admin/shop-categories?page=1&per_page=30
+{
+    "message": "Shop categories retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "categories": [
+            {
+                "id": 1,
+                "name": "đồng hồ",
+                "slug": "clock",
+                "description": null,
+                "image_url": null,
+                "parent_id": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 2,
+                "name": "laptop",
+                "slug": "laptop",
+                "description": null,
+                "image_url": null,
+                "parent_id": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 3,
+                "name": "macbook",
+                "slug": "macbook",
+                "description": null,
+                "image_url": null,
+                "parent_id": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 4,
+                "name": "ipad",
+                "slug": "ipad",
+                "description": null,
+                "image_url": null,
+                "parent_id": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 30,
+            "total": 4
+        }
+    }
+}
+lấy được các brand_id thì call api get: 
+{
+    "message": "Shop brands retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "brands": [
+            {
+                "id": 1,
+                "name": "Orient Star ",
+                "slug": "OrientStar ",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 2,
+                "name": "Orient",
+                "slug": "Orient",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 3,
+                "name": "Citizen",
+                "slug": "Citizen",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 4,
+                "name": "Seiko",
+                "slug": "Seiko",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 5,
+                "name": "Carnival",
+                "slug": "Carnival",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 6,
+                "name": "Longines",
+                "slug": "Longines",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 7,
+                "name": "Tissot",
+                "slug": "Tissot",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 8,
+                "name": "Omega",
+                "slug": "Omega",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": null,
+                "updated_at": null
+            },
+            {
+                "id": 11,
+                "name": "Đồng hồ khác",
+                "slug": "donghokhac",
+                "logo_url": null,
+                "description": null,
+                "country": null,
+                "is_active": true,
+                "sort_order": 0,
+                "created_at": "2026-03-23T11:42:51+09:00",
+                "updated_at": "2026-03-23T11:42:51+09:00"
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 50,
+            "total": 9
+        }
+    }
+}
+ 3.2 get detail order : /admin/shop/orders/45
+ {
+    "message": "Order retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "order": {
+            "id": 45,
+            "order_number": "SG26040043",
+            "order_type": "online",
+            "customer_name": null,
+            "status": "processing",
+            "payment_status": "pending",
+            "payment_method": "stripe",
+            "payment_receipt": null,
+            "shipping_method": "standard",
+            "subtotal": "69000",
+            "shipping_fee": "1000",
+            "cod_fee": "0",
+            "stripe_fee": 3000,
+            "deposit_amount": "0",
+            "discount_amount": "0",
+            "points_used": 0,
+            "points_earned": 0,
+            "total_amount": "73000",
+            "currency": "JPY",
+            "shipping_name": "Account TestDelete",
+            "shipping_phone": "",
+            "shipping_address": "北海道 虻田郡京極町 1111 111 111",
+            "shipping_city": "北海道",
+            "shipping_country": "JP",
+            "shipping_postal_code": "0440100",
+            "note": null,
+            "tracking_number": null,
+            "shipping_carrier": null,
+            "cancel_reason": null,
+            "confirmed_at": null,
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "cancelled_at": null,
+            "created_at": "2026-04-14T18:51:17+09:00",
+            "items": [
+                {
+                    "id": 52,
+                    "product_id": 91,
+                    "product_name": "Orient Star Joker Trắng  Automatic Semi Skeleton RK-AV0007S (Nội Địa Nhật Made in Japan)",
+                    "product_sku": "RK-AV0007S",
+                    "product_image": "https://api.sgwatch.jp/storage/products/91/8cvbprQrTisXuY5Z9NrWcOyHfYStLWkaoH5nUxg2.jpg",
+                    "quantity": 1,
+                    "unit_price": "69000",
+                    "total_price": "69000",
+                    "category": {
+                        "id": 1,
+                        "name": "đồng hồ",
+                        "slug": "clock"
+                    },
+                    "is_new": true,
+                    "brand": {
+                        "id": 1,
+                        "name": "Orient Star ",
+                        "slug": "OrientStar "
+                    }
+                }
+            ],
+            "admin_note": null,
+            "user": {
+                "id": 9,
+                "uuid": "111111222",
+                "first_name": "Account",
+                "last_name": "TestDelete",
+                "full_name": "Account TestDelete",
+                "email": "account_delete@gmail.com"
+            }
+        }
+    }
+}
+ ở đây có 3 button 
+ 1. Button chat : Nhắn tin với {full_name} đến room của user đó dựa vào id , xem kỹ ở phần III Chat
+ 2. Đổi trạng thái đơn hàng. api  PUT /admin/shop/orders/31/status
+    body :{
+    "status": "shipping"
+}
+ 3. Đổi trạng thái thanh toán. api PUT /admin/shop/orders/10/payment-status
+    body
+    {
+    "payment_status": "paid" // pending
+}
+ 4. List product chia làm 4 loại : đồng hồ, laptop, macbook, ipad : đọc code ở web để hoàn thành 
+ E:\JANPAN_CHAUTHAISON_SOURCE\DU_AN_FREELANCER\SGWatch\Web admin\SGWatch-Web-Admin> 
+ /admin/clock/
+ /admin/laptop/
+ /admin/macbook/
+ /admin/
+ 4.1 Thêm sản phẩm : ở đây có thêm đồng hồ(lwuu ý chổ carnival), laptop, macbook, ipad 
+ đọc code ở web để hoàn thành dựa vào các màn hình này ở web : E:\JANPAN_CHAUTHAISON_SOURCE\DU_AN_FREELANCER\SGWatch\Web admin\SGWatch-Web-Admin> 
+ /admin/clock/create/
+ /admin/laptop/create/
+ /admin/macbook/create/
+ /admin/ipad/
+ hoàn thiện đủ chức năng getdetail, xóa , update luôn nha.
+III. Chat:
+    - khi splash và cứ 2p sẽ call api này 1 lần /chat/conversations?is_hidden=false&limit=1&page=1 ( luu  ý limit=1&page=1)
+    {
+    "success": true,
+    "message": "統合チャットリストを取得しました",
+    "status_code": 200,
+    "data": {
+        "conversations": [
+            {
+                "type": "user",
+                "id": 70,
+                "first_name": "THANH",
+                "last_name": "LONG CAO",
+                "email": "caolong07072000@gmail.com",
+                "avatar_url": null,
+                "unread_count": 1,
+                "latest_message": {
+                    "id": 634,
+                    "message": "orient star trắng dây da giá thế nào ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 70,
+                    "user_name": "THANH LONG CAO",
+                    "created_at": "2026-04-15 10:47:13"
+                },
+                "last_activity": "2026-04-15 10:47:13"
+            }
+        ],
+        "pagination": {
+            "total": 131,
+            "count": 1,
+            "per_page": 1,
+            "current_page": 1,
+            "total_pages": 131,
+            "total_unread_count": 1
+        }
+    }
+}
+để biết được   "total_unread_count": 1 chưa đọc để hiển thị trên icon tin nhắn ở botton menu chat
+ khi click menu chat sẽ call api get : /chat/conversations?page=1&limit=20&is_hidden=false
+ response
+ {
+    "success": true,
+    "message": "統合チャットリストを取得しました",
+    "status_code": 200,
+    "data": {
+        "conversations": [
+            {
+                "type": "user",
+                "id": 70,
+                "first_name": "THANH",
+                "last_name": "LONG CAO",
+                "email": "caolong07072000@gmail.com",
+                "avatar_url": null,
+                "unread_count": 1,
+                "latest_message": {
+                    "id": 634,
+                    "message": "orient star trắng dây da giá thế nào ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 70,
+                    "user_name": "THANH LONG CAO",
+                    "created_at": "2026-04-15 10:47:13"
+                },
+                "last_activity": "2026-04-15 10:47:13"
+            },
+            {
+                "type": "user",
+                "id": 112,
+                "first_name": "Chí",
+                "last_name": "Đô Trần",
+                "email": "tranchidops@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 633,
+                    "message": "Mình đang tham khảo ạ nào cần mình sẽ liên hệ shop",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 112,
+                    "user_name": "Chí Đô Trần",
+                    "created_at": "2026-04-15 09:33:20"
+                },
+                "last_activity": "2026-04-15 09:33:20"
+            },
+            {
+                "type": "user",
+                "id": 90,
+                "first_name": "Thị",
+                "last_name": "Thanh Nguyễn",
+                "email": "nguyenthithanhhhh2020@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 629,
+                    "message": "dạ  cảm ơn ạh",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 23:16:12"
+                },
+                "last_activity": "2026-04-14 23:16:12"
+            },
+            {
+                "type": "user",
+                "id": 122,
+                "first_name": "Hữu",
+                "last_name": "Tùng Hoàng",
+                "email": "huutung232z30a@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 628,
+                    "message": "app đang fix lỗi, anh có mua trực tiếp ở đây và em sẽ đi đơn cho mình ạ. không phải tốn chi phí dịch vụ của thẻ visa ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 23:10:19"
+                },
+                "last_activity": "2026-04-14 23:10:19"
+            },
+            {
+                "type": "user",
+                "id": 84,
+                "first_name": "Trọng",
+                "last_name": "Thắng Trần",
+                "email": "trongthang1907@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 625,
+                    "message": "dạ em cảm ơn anh ủng hộ SGWATCH ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 23:06:29"
+                },
+                "last_activity": "2026-04-14 23:06:29"
+            },
+            {
+                "type": "user",
+                "id": 92,
+                "first_name": "duc",
+                "last_name": "thuc nguyen",
+                "email": "ducthuc34@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 624,
+                    "message": "dạ 7 9 h tối ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 23:06:10"
+                },
+                "last_activity": "2026-04-14 23:06:10"
+            },
+            {
+                "type": "user",
+                "id": 119,
+                "first_name": "Kim",
+                "last_name": "Ngân Trương",
+                "email": "kimngan25041995@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 612,
+                    "message": "Anh tranh thủ chốt sớm nha",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 22:00:55"
+                },
+                "last_activity": "2026-04-14 22:00:55"
+            },
+            {
+                "type": "user",
+                "id": 118,
+                "first_name": "hũu",
+                "last_name": "bình nguyễn",
+                "email": "huubinh123456788@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 608,
+                    "message": "Dạ vâng ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 21:59:50"
+                },
+                "last_activity": "2026-04-14 21:59:50"
+            },
+            {
+                "type": "user",
+                "id": 117,
+                "first_name": "thị",
+                "last_name": "phượng nguyễn",
+                "email": "rinneko120194@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 595,
+                    "message": "Dạ chị cần tư vấn gì để em hỗ trợ cho chị ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 15:58:35"
+                },
+                "last_activity": "2026-04-14 15:58:35"
+            },
+            {
+                "type": "user",
+                "id": 33,
+                "first_name": "XUAN",
+                "last_name": "NGUYEN LE",
+                "email": "xuannguyen25122000@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 592,
+                    "message": "dạ ok ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 33,
+                    "user_name": "XUAN NGUYEN LE",
+                    "created_at": "2026-04-14 14:58:00"
+                },
+                "last_activity": "2026-04-14 14:58:00"
+            },
+            {
+                "type": "user",
+                "id": 78,
+                "first_name": "nhựt",
+                "last_name": "Bình phan",
+                "email": "nhutbinhp@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 562,
+                    "message": "Dạ 13tr850k anh ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 08:41:54"
+                },
+                "last_activity": "2026-04-14 08:41:54"
+            },
+            {
+                "type": "user",
+                "id": 56,
+                "first_name": "TOAN",
+                "last_name": "TRAN",
+                "email": "toanvathu1@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 560,
+                    "message": "aa",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 56,
+                    "user_name": "TOAN TRAN",
+                    "created_at": "2026-04-14 03:48:32"
+                },
+                "last_activity": "2026-04-14 03:48:32"
+            },
+            {
+                "type": "user",
+                "id": 27,
+                "first_name": "Van",
+                "last_name": "That Bui",
+                "email": "buivanthat0505@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 554,
+                    "message": "anh thanh toán tiền nhật hay việt ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 02:11:09"
+                },
+                "last_activity": "2026-04-14 02:11:09"
+            },
+            {
+                "type": "user",
+                "id": 26,
+                "first_name": "thị",
+                "last_name": "hoa bùi",
+                "email": "thathoa9199@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 551,
+                    "message": "Dạ em chào chị, mình thanh toán được chưa ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 02:09:27"
+                },
+                "last_activity": "2026-04-14 02:09:27"
+            },
+            {
+                "type": "user",
+                "id": 74,
+                "first_name": "Tuấn",
+                "last_name": "Nguyễn",
+                "email": "nguyenviettuan312005@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 550,
+                    "message": "chốt con này ạ a",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-14 02:04:58"
+                },
+                "last_activity": "2026-04-14 02:04:58"
+            },
+            {
+                "type": "user",
+                "id": 9,
+                "first_name": "Account",
+                "last_name": "TestDelete",
+                "email": "account_delete@gmail.com",
+                "avatar_url": "https://api.sgwatch.jp/storage/avatars/OofRkmso2GHWYLIMLXMRps2vNOLvvhkOM0rHoSWZ.png",
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 541,
+                    "message": "test11222",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-13 23:39:05"
+                },
+                "last_activity": "2026-04-13 23:39:05"
+            },
+            {
+                "type": "user",
+                "id": 107,
+                "first_name": "phan",
+                "last_name": "Phat",
+                "email": "phatphan19092000@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 534,
+                    "message": "Dạ vâng ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-13 21:57:23"
+                },
+                "last_activity": "2026-04-13 21:57:23"
+            },
+            {
+                "type": "user",
+                "id": 66,
+                "first_name": "VAN",
+                "last_name": "TRUNG LƯU",
+                "email": "luutrungvp1990@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 523,
+                    "message": "DẠ CÓ ANH Ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-13 21:29:53"
+                },
+                "last_activity": "2026-04-13 21:29:53"
+            },
+            {
+                "type": "user",
+                "id": 80,
+                "first_name": "hien",
+                "last_name": "bui",
+                "email": "buithithuhien1206@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 467,
+                    "message": "mình điền hết thông tin địa chỉ nhấp vào thanh toán chọn hình thức daibiki chưa ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-13 20:39:53"
+                },
+                "last_activity": "2026-04-13 20:39:53"
+            },
+            {
+                "type": "user",
+                "id": 100,
+                "first_name": "Tuấn",
+                "last_name": "Kiệt Bế",
+                "email": "kietbetuan@gmail.com",
+                "avatar_url": null,
+                "unread_count": 0,
+                "latest_message": {
+                    "id": 456,
+                    "message": "a dùng thước dây đo vị trí cổ tay anh muốn đeo, tầm 16, 17, 18cm là đeo ok ạ",
+                    "message_type": "text",
+                    "file_name": null,
+                    "file_type": null,
+                    "file_category": null,
+                    "user_id": 1,
+                    "user_name": "SGWATCH JP",
+                    "created_at": "2026-04-13 20:36:28"
+                },
+                "last_activity": "2026-04-13 20:36:28"
+            }
+        ],
+        "pagination": {
+            "total": 131,
+            "count": 20,
+            "per_page": 20,
+            "current_page": 1,
+            "total_pages": 7,
+            "total_unread_count": 1
+        }
+    }
+}
+ khi scroll được 1/2 thì + page ở sau vào
+ click 1 user thì vào room chat user đó
+ get /chat/history/list?receiver_id=112&limit=50
+ {
+    "success": true,
+    "message": "メッセージ一覧",
+    "status_code": 200,
+    "data": {
+        "messages": [
+            {
+                "id": 633,
+                "user_id": 112,
+                "sender_name": "Chí Đô Trần",
+                "sender_avatar": null,
+                "user_name": "Chí Đô Trần",
+                "user_avatar": null,
+                "receiver_id": 1,
+                "receiver_name": "SGWATCH JP",
+                "receiver_avatar": "https://api.sgwatch.jp/storage/avatars/PwAE3QmA3SeMECAz3sdZHWLgMsueQCrek2ybKXRM.png",
+                "reply_to_message_id": null,
+                "message": "Mình đang tham khảo ạ nào cần mình sẽ liên hệ shop",
+                "message_type": "text",
+                "file_url": null,
+                "file_name": null,
+                "file_type": null,
+                "file_size": null,
+                "is_read": true,
+                "read_at": "2026-04-15T01:26:18.000000Z",
+                "created_at": "2026-04-15T00:33:20.000000Z",
+                "updated_at": "2026-04-15T01:26:18.000000Z",
+                "reply_to_message": null,
+                "mentions": []
+            },
+            {
+                "id": 563,
+                "user_id": 1,
+                "sender_name": "SGWATCH JP",
+                "sender_avatar": "https://api.sgwatch.jp/storage/avatars/PwAE3QmA3SeMECAz3sdZHWLgMsueQCrek2ybKXRM.png",
+                "user_name": "SGWATCH JP",
+                "user_avatar": "https://api.sgwatch.jp/storage/avatars/PwAE3QmA3SeMECAz3sdZHWLgMsueQCrek2ybKXRM.png",
+                "receiver_id": 112,
+                "receiver_name": "Chí Đô Trần",
+                "receiver_avatar": null,
+                "reply_to_message_id": null,
+                "message": "Dạ anh cần tư vấn gì để em hỗ trợ cho anh ạ",
+                "message_type": "text",
+                "file_url": null,
+                "file_name": null,
+                "file_type": null,
+                "file_size": null,
+                "is_read": true,
+                "read_at": "2026-04-14T00:58:15.000000Z",
+                "created_at": "2026-04-13T23:42:44.000000Z",
+                "updated_at": "2026-04-14T00:58:15.000000Z",
+                "reply_to_message": null,
+                "mentions": []
+            },
+            {
+                "id": 559,
+                "user_id": 112,
+                "sender_name": "Chí Đô Trần",
+                "sender_avatar": null,
+                "user_name": "Chí Đô Trần",
+                "user_avatar": null,
+                "receiver_id": 1,
+                "receiver_name": "SGWATCH JP",
+                "receiver_avatar": "https://api.sgwatch.jp/storage/avatars/PwAE3QmA3SeMECAz3sdZHWLgMsueQCrek2ybKXRM.png",
+                "reply_to_message_id": null,
+                "message": "Tôi đang quan tâm đến sản phẩm CITIZEN SAKURA LIMITED Automatic PC1017-88Y (Made in Japan, Nội địa Nhật)",
+                "message_type": "text",
+                "file_url": null,
+                "file_name": null,
+                "file_type": null,
+                "file_size": null,
+                "is_read": true,
+                "read_at": "2026-04-13T23:40:56.000000Z",
+                "created_at": "2026-04-13T18:33:47.000000Z",
+                "updated_at": "2026-04-13T23:40:56.000000Z",
+                "reply_to_message": null,
+                "mentions": []
+            },
+            {
+                "id": 558,
+                "user_id": 112,
+                "sender_name": "Chí Đô Trần",
+                "sender_avatar": null,
+                "user_name": "Chí Đô Trần",
+                "user_avatar": null,
+                "receiver_id": 1,
+                "receiver_name": "SGWATCH JP",
+                "receiver_avatar": "https://api.sgwatch.jp/storage/avatars/PwAE3QmA3SeMECAz3sdZHWLgMsueQCrek2ybKXRM.png",
+                "reply_to_message_id": null,
+                "message": "",
+                "message_type": "file",
+                "file_url": "https://api.sgwatch.jp/storage/chat_files/JJ26LiO6o0aV8OZSaZiv7n0UvUBYdZWrixPGVHOd.jpg",
+                "file_name": "product_1776105225695.jpg",
+                "file_type": "image/jpeg",
+                "file_size": 88281,
+                "is_read": true,
+                "read_at": "2026-04-13T23:40:56.000000Z",
+                "created_at": "2026-04-13T18:33:46.000000Z",
+                "updated_at": "2026-04-13T23:40:56.000000Z",
+                "reply_to_message": null,
+                "mentions": []
+            }
+        ],
+        "unread_count": 0,
+        "pagination": {
+            "total": 4,
+            "count": 4,
+            "per_page": 50,
+            "current_page": 1,
+            "total_pages": 1
+        }
+    }
+}
+khi scroll 1/2 thì thêm page sau vào
+đồng thời khi vào room thì call api POST: /chat/messages/mark-as-read
+BODY {
+    "chat_partner_id": 112
+}
+gửi tin nhắn api POST: /chat/message
+Đọc source app user: cách gửi tin nhắn
+Đọc souce ở web: E:\JANPAN_CHAUTHAISON_SOURCE\DU_AN_FREELANCER\SGWatch\Web admin\SGWatch-Web-Admin>  phần Chat nha
+Để hoàn thành gửi tin nhắn và nhận tin nhắn Realtime nha. 
+IV. Profile : giống user : thêm chức năng chuyển đổi qua lại giữa admin và user
+lưu ý khi logout đã xóa token, xóa fcm-token, xóa cache, thông báo, pusher của user logout chưa.
+khi login vào lại thì đăng lý lại mọi thứ
+
+

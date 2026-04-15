@@ -1,67 +1,79 @@
-import 'package:flutter/material.dart';
-import 'package:sgwatch_app/core/services/notification_unread_service.dart';
-import 'package:sgwatch_app/core/theme/app_colors.dart';
-import 'package:sgwatch_app/core/utils/auth_guard.dart';
-import 'package:sgwatch_app/core/widgets/floating_social_buttons.dart';
-import 'package:sgwatch_app/features/admin/admin_mode.dart';
-import 'package:sgwatch_app/features/admin/presentation/admin_scaffold.dart';
-import 'package:sgwatch_app/features/favorites/presentation/favorites_screen.dart';
-import 'package:sgwatch_app/features/home/presentation/home_screen.dart';
-import 'package:sgwatch_app/features/notifications/presentation/notifications_screen.dart';
-import 'package:sgwatch_app/features/profile/presentation/profile_screen.dart';
-import 'package:sgwatch_app/features/profile/presentation/profile_viewmodel.dart';
+import 'dart:async';
 
-class MainScaffold extends StatefulWidget {
-  const MainScaffold({super.key});
+import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/network/api_client.dart';
+import 'package:sgwatch_app/core/theme/app_colors.dart';
+import 'package:sgwatch_app/features/admin/data/datasources/admin_datasource.dart';
+import 'package:sgwatch_app/features/admin/presentation/chat/admin_chat_list_screen.dart';
+import 'package:sgwatch_app/features/admin/presentation/manager/admin_manager_screen.dart';
+import 'package:sgwatch_app/features/home/presentation/home_screen.dart';
+import 'package:sgwatch_app/features/profile/presentation/profile_screen.dart';
+
+class AdminScaffold extends StatefulWidget {
+  const AdminScaffold({super.key});
 
   @override
-  State<MainScaffold> createState() => _MainScaffoldState();
+  State<AdminScaffold> createState() => _AdminScaffoldState();
 }
 
-class _MainScaffoldState extends State<MainScaffold> {
+class _AdminScaffoldState extends State<AdminScaffold> {
   int _currentIndex = 0;
+  final _chatUnread = ValueNotifier<int>(0);
+  Timer? _unreadTimer;
+  final _ds = AdminDatasource(ApiClient());
 
-  final _screens = const [
-    HomeScreen(),
-    FavoritesScreen(),
-    NotificationsScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchUnread();
+    _unreadTimer = Timer.periodic(
+      const Duration(minutes: 2),
+      (_) => _fetchUnread(),
+    );
+  }
 
-  /// Tabs that require authentication (index > 0)
-  static const _authRequiredTabs = {1, 2, 3};
+  Future<void> _fetchUnread() async {
+    try {
+      final count = await _ds.getUnreadCount();
+      _chatUnread.value = count;
+    } catch (_) {}
+  }
 
-  Future<void> _onTabTap(int index) async {
-    if (index == _currentIndex) return;
+  @override
+  void dispose() {
+    _unreadTimer?.cancel();
+    _chatUnread.dispose();
+    super.dispose();
+  }
 
-    if (_authRequiredTabs.contains(index)) {
-      final isAuth = await AuthGuard.check(context);
-      if (!isAuth) return;
+  Widget _getScreen() {
+    switch (_currentIndex) {
+      case 0:
+        return const HomeScreen();
+      case 1:
+        return const AdminManagerScreen();
+      case 2:
+        return const AdminChatListScreen();
+      case 3:
+        return const ProfileScreen();
+      default:
+        return const HomeScreen();
     }
+  }
 
+  void _onTabTap(int index) {
+    if (index == _currentIndex) return;
+    if (index == 2) {
+      // Clear chat unread when entering chat
+      _chatUnread.value = 0;
+    }
     setState(() => _currentIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // If user is admin and admin mode is on → show AdminScaffold
-    if (ProfileViewModel.cachedRole == 'admin') {
-      return ValueListenableBuilder<bool>(
-        valueListenable: AdminMode.notifier,
-        builder: (_, isAdminMode, __) {
-          if (isAdminMode) return const AdminScaffold();
-          return _buildUserScaffold();
-        },
-      );
-    }
-    return _buildUserScaffold();
-  }
-
-  Widget _buildUserScaffold() {
     return Scaffold(
-      body: Stack(
-        children: [_screens[_currentIndex], const FloatingSocialButtons()],
-      ),
+      body: _getScreen(),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: AppColors.white,
@@ -85,12 +97,11 @@ class _MainScaffoldState extends State<MainScaffold> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(Icons.home_outlined, 'Trang chủ', 0),
-                _buildNavItem(Icons.favorite_outline, 'Yêu thích', 1),
+                _buildNavItem(Icons.dashboard_outlined, 'Quản lý', 1),
                 ValueListenableBuilder<int>(
-                  valueListenable:
-                      NotificationUnreadService.instance.unreadCount,
+                  valueListenable: _chatUnread,
                   builder: (_, count, __) =>
-                      _buildNavItem(Icons.notifications_none, 'Thông báo', 2,
+                      _buildNavItem(Icons.chat_outlined, 'Chat', 2,
                           badge: count),
                 ),
                 _buildNavItem(Icons.person_outline, 'Tài khoản', 3),
@@ -102,7 +113,8 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index, {int badge = 0}) {
+  Widget _buildNavItem(IconData icon, String label, int index,
+      {int badge = 0}) {
     final isSelected = _currentIndex == index;
     final color = isSelected ? AppColors.black : AppColors.grey;
 
@@ -151,7 +163,8 @@ class _MainScaffoldState extends State<MainScaffold> {
               style: TextStyle(
                 fontSize: 11,
                 color: color,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontWeight:
+                    isSelected ? FontWeight.bold : FontWeight.w500,
               ),
             ),
           ],

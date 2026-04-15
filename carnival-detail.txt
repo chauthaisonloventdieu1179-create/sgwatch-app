@@ -1,0 +1,1742 @@
+phần get detail của carnival sẽ là  api khác tí :
+get: /shop/products?keyword=Đồng hồ Carnival Nữ Form Rolex&brand_id=5&group_by=name
+với keyword truyền name 
+response 
+{
+    "message": "Products retrieved successfully.",
+    "status_code": 200,
+    "data": {
+        "products": [
+            {
+                "id": 441,
+                "name": "Đồng hồ Carnival Nữ Form Rolex",
+                "slug": "dong-ho-carnival-form-rolex-nu-8131l-vt-tk-YZu2S",
+                "sku": "8131L-VT-TK",
+                "short_description": null,
+                "price_jpy": "19000",
+                "price_vnd": "3325000",
+                "original_price_jpy": "27000",
+                "original_price_vnd": "4725000",
+                "points": 200,
+                "gender": "female",
+                "movement_type": "quartz",
+                "condition": "new",
+                "stock_quantity": 0,
+                "stock_type": "in_stock",
+                "is_featured": false,
+                "is_domestic": false,
+                "sale_percent": 30,
+                "attributes": {
+                    "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                    "color_code": "8131L-VT-TK",
+                    "color": "mặt xà cừ trắng, dây trắng bạc"
+                },
+                "display_order": 49,
+                "average_rating": "0.0",
+                "review_count": 0,
+                "primary_image_url": "https://api.sgwatch.jp/storage/products/441/iddM8LtzQubCoZf5FZ0ekLytySL6qu48dBJt57l4.webp",
+                "is_favorited": false,
+                "is_purchased": false,
+                "brand": {
+                    "id": 5,
+                    "name": "Carnival",
+                    "slug": "Carnival"
+                },
+                "category": {
+                    "id": 1,
+                    "name": "đồng hồ",
+                    "slug": "clock"
+                },
+                "grouped_products": [
+                    {
+                        "id": 441,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-vt-tk-YZu2S",
+                        "sku": "8131L-VT-TK",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-TK",
+                            "color": "mặt xà cừ trắng, dây trắng bạc"
+                        },
+                        "display_order": 49,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/441/iddM8LtzQubCoZf5FZ0ekLytySL6qu48dBJt57l4.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 442,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-7dwfc",
+                        "sku": "8131L-VT-HK",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-HK",
+                            "color": "mặt xà cừ hồng, dây trắng bạc"
+                        },
+                        "display_order": 50,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/442/LvwL6JXivnppuFACw9Emz4YIiRUnDwEJ6tNsuOSc.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 443,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-Y0gve",
+                        "sku": "8131L-CH-NN",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-NN",
+                            "color": "mặt rose gold, dây demi rose gold"
+                        },
+                        "display_order": 51,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/443/DBr2Mt9gm12dNtzcwpu6JTYKMF732qymsd2zRYxG.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 444,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-qwQ6F",
+                        "sku": "8131L-CH-HK",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-HK",
+                            "color": "mặt xà cừ hồng, dây demi rose gold"
+                        },
+                        "display_order": 52,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/444/sYR3dRYWqjLYg7EKIiWTOJo6iS9jqqicruDZKWcm.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 445,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-gCY8p",
+                        "sku": "8131L-CH-TK",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-TK",
+                            "color": "mặt trắng xà cừ, dây demi rose gold"
+                        },
+                        "display_order": 53,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/445/WpSwmNHruXVUFR5n6XhGIccTwu7rYtILbFCcEJDl.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 446,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-ex0lD",
+                        "sku": "8131L-VH-NN",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VH-NN",
+                            "color": "mặt rose gold, dây rose gold"
+                        },
+                        "display_order": 54,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/446/rKUTuFiYvlljNH5uuVrnrnovr8yE3cnKPV10krKu.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 447,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-UsTsO",
+                        "sku": "8131L-VT-XT",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 2,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-XT",
+                            "color": "mặt xanh tiffany, dây trắng bạc"
+                        },
+                        "display_order": 55,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/447/vcr6s9wVNdHz8dY4eoXwe9Y2VkVeagNpY2xTG8MT.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 448,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-vBdT2",
+                        "sku": "8131L-CH-XL",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-XL",
+                            "color": "mặt xanh lục, dây demi rose gold"
+                        },
+                        "display_order": 56,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/448/eqpOv0LZB4GEqDaZTfXBJ5tpv5ZhE8KVCsv132zA.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 449,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-GBUzi",
+                        "sku": "8131L-VH-T",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VH-T",
+                            "color": "mặt trắng, dây rose gold"
+                        },
+                        "display_order": 57,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/449/yTvdtNRf3Zy8ZOfSR9OKscgmrunTXSX7WzSb0gCE.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 450,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-z4rr3",
+                        "sku": "8131L-CH-T",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-T",
+                            "color": "mặt trắng, dây demi rose gold"
+                        },
+                        "display_order": 58,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/450/OO9VZpIYOPshJsM57kK4X3SjcUcvnTIohuMAJU6U.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 451,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-E705A",
+                        "sku": "8131L-VT-T",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 1,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-T",
+                            "color": "mặt trắng, dây trắng bạc"
+                        },
+                        "display_order": 59,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/451/pAXryl7GocWp1SLKncYZVEjximlTx7eXIoutE3Mx.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 452,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8XATZ",
+                        "sku": "8131L-CH-D",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-D",
+                            "color": "mặt đen, dây demi rose gold"
+                        },
+                        "display_order": 60,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/452/OkEGRVBKHcvs9nwwSO9g5CHt53Sb7gsUopwAWbEX.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 453,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-ur9gV",
+                        "sku": "8131L-CV-X",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CV-X",
+                            "color": "mặt xanh dương, dây demi vàng"
+                        },
+                        "display_order": 61,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/453/blUmfkSBKBqvn8GgpkqcKoWsNfKcQysZTFE55cmw.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 454,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-MXBuA",
+                        "sku": "8131L-VT-D",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 5,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-D",
+                            "color": "mặt đen, dây trắng bạc"
+                        },
+                        "display_order": 62,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/454/QQO9Brl0KLyP2N90OzEw1nKFPLpxlLAHvxMjYkV1.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 455,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-vh-n-ZNxJp",
+                        "sku": "8131L-VH-N",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VH-N",
+                            "color": "mặt nâu chocolate, dây rose gold"
+                        },
+                        "display_order": 63,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/455/7iaD0Ijezi0GaMOFQ3taD1EGsUFgyftsjAhTuT1K.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 456,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-cv-t-dHWHw",
+                        "sku": "8131L-CV-T",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 2,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CV-T",
+                            "color": "mặt trắng, dây demi vàng"
+                        },
+                        "display_order": 64,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/456/plRHPlbTwP5ojJIqjJ7PJ1g9mkeXjZ3MA7K9cvam.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 457,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-cv-t-V4q7H",
+                        "sku": "8131L-CH-N",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 1,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CH-N",
+                            "color": "mặt chocolate, dây demi rose gold"
+                        },
+                        "display_order": 65,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/457/VX8H5CcqVfkc8TtbHt3Oe5W2xrWI1MQkv1zAWUtR.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 458,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-vt-x-3r22L",
+                        "sku": "8131L-VT-X",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 3,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VT-X",
+                            "color": "mặt xanh dương, dây trắng bạc"
+                        },
+                        "display_order": 66,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/458/rpWzPXSdeEVuO67IocPAcJoEnQNd8qQZZE6TX3ou.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 459,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-vt-x-BJ483",
+                        "sku": "8131L-VH-D",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-VH-D",
+                            "color": "mặt đen, dây rose gold"
+                        },
+                        "display_order": 67,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/459/6bfJXPdpuS9v2CqfeC50RxTbLGgCZIPdP3YEVqLF.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 460,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-hk-wzOov",
+                        "sku": "8131L2-CH-HK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-HK",
+                            "color": "mặt hồng xà cừ, dây demi rose gold"
+                        },
+                        "display_order": 68,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/460/xY62MDKO9BXj9x8L8CdOsYv8A4r611nQJmmNH6Eq.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 461,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vt-tk-yzYZ5",
+                        "sku": "8131L2-VT-TK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-TK",
+                            "color": "mặt trắng xà cừ, dây trắng bạc"
+                        },
+                        "display_order": 69,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/461/qLSFiVRw408UzFRoVwMcGt6a9RkgwxWMbcCAVG4T.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 462,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-nn-bZWfq",
+                        "sku": "8131L2-CH-NN",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-NN",
+                            "color": "mặt nâu cá hồi, dây trắng bạc"
+                        },
+                        "display_order": 70,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/462/jIiNTKdeQXSk12ZPFYpK48OuiETaI4sTB1loZ043.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 463,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vt-hk-XHB3e",
+                        "sku": "8131L2-VT-HK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-HK",
+                            "color": "mặt hồng xà cừ, dây trắng bạc"
+                        },
+                        "display_order": 71,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/463/oGZfCEfGcfFoJneo4C4OUu0gxe1DCz6lqUM89EPQ.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 464,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-tk-gD0eu",
+                        "sku": "8131L2-CH-TK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-TK",
+                            "color": "mặt trắng xà cừ, dây demi rose gold"
+                        },
+                        "display_order": 72,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/464/2yi2oNIw6Ofl3zAEkSOZoiOincP2nS2g0QXxxkyi.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 465,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-hk-Jtx8X",
+                        "sku": "8131L2-VH-HK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-HK",
+                            "color": "mặt hồng xà cừ, dây rose gold"
+                        },
+                        "display_order": 73,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/465/h9tbvn1YvLUJIyFehZo3t5w0QGa0c6u7IjEylabG.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 466,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-tk-VU721",
+                        "sku": "8131L2-VH-TK",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-TK",
+                            "color": "mặt trắng xà cừ, dây rose gold"
+                        },
+                        "display_order": 74,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/466/kxJ29FWe6HLDbRma0sYlu4728xSM3rDY67e8Zcsh.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 467,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-nn-ShUw0",
+                        "sku": "8131L2-VH-NN",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-NN",
+                            "color": "mặt  nâu cá hồi, dây rose gold"
+                        },
+                        "display_order": 75,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/467/PxAlgkwmFwef0QKTJjG4DEe83amiimInjz9LGpfH.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 468,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vt-x-TyXZb",
+                        "sku": "8131L2-VT-X",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-X",
+                            "color": "mặt xanh dương, dây trắng bạc"
+                        },
+                        "display_order": 76,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/468/JSOFQeUFCf1tL4otddSJy8QiH8ZxH4WudmBL1wPz.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 469,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vt-n-D7yXu",
+                        "sku": "8131L2-VT-N",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 3,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-N",
+                            "color": "mặt nâu, dây trắng bạc"
+                        },
+                        "display_order": 77,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/469/GsfaqYKilmXM4DVRMx1aC0c0Ijk0tTlBKxNtf12g.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 470,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vt-d-SbYON",
+                        "sku": "8131L2-VT-D",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-D",
+                            "color": "mặt đen, dây trắng bạc"
+                        },
+                        "display_order": 78,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/470/ls0hzV1x36o5pV42VectUVbRmBnJt7fAFQAeq8hX.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 471,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-t-S5QQ5",
+                        "sku": "8131L2-VH-T",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-T",
+                            "color": "mặt trắng, dây rose gold"
+                        },
+                        "display_order": 79,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/471/oCI7Smg3r4Yt5tr9MkrPCc4psNsBSicQx4JrsSH8.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 472,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-n-EfJV8",
+                        "sku": "8131L2-VH-N",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-N",
+                            "color": "mặt nâu, dây rose gold"
+                        },
+                        "display_order": 80,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/472/mdmnrC3JhrWeAD0HRkdhoNbCAIayfGDPctBP1zer.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 473,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-vh-d-qQWBe",
+                        "sku": "8131L2-VH-D",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 1,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VH-D",
+                            "color": "mặt đen, dây rose gold"
+                        },
+                        "display_order": 81,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/473/YVDw6AG1sFjovwxBn2JcWSluqZrRGw5uiM8CcGRl.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 474,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-cv-x-xnM2f",
+                        "sku": "8131L2-CV-X",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CV-X",
+                            "color": "mặt xanh, dây demi vàng"
+                        },
+                        "display_order": 82,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/474/LS4Jbp6nFAb24KpEEcyVHHLalufb9DMZJG5fnM8C.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 475,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-cv-t-5wQGO",
+                        "sku": "8131L2-CV-T",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CV-T",
+                            "color": "mặt trắng, dây demi vàng"
+                        },
+                        "display_order": 83,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/475/I57cEoE71QTCREnFlbjPnkC6bGgaPzJfKaxc8X9J.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 476,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-cv-d-LHOeu",
+                        "sku": "8131L2-CV-D",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CV-D",
+                            "color": "mặt đen, dây demi vàng"
+                        },
+                        "display_order": 84,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/476/08JnzHuTB2G2ZJ4Feia2ZYJu3IIGECvuuKzwTGez.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 477,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-t-rz7Vy",
+                        "sku": "8131L2-CH-T",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-T",
+                            "color": "mặt trắng, dây demi rose gold"
+                        },
+                        "display_order": 85,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/477/KiNxA0tBhsAvSjywOAkrTpjr76AxLFAR7ld8rEs4.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 478,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-n-sFLhH",
+                        "sku": "8131L2-CH-N",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-N",
+                            "color": "mặt nâu, dây demi rose gold"
+                        },
+                        "display_order": 86,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/478/ex1DOAVRBnGTzFCp8Z0lvx2H7kDdoRu16MElzcQq.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 479,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-d-NLxit",
+                        "sku": "8131L2-CH-D",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-CH-D",
+                            "color": "mặt đen, dây demi rose gold"
+                        },
+                        "display_order": 87,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/479/zEIIcAUA7N1RpLE6Py06LbI7sVc6L5sInr3uTkvN.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 480,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l2-ch-d-4KINt",
+                        "sku": "8131L2-VT-T",
+                        "short_description": null,
+                        "price_jpy": "22000",
+                        "price_vnd": "3850000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 500,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 0,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 19,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L2-VT-T",
+                            "color": "mặt trắng, dây trắng bạc"
+                        },
+                        "display_order": 88,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/480/W6b1MFUqj9QW0uDBvDwODBSSizcSHFV0zdilVdok.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    },
+                    {
+                        "id": 481,
+                        "name": "Đồng hồ Carnival Nữ Form Rolex",
+                        "slug": "dong-ho-carnival-form-rolex-nu-8131l-cv-d-uKlTv",
+                        "sku": "8131L-CV-D",
+                        "short_description": null,
+                        "price_jpy": "19000",
+                        "price_vnd": "3325000",
+                        "original_price_jpy": "27000",
+                        "original_price_vnd": "4725000",
+                        "points": 200,
+                        "gender": "female",
+                        "movement_type": "quartz",
+                        "condition": "new",
+                        "stock_quantity": 1,
+                        "stock_type": "in_stock",
+                        "is_featured": false,
+                        "is_domestic": false,
+                        "sale_percent": 30,
+                        "attributes": {
+                            "thong_so_ky_thuat": "Thương hiệu: CARNIVAL\r\n\r\nBộ sưu tập: CARNIVAL nữ 8131L\r\n\r\nXuất xứ: Quốc Tế\r\n\r\nGiới tính: Nữ\r\n\r\nKính: Sapphire (Kính chống trầy)\r\n\r\nMáy: Quatz ( Pin)\r\n\r\nBảo hành tại SGWATCH: 5 năm\r\n\r\nĐường kính mặt số: 30 mm\r\n\r\nBề dày mặt số: khoảng 7.8mm\r\n\r\nNiềng: Thép không gỉ \r\n\r\nDây đeo: Thép không gỉ\r\n\r\nChống nước: 5 ATM\r\n\r\nTiện ích: Có cửa sổ hiển thị lịch ngày tại vị trí 3 giờ và cọc số đính đá sang trọng",
+                            "color_code": "8131L-CV-D",
+                            "color": "mặt đen, dây demi gold"
+                        },
+                        "display_order": 89,
+                        "average_rating": "0.0",
+                        "review_count": 0,
+                        "primary_image_url": "https://api.sgwatch.jp/storage/products/481/I5ceOdHZ4UC6V8janBleKGBz69PoKvG8H5nkUxEc.webp",
+                        "is_favorited": false,
+                        "is_purchased": false,
+                        "brand": {
+                            "id": 5,
+                            "name": "Carnival",
+                            "slug": "Carnival"
+                        },
+                        "category": {
+                            "id": 1,
+                            "name": "đồng hồ",
+                            "slug": "clock"
+                        }
+                    }
+                ]
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 15,
+            "total": 1
+        }
+    }
+}

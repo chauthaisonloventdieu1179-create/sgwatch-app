@@ -9,6 +9,7 @@ import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 import 'package:sgwatch_app/features/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:sgwatch_app/features/profile/data/models/user_model.dart';
 import 'package:sgwatch_app/core/services/firebase_notification_service.dart';
+import 'package:sgwatch_app/core/services/pusher_service.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -18,6 +19,7 @@ class ProfileViewModel extends ChangeNotifier {
   static UserModel? _cachedUser;
   static int? _cachedPoint;
   static bool get hasCachedUser => _cachedUser != null;
+  static String? get cachedRole => _cachedUser?.role;
 
   /// Called from SplashScreen to pre-fetch user info (requires token).
   static Future<void> prefetchUserInfo() async {
@@ -183,6 +185,7 @@ class ProfileViewModel extends ChangeNotifier {
     clearCache();
     AddressViewModel.clearCache();
     CartViewModel().clearCache();
+    await PusherService().disconnect();
     await LocalStorage.removeToken();
     await LocalStorage.removeUser();
     return true;
