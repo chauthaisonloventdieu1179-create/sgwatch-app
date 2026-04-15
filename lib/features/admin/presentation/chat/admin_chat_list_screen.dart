@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
+import 'package:sgwatch_app/core/services/pusher_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/admin/data/datasources/admin_datasource.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_conversation_model.dart';
@@ -18,8 +21,13 @@ class AdminChatListScreen extends StatefulWidget {
 }
 
 class _AdminChatListScreenState extends State<AdminChatListScreen> {
+  static const _pusherChannel = 'chat-channel';
+  static const _pusherEvent = 'chat-event';
+
   final _ds = AdminDatasource(ApiClient());
   final _scrollController = ScrollController();
+  final _pusher = PusherService();
+  Timer? _debounceTimer;
 
   List<AdminConversationModel> _conversations = [];
   bool _isLoading = false;
@@ -31,9 +39,32 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _loadConversations();
+    _pusher.subscribe(
+      channelName: _pusherChannel,
+      eventName: _pusherEvent,
+      onEvent: _onPusherMessage,
+    );
     AdminChatListScreen.openRoomNotifier.addListener(_onExternalOpenRoom);
     // Xử lý trường hợp notifier đã được set trước khi widget mount
     WidgetsBinding.instance.addPostFrameCallback((_) => _onExternalOpenRoom());
+  }
+
+  void _onPusherMessage(Map<String, dynamic> _) {
+    // Debounce 1 giây để tránh gọi API liên tục khi nhiều tin đến cùng lúc
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(seconds: 1), _silentRefresh);
+  }
+
+  Future<void> _silentRefresh() async {
+    try {
+      final res = await _ds.getConversations(page: 1);
+      if (!mounted) return;
+      setState(() {
+        _conversations = res.conversations;
+        _hasMore = res.currentPage < res.totalPages;
+        _currentPage = res.currentPage;
+      });
+    } catch (_) {}
   }
 
   void _onExternalOpenRoom() {
@@ -56,7 +87,13 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _scrollController.dispose();
+    _pusher.removeListener(
+      channelName: _pusherChannel,
+      eventName: _pusherEvent,
+      onEvent: _onPusherMessage,
+    );
     AdminChatListScreen.openRoomNotifier.removeListener(_onExternalOpenRoom);
     super.dispose();
   }
@@ -162,7 +199,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
         controller: _scrollController,
         itemCount: _conversations.length + (_hasMore ? 1 : 0),
         separatorBuilder: (_, __) =>
-            const Divider(height: 1, indent: 72),
+            const Divider(height: 1, indent: 80, endIndent: 0, thickness: 0.5),
         itemBuilder: (ctx, index) {
           if (index == _conversations.length) {
             return const Center(
@@ -180,85 +217,12 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
   }
 
   Widget _buildConversationTile(AdminConversationModel conv) {
-    return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      leading: Stack(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-            backgroundImage:
-                conv.avatarUrl != null ? NetworkImage(conv.avatarUrl!) : null,
-            child: conv.avatarUrl == null
-                ? Text(
-                    conv.fullName.isNotEmpty
-                        ? conv.fullName[0].toUpperCase()
-                        : '?',
-                    style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  )
-                : null,
-          ),
-          if (conv.unreadCount > 0)
-            Positioned(
-              right: 0,
-              top: 0,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                    color: AppColors.primary, shape: BoxShape.circle),
-                child: Text(
-                  conv.unreadCount > 99
-                      ? '99+'
-                      : '${conv.unreadCount}',
-                  style: const TextStyle(
-                      color: AppColors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-        ],
-      ),
-      title: Text(
-        conv.fullName,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: conv.unreadCount > 0
-              ? FontWeight.bold
-              : FontWeight.normal,
-          color: AppColors.black,
-        ),
-      ),
-      subtitle: conv.latestMessage != null
-          ? Text(
-              conv.latestMessage!.message.isEmpty ? '[File]' : conv.latestMessage!.message,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                color: conv.unreadCount > 0
-                    ? AppColors.black
-                    : AppColors.grey,
-                fontWeight: conv.unreadCount > 0
-                    ? FontWeight.w500
-                    : FontWeight.normal,
-              ),
-            )
-          : null,
-      trailing: conv.latestMessage != null
-          ? Text(
-              _formatTime(conv.latestMessage!.createdAt),
-              style: TextStyle(
-                  fontSize: 11,
-                  color: conv.unreadCount > 0
-                      ? AppColors.primary
-                      : AppColors.grey),
-            )
-          : null,
+    final hasUnread = conv.unreadCount > 0;
+    final initials = conv.fullName.isNotEmpty
+        ? conv.fullName[0].toUpperCase()
+        : '?';
+
+    return InkWell(
       onTap: () async {
         await Navigator.push(
           context,
@@ -269,9 +233,135 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
             ),
           ),
         );
-        // Refresh to update unread counts
         _loadConversations();
       },
+      child: Container(
+        color: hasUnread
+            ? AppColors.primary.withValues(alpha: 0.04)
+            : AppColors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            // Avatar
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary.withValues(alpha: 0.12),
+                    image: conv.avatarUrl != null
+                        ? DecorationImage(
+                            image: NetworkImage(conv.avatarUrl!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: conv.avatarUrl == null
+                      ? Center(
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        )
+                      : null,
+                ),
+                if (hasUnread)
+                  Positioned(
+                    right: -2,
+                    top: -2,
+                    child: Container(
+                      constraints: const BoxConstraints(
+                          minWidth: 18, minHeight: 18),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 2),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        conv.unreadCount > 99
+                            ? '99+'
+                            : '${conv.unreadCount}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(width: 12),
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          conv.fullName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: hasUnread
+                                ? FontWeight.w700
+                                : FontWeight.w600,
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ),
+                      if (conv.latestMessage != null) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          _formatTime(conv.latestMessage!.createdAt),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: hasUnread
+                                ? AppColors.primary
+                                : AppColors.grey,
+                            fontWeight: hasUnread
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (conv.latestMessage != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      conv.latestMessage!.message.isEmpty
+                          ? '📎 File đính kèm'
+                          : conv.latestMessage!.message,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: hasUnread ? AppColors.black : AppColors.grey,
+                        fontWeight: hasUnread
+                            ? FontWeight.w500
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
