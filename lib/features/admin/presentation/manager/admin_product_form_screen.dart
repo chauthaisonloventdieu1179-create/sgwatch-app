@@ -514,8 +514,9 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                         items: const [
                           DropdownMenuItem<String?>(value: null, child: Text('-- Chọn --')),
                           DropdownMenuItem(value: 'new', child: Text('Mới')),
-                          DropdownMenuItem(value: 'like_new', child: Text('Like New')),
-                          DropdownMenuItem(value: 'used', child: Text('Đã sử dụng')),
+                          DropdownMenuItem(value: 'like_new', child: Text('Like new')),
+                          DropdownMenuItem(value: 'display', child: Text('Trưng bày')),
+                          DropdownMenuItem(value: 'used', child: Text('Đã qua sử dụng')),
                         ],
                         onChanged: (v) => setState(() => _condition = v),
                       ),
@@ -552,7 +553,13 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                               child: Text('Quartz (Pin)')),
                           DropdownMenuItem(
                               value: 'automatic',
-                              child: Text('Automatic')),
+                              child: Text('Automatic (Cơ)')),
+                          DropdownMenuItem(
+                              value: 'solar',
+                              child: Text('Solar (Năng lượng mặt trời)')),
+                          DropdownMenuItem(
+                              value: 'eco-drive',
+                              child: Text('Eco-drive')),
                         ],
                         onChanged: (v) =>
                             setState(() => _movementType = v),

@@ -332,19 +332,21 @@ class ProductDetailViewModel extends ChangeNotifier {
 
   String _mapMovement(String value) {
     switch (value) {
-      case 'quartz': return 'Pin';
-      case 'automatic':
-      case 'mechanical':
-      case 'solar':
-      default: return 'Cơ (Automatic)';
+      case 'quartz': return 'Quartz (Pin)';
+      case 'automatic': return 'Automatic (Cơ)';
+      case 'mechanical': return 'Mechanical (Cơ)';
+      case 'solar': return 'Solar (Năng lượng mặt trời)';
+      case 'eco-drive': return 'Eco-drive';
+      default: return value;
     }
   }
 
   String _mapCondition(String value) {
     switch (value) {
-      case 'new': return 'Mới 100%';
+      case 'new': return 'Mới';
+      case 'like_new': return 'Like new';
+      case 'display': return 'Trưng bày';
       case 'used': return 'Đã qua sử dụng';
-      case 'refurbished': return 'Refurbished';
       default: return value;
     }
   }

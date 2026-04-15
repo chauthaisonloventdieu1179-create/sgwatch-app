@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_conversation_model.dart';
+import 'package:sgwatch_app/features/admin/data/models/admin_discount_code_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_inventory_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_order_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_product_model.dart';
@@ -14,6 +15,7 @@ const _kAdminNotices = '/admin/notices';
 const _kAdminProducts = '/admin/shop/products';
 const _kAdminBrands = '/admin/shop-brands';
 const _kAdminCategories = '/admin/shop-categories';
+const _kAdminDiscountCodes = '/admin/discount-codes';
 const _kChatConversations = '/chat/conversations';
 const _kChatHistoryList = '/chat/history/list';
 const _kChatMarkAsRead = '/chat/messages/mark-as-read';
@@ -254,6 +256,58 @@ class AdminDatasource {
     return list
         .map((e) => AdminCategoryModel.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  // ── Discount Codes ───────────────────────────────────────────────────────
+
+  Future<List<DiscountCodeModel>> getDiscountCodes({
+    int page = 1,
+    int perPage = 50,
+  }) async {
+    final resp = await _api.get(_kAdminDiscountCodes,
+        queryParameters: {'page': page, 'per_page': perPage});
+    final data = resp.data['data'] as Map<String, dynamic>;
+    final list = data['discount_codes'] as List? ?? [];
+    return list
+        .map((e) => DiscountCodeModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<DiscountCodeModel> createDiscountCode({
+    required String code,
+    required int quantity,
+    required int amount,
+    required String expiresAt,
+  }) async {
+    final resp = await _api.post(_kAdminDiscountCodes, data: {
+      'code': code,
+      'quantity': quantity,
+      'amount': amount,
+      'expires_at': expiresAt,
+    });
+    return DiscountCodeModel.fromJson(
+        resp.data['data']['discount_code'] as Map<String, dynamic>);
+  }
+
+  Future<DiscountCodeModel> updateDiscountCode({
+    required int id,
+    required String code,
+    required int quantity,
+    required int amount,
+    required String expiresAt,
+  }) async {
+    final resp = await _api.post('$_kAdminDiscountCodes/$id', data: {
+      'code': code,
+      'quantity': quantity,
+      'amount': amount,
+      'expires_at': expiresAt,
+    });
+    return DiscountCodeModel.fromJson(
+        resp.data['data']['discount_code'] as Map<String, dynamic>);
+  }
+
+  Future<void> deleteDiscountCode(int id) async {
+    await _api.delete('$_kAdminDiscountCodes/$id');
   }
 
   // ── Chat ─────────────────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_all_orders_screen.dart';
+import 'package:sgwatch_app/features/admin/presentation/manager/admin_discount_codes_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_inventory_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_notification_create_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_processing_orders_screen.dart';
@@ -103,6 +104,29 @@ class AdminManagerScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildSectionTitle('Khuyến mãi'),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildMenuCard(
+                    context,
+                    icon: Icons.discount_outlined,
+                    color: Colors.deepOrange,
+                    title: 'Mã giảm giá',
+                    subtitle: 'Tạo & quản lý mã',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AdminDiscountCodesScreen()),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: SizedBox()),
               ],
             ),
             const SizedBox(height: 24),
