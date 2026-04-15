@@ -96,37 +96,49 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          const Text('Chọn trạng thái đơn hàng',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          ...statuses.map((s) => ListTile(
-                title: Text(s.$2),
-                trailing: _order?.status == s.$1
-                    ? const Icon(Icons.check, color: AppColors.primary)
-                    : null,
-                onTap: () {
-                  Navigator.pop(context);
-                  if (_order?.status != s.$1) _updateStatus(s.$1);
-                },
-              )),
-          const SizedBox(height: 8),
-        ],
+            const SizedBox(height: 12),
+            const Text('Chọn trạng thái đơn hàng',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(ctx).size.height * 0.55,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: statuses.map((s) => ListTile(
+                        title: Text(s.$2),
+                        trailing: _order?.status == s.$1
+                            ? const Icon(Icons.check, color: AppColors.primary)
+                            : null,
+                        onTap: () {
+                          Navigator.pop(context);
+                          if (_order?.status != s.$1) _updateStatus(s.$1);
+                        },
+                      )).toList(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }

@@ -8,7 +8,11 @@ import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/app/app.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
+import 'package:sgwatch_app/features/admin/presentation/chat/admin_chat_list_screen.dart';
+import 'package:sgwatch_app/features/admin/presentation/manager/admin_all_orders_screen.dart';
+import 'package:sgwatch_app/features/admin/presentation/manager/admin_manager_screen.dart';
 import 'package:sgwatch_app/features/chat/presentation/chat_screen.dart';
+import 'package:sgwatch_app/features/profile/presentation/profile_viewmodel.dart';
 
 // ─── Background handler (BẮT BUỘC top-level function) ────────────────
 @pragma('vm:entry-point')
@@ -175,12 +179,22 @@ class FirebaseNotificationService {
     debugPrint('[FCM] Handle notification data: $data');
 
     final redirectType = data['redirectType'];
+    final isAdmin = ProfileViewModel.cachedRole == 'admin';
+
     if (redirectType == 'chat') {
-      _navigateToChat();
+      if (isAdmin) {
+        _navigateToAdminChatList();
+      } else {
+        _navigateToChat();
+      }
+    } else if (redirectType == 'order_detail') {
+      if (isAdmin) {
+        _navigateToAdminOrders();
+      }
     }
   }
 
-  /// Navigate vào ChatScreen (CSKH)
+  /// Navigate vào ChatScreen (CSKH - user thường)
   static void _navigateToChat() {
     final context = navigatorKey.currentContext;
     if (context == null) {
@@ -192,6 +206,31 @@ class FirebaseNotificationService {
       MaterialPageRoute(builder: (_) => const ChatScreen()),
     );
     debugPrint('[FCM] Navigated to ChatScreen');
+  }
+
+  /// Navigate vào AdminChatListScreen (admin)
+  static void _navigateToAdminChatList() {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AdminChatListScreen()),
+    );
+    debugPrint('[FCM] Navigated to AdminChatListScreen');
+  }
+
+  /// Navigate vào AdminManagerScreen → AdminAllOrdersScreen (admin)
+  static void _navigateToAdminOrders() {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AdminManagerScreen()),
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AdminAllOrdersScreen()),
+    );
+    debugPrint('[FCM] Navigated to AdminAllOrdersScreen');
   }
 
   /// Lấy FCM token hiện tại
