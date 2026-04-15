@@ -29,6 +29,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class FirebaseNotificationService {
   FirebaseNotificationService._();
 
+  /// Lưu data notification từ terminated state để xử lý sau khi profile load
+  static Map<String, dynamic>? _pendingInitialData;
+
   static final FlutterLocalNotificationsPlugin _local =
       FlutterLocalNotificationsPlugin();
 
@@ -113,12 +116,23 @@ class FirebaseNotificationService {
     });
 
     // 10) User tap notification khi app terminated
+    // Lưu data lại, KHÔNG xử lý ngay vì ProfileViewModel.cachedRole chưa load
     final initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      debugPrint('[FCM] ── Opened from terminated ──');
+      debugPrint('[FCM] ── Opened from terminated (pending) ──');
       debugPrint('[FCM]   data=${initialMessage.data}');
-      _handleNotificationData(initialMessage.data);
+      _pendingInitialData = initialMessage.data;
+    }
+  }
+
+  /// Gọi từ SplashScreen sau khi profile đã load xong
+  /// để xử lý notification từ terminated state với role chính xác
+  static void processPendingNotification() {
+    if (_pendingInitialData != null) {
+      debugPrint('[FCM] ── Process pending terminated notification ──');
+      _handleNotificationData(_pendingInitialData!);
+      _pendingInitialData = null;
     }
   }
 

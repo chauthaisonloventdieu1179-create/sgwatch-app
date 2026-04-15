@@ -43,6 +43,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     await Future.wait(futures);
 
+    // Xử lý notification từ terminated state (sau khi role đã được load)
+    FirebaseNotificationService.processPendingNotification();
+
     if (!mounted) return;
 
     // Precache banner images so they display instantly on home
