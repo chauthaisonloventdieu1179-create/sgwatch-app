@@ -2,7 +2,7 @@ class Env {
   Env._();
 
   /// Base URL
-  static const String baseURL = 'http://api.sgwatch.jp/';
+  static const String baseURL = 'https://api.sgwatch.jp';
 
   /// API Path prefix
   static const String apiPath = '/api/v1';
