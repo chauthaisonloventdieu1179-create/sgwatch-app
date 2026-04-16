@@ -24,6 +24,9 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
   static const _pusherChannel = 'chat-channel';
   static const _pusherEvent = 'chat-event';
 
+  // Cache tĩnh giữ list qua navigation
+  static List<AdminConversationModel>? _cache;
+
   final _ds = AdminDatasource(ApiClient());
   final _scrollController = ScrollController();
   final _pusher = PusherService();
@@ -38,32 +41,63 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _loadConversations();
+    // Hiện cache ngay nếu có, rồi silent refresh để sync
+    if (_cache != null && _cache!.isNotEmpty) {
+      _conversations = List.from(_cache!);
+      _silentRefresh();
+    } else {
+      _loadConversations();
+    }
     _pusher.subscribe(
       channelName: _pusherChannel,
       eventName: _pusherEvent,
       onEvent: _onPusherMessage,
     );
     AdminChatListScreen.openRoomNotifier.addListener(_onExternalOpenRoom);
-    // Xử lý trường hợp notifier đã được set trước khi widget mount
     WidgetsBinding.instance.addPostFrameCallback((_) => _onExternalOpenRoom());
   }
 
   void _onPusherMessage(Map<String, dynamic> _) {
-    // Debounce 1 giây để tránh gọi API liên tục khi nhiều tin đến cùng lúc
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(seconds: 1), _silentRefresh);
   }
 
+  /// Fetch page 1, merge in-place: update item theo ID, thêm conv mới lên đầu, sort lại
   Future<void> _silentRefresh() async {
     try {
       final res = await _ds.getConversations(page: 1);
       if (!mounted) return;
-      setState(() {
-        _conversations = res.conversations;
-        _hasMore = res.currentPage < res.totalPages;
-        _currentPage = res.currentPage;
+
+      final newMap = {for (final c in res.conversations) c.id: c};
+      final existingIds = <int>{};
+      final merged = <AdminConversationModel>[];
+
+      // Cập nhật items đang có
+      for (final conv in _conversations) {
+        existingIds.add(conv.id);
+        merged.add(newMap[conv.id] ?? conv);
+      }
+
+      // Thêm conv mới chưa có trong list
+      for (final conv in res.conversations) {
+        if (!existingIds.contains(conv.id)) {
+          merged.insert(0, conv);
+        }
+      }
+
+      // Sort theo tin nhắn mới nhất
+      merged.sort((a, b) {
+        final ta = a.latestMessage?.createdAt ?? '';
+        final tb = b.latestMessage?.createdAt ?? '';
+        return tb.compareTo(ta);
       });
+
+      _conversations = merged;
+      _hasMore = res.currentPage < res.totalPages;
+      _currentPage = res.currentPage;
+      _cache = List.from(_conversations);
+
+      if (mounted) setState(() {});
     } catch (_) {}
   }
 
@@ -81,7 +115,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
             userName: userName,
           ),
         ),
-      ).then((_) => _loadConversations());
+      ).then((_) => _silentRefresh());
     }
   }
 
@@ -120,6 +154,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
         _conversations = res.conversations;
         _hasMore = res.currentPage < res.totalPages;
         _currentPage = res.currentPage;
+        _cache = List.from(_conversations);
       });
     } catch (_) {
     } finally {
@@ -137,6 +172,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
         _conversations.addAll(res.conversations);
         _hasMore = res.currentPage < res.totalPages;
         _currentPage = res.currentPage;
+        _cache = List.from(_conversations);
       });
     } catch (_) {
     } finally {
@@ -223,8 +259,8 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
         : '?';
 
     return InkWell(
-      onTap: () async {
-        await Navigator.push(
+      onTap: () {
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => AdminChatRoomScreen(
@@ -232,8 +268,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
               userName: conv.fullName,
             ),
           ),
-        );
-        _loadConversations();
+        ).then((_) => _silentRefresh());
       },
       child: Container(
         color: hasUnread
