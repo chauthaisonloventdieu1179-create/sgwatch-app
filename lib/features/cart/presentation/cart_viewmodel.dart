@@ -88,9 +88,8 @@ class CartViewModel extends ChangeNotifier {
     final token = await LocalStorage.getToken();
     if (token == null || token.isEmpty) {
       debugPrint('[CartVM] token is NULL — redirect to login');
-      navigatorKey.currentState?.pushAndRemoveUntil(
+      navigatorKey.currentState?.push(
         MaterialPageRoute(builder: (_) => const LoginScreen()),
-        (route) => false,
       );
       return false;
     }

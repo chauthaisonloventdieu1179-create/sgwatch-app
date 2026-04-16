@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/storage/local_storage.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/core/utils/price_formatter.dart';
+import 'package:sgwatch_app/features/auth/presentation/login_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 import 'package:sgwatch_app/features/chat/presentation/chat_screen.dart';
@@ -74,6 +76,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Future<void> _onBuyTap() async {
+    // Check token trước khi show dialog, tránh dialog bị kẹt khi redirect login
+    final token = await LocalStorage.getToken();
+    if (!mounted) return;
+    if (token == null || token.isEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -86,9 +98,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     Navigator.of(context).pop(); // dismiss loading
 
     if (success) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(_cartVM.error ?? 'Không thể thêm vào giỏ hàng.')),

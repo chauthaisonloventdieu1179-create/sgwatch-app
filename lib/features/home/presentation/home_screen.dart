@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/storage/local_storage.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
+import 'package:sgwatch_app/features/auth/presentation/login_screen.dart';
 import 'package:sgwatch_app/features/home/presentation/home_viewmodel.dart';
 import 'package:sgwatch_app/features/home/presentation/widgets/home_banner_slider.dart';
 import 'package:sgwatch_app/features/home/presentation/widgets/home_brand_grid.dart';
@@ -61,6 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ));
       return;
     }
+
+    final token = await LocalStorage.getToken();
+    if (!mounted) return;
+    if (token == null || token.isEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,

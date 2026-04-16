@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sgwatch_app/core/storage/local_storage.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
+import 'package:sgwatch_app/features/auth/presentation/login_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_screen.dart';
 import 'package:sgwatch_app/features/cart/presentation/cart_viewmodel.dart';
 import 'package:sgwatch_app/features/favorites/presentation/favorite_viewmodel.dart';
@@ -105,6 +107,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ));
       return;
     }
+
+    final token = await LocalStorage.getToken();
+    if (!mounted) return;
+    if (token == null || token.isEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
