@@ -45,7 +45,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
   final _thongSoCtrl = TextEditingController();
   final _colorCodeCtrl = TextEditingController();
   final _colorCtrl = TextEditingController();
-  final _displayOrderCtrl = TextEditingController();
   final _shortDescCtrl = TextEditingController();
   // Electronics attributes
   final _yearCtrl = TextEditingController();
@@ -110,7 +109,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
     _thongSoCtrl.dispose();
     _colorCodeCtrl.dispose();
     _colorCtrl.dispose();
-    _displayOrderCtrl.dispose();
     _shortDescCtrl.dispose();
     _yearCtrl.dispose();
     _gpuCtrl.dispose();
@@ -147,7 +145,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       _thongSoCtrl.text = p.attributes?['thong_so_ky_thuat']?.toString() ?? '';
       _colorCodeCtrl.text = p.attributes?['color_code']?.toString() ?? '';
       _colorCtrl.text = p.attributes?['color']?.toString() ?? '';
-      _displayOrderCtrl.text = p.displayOrder?.toString() ?? '';
       _shortDescCtrl.text = p.shortDescription ?? '';
       _yearCtrl.text = p.attributes?['year']?.toString() ?? '';
       _gpuCtrl.text = p.attributes?['gpu']?.toString() ?? '';
@@ -286,10 +283,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
       if (_dealInfoCtrl.text.trim().isNotEmpty) {
         map['deal_info'] = _dealInfoCtrl.text.trim();
       }
-      if (_displayOrderCtrl.text.trim().isNotEmpty) {
-        map['display_order'] = _displayOrderCtrl.text.trim();
-      }
-
       // Primary image (new upload)
       if (_newPrimaryImage != null) {
         map['primary_image'] = await MultipartFile.fromFile(
@@ -634,14 +627,6 @@ class _AdminProductFormScreenState extends State<AdminProductFormScreen> {
                     const SizedBox(height: 12),
                     _buildTextField(_dealInfoCtrl, 'Thông tin deal',
                         maxLines: 3),
-                  ]),
-                  const SizedBox(height: 12),
-                  _buildSection('Hiển thị', [
-                    _buildTextField(
-                      _displayOrderCtrl,
-                      'Thứ tự hiển thị',
-                      keyboardType: TextInputType.number,
-                    ),
                   ]),
                   const SizedBox(height: 12),
                   _buildImageSection(),

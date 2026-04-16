@@ -39,7 +39,6 @@ class AdminProductModel {
   final String? description;
   final String? productInfo;
   final String? dealInfo;
-  final int? displayOrder;
 
   const AdminProductModel({
     required this.id,
@@ -68,7 +67,6 @@ class AdminProductModel {
     this.description,
     this.productInfo,
     this.dealInfo,
-    this.displayOrder,
   });
 
   factory AdminProductModel.fromJson(Map<String, dynamic> json) {
@@ -112,9 +110,6 @@ class AdminProductModel {
       description: json['description']?.toString(),
       productInfo: json['product_info']?.toString(),
       dealInfo: json['deal_info']?.toString(),
-      displayOrder: json['display_order'] != null
-          ? _parseProdInt(json['display_order'])
-          : null,
     );
   }
 }
