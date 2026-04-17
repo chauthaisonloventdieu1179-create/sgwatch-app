@@ -267,7 +267,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Radius.circular(isMine ? 4 : 16),
                           ),
                         ),
-                        child: _buildBubbleContent(msg),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (msg.replyToMessage != null) ...[
+                              _buildReplyPreview(msg.replyToMessage!, isMine: isMine),
+                              const SizedBox(height: 6),
+                            ],
+                            _buildBubbleContent(msg),
+                          ],
+                        ),
                       ),
               ),
             ],
@@ -375,6 +385,52 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       },
       child: _buildTextWithLinks(text),
+    );
+  }
+
+  Widget _buildReplyPreview(ReplyMessage reply, {required bool isMine}) {
+    final accentColor = isMine ? AppColors.primary : const Color(0xFF1565C0);
+    final bgColor = isMine
+        ? const Color(0xFFFFCCC9)
+        : const Color(0xFFF0F0F0);
+    final previewText = (reply.message != null && reply.message!.trim().isNotEmpty)
+        ? reply.message!.replaceAll('\n', ' ')
+        : '📎 Hình ảnh';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border(
+          left: BorderSide(color: accentColor, width: 3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            reply.userName ?? 'Unknown',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: accentColor,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            previewText,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.grey,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
