@@ -10,6 +10,7 @@ import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/features/chat/data/datasources/chat_remote_datasource.dart';
 import 'package:sgwatch_app/features/chat/data/models/chat_message_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminChatRoomScreen extends StatefulWidget {
   final int receiverId;
@@ -44,6 +45,9 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
   int _currentPage = 0;
   bool _hasMore = true;
   int? _currentUserId;
+  ChatMessageModel? _replyToMessage;
+
+  static final _urlRegex = RegExp(r'https?://[^\s]+', caseSensitive: false);
 
   @override
   void initState() {
@@ -157,13 +161,18 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
     final text = _controller.text.trim();
     if (text.isEmpty && _pendingImages.isEmpty) return;
     _controller.clear();
+    final replyId = _replyToMessage?.id;
+    setState(() {
+      _isSending = true;
+      _replyToMessage = null;
+    });
 
-    setState(() => _isSending = true);
     try {
       for (final img in List.of(_pendingImages)) {
         final sent = await _datasource.sendMessage(
           receiverId: widget.receiverId,
           file: img,
+          replyToMessageId: replyId,
         );
         if (!_messages.any((m) => m.id == sent.id)) {
           setState(() => _messages.add(sent));
@@ -175,6 +184,7 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
         final sent = await _datasource.sendMessage(
           receiverId: widget.receiverId,
           message: text,
+          replyToMessageId: replyId,
         );
         if (!_messages.any((m) => m.id == sent.id)) {
           setState(() => _messages.add(sent));
@@ -234,6 +244,7 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
         children: [
           Expanded(child: _buildMessageList()),
           if (_pendingImages.isNotEmpty) _buildPendingImages(),
+          if (_replyToMessage != null) _buildReplyBar(),
           _buildInputBar(),
         ],
       ),
@@ -273,92 +284,253 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
 
   Widget _buildBubble(ChatMessageModel msg) {
     final me = _isMe(msg);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment:
-            me ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (!me) ...[
-            CircleAvatar(
-              radius: 16,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-              child: Text(
-                widget.userName.isNotEmpty
-                    ? widget.userName[0].toUpperCase()
-                    : '?',
-                style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onLongPress: () => setState(() => _replyToMessage = msg),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          mainAxisAlignment:
+              me ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (!me) ...[
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                child: Text(
+                  widget.userName.isNotEmpty
+                      ? widget.userName[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment:
+                    me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: msg.isImageFile
+                        ? EdgeInsets.zero
+                        : const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: me ? AppColors.primary : AppColors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(16),
+                        topRight: const Radius.circular(16),
+                        bottomLeft: Radius.circular(me ? 16 : 4),
+                        bottomRight: Radius.circular(me ? 4 : 16),
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color(0x0D000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 2))
+                      ],
+                    ),
+                    child: msg.isImageFile
+                        ? GestureDetector(
+                            onTap: () => _openImageViewer(msg.fileUrl!),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                msg.fileUrl!,
+                                width: 200,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Icon(Icons.broken_image,
+                                      color: AppColors.grey),
+                                ),
+                              ),
+                            ),
+                          )
+                        : msg.isFile
+                            ? _buildFileMessage(msg, me)
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (msg.replyToMessage != null) ...[
+                                    _buildReplyPreview(msg.replyToMessage!, isMine: me),
+                                    const SizedBox(height: 6),
+                                  ],
+                                  _buildTextWithLinks(
+                                    msg.message ?? '',
+                                    textColor: me ? AppColors.white : AppColors.black,
+                                  ),
+                                ],
+                              ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    DateFormatter.formatDateTime(msg.createdAt),
+                    style: const TextStyle(
+                        fontSize: 10, color: AppColors.grey),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 8),
+            if (me) const SizedBox(width: 8),
           ],
-          Flexible(
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReplyBar() {
+    final reply = _replyToMessage!;
+    final me = _isMe(reply);
+    final senderName = me ? 'Bạn' : widget.userName;
+    final previewText = (reply.message != null && reply.message!.trim().isNotEmpty)
+        ? reply.message!.replaceAll('\n', ' ')
+        : '📎 Hình ảnh';
+
+    return Container(
+      color: AppColors.white,
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Container(
+            width: 3,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
             child: Column(
-              crossAxisAlignment:
-                  me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  padding: msg.isImageFile
-                      ? EdgeInsets.zero
-                      : const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: me ? AppColors.primary : AppColors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
-                      bottomLeft: Radius.circular(me ? 16 : 4),
-                      bottomRight: Radius.circular(me ? 4 : 16),
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color(0x0D000000),
-                          blurRadius: 4,
-                          offset: Offset(0, 2))
-                    ],
+                Text(
+                  senderName,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
                   ),
-                  child: msg.isImageFile
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            msg.fileUrl!,
-                            width: 200,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Icon(Icons.broken_image,
-                                  color: AppColors.grey),
-                            ),
-                          ),
-                        )
-                      : msg.isFile
-                          ? _buildFileMessage(msg, me)
-                          : Text(
-                              msg.message ?? '',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: me
-                                      ? AppColors.white
-                                      : AppColors.black),
-                            ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  DateFormatter.formatDateTime(msg.createdAt),
-                  style: const TextStyle(
-                      fontSize: 10, color: AppColors.grey),
+                  previewText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: AppColors.grey),
                 ),
               ],
             ),
           ),
-          if (me) const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.close, size: 18, color: AppColors.grey),
+            onPressed: () => setState(() => _replyToMessage = null),
+          ),
         ],
       ),
     );
+  }
+
+  Widget _buildReplyPreview(ReplyMessage reply, {required bool isMine}) {
+    final accentColor = isMine ? Colors.white70 : AppColors.primary;
+    final bgColor = isMine
+        ? const Color(0x33FFFFFF)
+        : const Color(0xFFF0F0F0);
+    final previewText = (reply.message != null && reply.message!.trim().isNotEmpty)
+        ? reply.message!.replaceAll('\n', ' ')
+        : '📎 Hình ảnh';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border(left: BorderSide(color: accentColor, width: 3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            reply.userName ?? 'Unknown',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: accentColor,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            previewText,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              color: isMine ? Colors.white70 : AppColors.grey,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextWithLinks(String text, {Color textColor = AppColors.black}) {
+    final spans = <InlineSpan>[];
+    int lastEnd = 0;
+    for (final match in _urlRegex.allMatches(text)) {
+      if (match.start > lastEnd) {
+        spans.add(TextSpan(
+          text: text.substring(lastEnd, match.start),
+          style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
+        ));
+      }
+      final url = match.group(0)!;
+      spans.add(WidgetSpan(
+        child: GestureDetector(
+          onTap: () async {
+            final uri = Uri.tryParse(url);
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          },
+          child: Text(
+            url,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.blue,
+              height: 1.4,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+            ),
+          ),
+        ),
+      ));
+      lastEnd = match.end;
+    }
+    if (lastEnd < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastEnd),
+        style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
+      ));
+    }
+    if (spans.isEmpty) {
+      return Text(text, style: TextStyle(fontSize: 14, color: textColor, height: 1.4));
+    }
+    return RichText(text: TextSpan(children: spans));
+  }
+
+  void _openImageViewer(String imageUrl) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => _FullScreenImageViewer(imageUrl: imageUrl),
+    ));
   }
 
   Widget _buildFileMessage(ChatMessageModel msg, bool me) {
@@ -485,6 +657,65 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
                     )
                   : const Icon(Icons.send,
                       color: AppColors.white, size: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FullScreenImageViewer extends StatefulWidget {
+  final String imageUrl;
+  const _FullScreenImageViewer({required this.imageUrl});
+
+  @override
+  State<_FullScreenImageViewer> createState() => _FullScreenImageViewerState();
+}
+
+class _FullScreenImageViewerState extends State<_FullScreenImageViewer> {
+  final _transformController = TransformationController();
+
+  @override
+  void dispose() {
+    _transformController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(
+            child: InteractiveViewer(
+              transformationController: _transformController,
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.network(
+                widget.imageUrl,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Center(
+                  child: Icon(Icons.broken_image, size: 48, color: Colors.white54),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            right: 12,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 22),
+              ),
             ),
           ),
         ],
