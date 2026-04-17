@@ -123,7 +123,7 @@ class HomeProductCard extends StatelessWidget {
                               ),
                               if (product.isPreOrder)
                                 const TextSpan(
-                                  text: ' - Nhận Order',
+                                  text: ' - Nhận Order từ 2 - 4 ngày',
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -218,5 +218,4 @@ class HomeProductCard extends StatelessWidget {
       ),
     );
   }
-
 }

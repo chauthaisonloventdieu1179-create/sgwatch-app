@@ -23,7 +23,6 @@ import 'package:sgwatch_app/features/about/presentation/about_screen.dart';
 import 'package:sgwatch_app/features/refund_policy/presentation/refund_policy_screen.dart';
 import 'package:sgwatch_app/features/warranty/presentation/warranty_policy_screen.dart';
 import 'package:sgwatch_app/features/warranty/presentation/laptop_warranty_screen.dart';
-import 'package:sgwatch_app/features/guide/presentation/watch_size_guide_screen.dart';
 import 'package:sgwatch_app/features/buyback_policy/presentation/buyback_policy_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -287,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_viewModel.collections.isNotEmpty) ...[
               for (final collection in _viewModel.collections) ...[
                 HomeSectionHeader(
-                  title: 'BST Đồng hồ nội địa bán chạy 2026',
+                  title: 'BST ĐỒNG HỒ NỘI ĐỊA NHẬT BẢN 2026',
                   fontSize: 14,
                 ),
                 const SizedBox(height: 15),
@@ -511,16 +510,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const RefundPolicyScreen()));
-              },
-            ),
-            _buildDrawerItem(
-              context,
-              icon: Icons.watch_outlined,
-              label: 'Hướng dẫn chọn đồng hồ',
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const WatchSizeGuideScreen()));
               },
             ),
             _buildDrawerItem(

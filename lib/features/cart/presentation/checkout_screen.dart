@@ -136,6 +136,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
     return 0;
   }
+
   bool get _isDaibiki => _selectedPaymentMethod == 'Daibiki (代引き)';
   bool get _isStripe =>
       _selectedPaymentMethod != null &&
@@ -147,6 +148,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (_subtotal < 100000) return 3000;
     return 5000;
   }
+
   double get _serviceFee => _daibikiFee + _stripeFee;
   double get _discount => _discountAmount > 0 ? _discountAmount.toDouble() : 0;
   double get _pointDiscount => _usePoint ? _profileVM.point.toDouble() : 0;
@@ -266,11 +268,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: TextStyle(fontSize: 12.5, color: Colors.red.shade700, height: 1.5),
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: Colors.red.shade700,
+                  height: 1.5,
+                ),
                 children: const [
-                  TextSpan(
-                    text: 'Miễn phí vận chuyển ',
-                  ),
+                  TextSpan(text: 'Miễn phí vận chuyển '),
                   TextSpan(
                     text: 'toàn bộ',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -282,9 +286,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     text: '+1,000¥ (≈175,000đ)',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(
-                    text: ': Hokkaido, Okinawa (Nhật Bản) và Việt Nam.',
-                  ),
+                  TextSpan(text: ': Hokkaido, Okinawa (Nhật Bản) và Việt Nam.'),
                 ],
               ),
             ),
@@ -680,10 +682,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               const SizedBox(width: 4),
               const Text(
                 '(Thời gian nhận hàng mong muốn)',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.grey,
-                ),
+                style: TextStyle(fontSize: 12, color: AppColors.grey),
               ),
             ],
           ),
@@ -1173,10 +1172,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 2),
                   Text(
                     '≈ ${PriceFormatter.formatVND(_grandTotal * 175)}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
                   ),
                 ],
               ),
@@ -1185,11 +1181,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           if (_selectedAddress?.isVn == true) ...[
             const SizedBox(height: 10),
             const Text(
-              '🚚 Thời gian ship là 5 đến 7 ngày',
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.grey,
-              ),
+              '🚚 Thời gian ship là 7 đến 10 ngày',
+              style: TextStyle(fontSize: 13, color: AppColors.grey),
             ),
           ],
         ],
@@ -1258,10 +1251,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   Text(
                     '≈ ${PriceFormatter.formatVND(_grandTotal * 175)}',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 11, color: AppColors.grey),
                   ),
                 ],
               ),
@@ -1373,10 +1363,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMsg),
-          backgroundColor: AppColors.primary,
-        ),
+        SnackBar(content: Text(errorMsg), backgroundColor: AppColors.primary),
       );
     }
   }
@@ -1458,8 +1445,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<void> _retryStripePayment(int? orderId, String? orderNumber) async {
     if (orderId == null) return;
     try {
-      final endpoint =
-          Endpoints.retryPayment.replaceFirst('{id}', orderId.toString());
+      final endpoint = Endpoints.retryPayment.replaceFirst(
+        '{id}',
+        orderId.toString(),
+      );
       final response = await ApiClient().post(endpoint);
       if (!mounted) return;
 
@@ -1471,7 +1460,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Không nhận được thông tin thanh toán.')),
+            content: Text('Không nhận được thông tin thanh toán.'),
+          ),
         );
         return;
       }
@@ -1512,7 +1502,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  void _onOrderSuccess({Map<String, dynamic>? orderJson, int? orderId, String? orderNumber}) {
+  void _onOrderSuccess({
+    Map<String, dynamic>? orderJson,
+    int? orderId,
+    String? orderNumber,
+  }) {
     // Clear cart after successful order
     _cartVM.clearCache();
 
@@ -1602,8 +1596,11 @@ class _StripeRetrySheetState extends State<_StripeRetrySheet> {
               color: Colors.orange.shade50,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.payment_outlined,
-                size: 28, color: Colors.orange.shade700),
+            child: Icon(
+              Icons.payment_outlined,
+              size: 28,
+              color: Colors.orange.shade700,
+            ),
           ),
           const SizedBox(height: 16),
           const Text(
@@ -1618,7 +1615,11 @@ class _StripeRetrySheetState extends State<_StripeRetrySheet> {
           Text(
             'Đơn hàng ${widget.orderNumber ?? ''} đã được tạo nhưng chưa thanh toán.\nBạn có muốn thanh toán lại không?',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 13, color: AppColors.grey, height: 1.5),
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.grey,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -1638,19 +1639,24 @@ class _StripeRetrySheetState extends State<_StripeRetrySheet> {
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: AppColors.white),
+                        strokeWidth: 2,
+                        color: AppColors.white,
+                      ),
                     )
                   : const Icon(Icons.credit_card_outlined, size: 18),
               label: Text(
                 _isRetrying ? 'Đang xử lý...' : 'Thanh toán lại',
                 style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.bold),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.white,
-                disabledBackgroundColor:
-                    AppColors.primary.withValues(alpha: 0.6),
+                disabledBackgroundColor: AppColors.primary.withValues(
+                  alpha: 0.6,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -1673,9 +1679,10 @@ class _StripeRetrySheetState extends State<_StripeRetrySheet> {
               child: const Text(
                 'Đóng',
                 style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.grey),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.grey,
+                ),
               ),
             ),
           ),

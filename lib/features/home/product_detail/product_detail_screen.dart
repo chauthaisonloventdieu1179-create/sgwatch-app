@@ -38,7 +38,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _viewModel = ProductDetailViewModel(widget.product, groupedProducts: widget.groupedProducts);
+    _viewModel = ProductDetailViewModel(
+      widget.product,
+      groupedProducts: widget.groupedProducts,
+    );
     _viewModel.addListener(_onChanged);
     _favoriteVM.addListener(_onChanged);
     _cartVM.addListener(_onChanged);
@@ -68,7 +71,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final targetOffset = sidePadding + index * (itemWidth + spacing);
     if (_variantStripController.hasClients) {
       _variantStripController.animateTo(
-        targetOffset.clamp(0.0, _variantStripController.position.maxScrollExtent),
+        targetOffset.clamp(
+          0.0,
+          _variantStripController.position.maxScrollExtent,
+        ),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -80,9 +86,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final token = await LocalStorage.getToken();
     if (!mounted) return;
     if (token == null || token.isEmpty) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const LoginScreen()));
       return;
     }
 
@@ -98,10 +104,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     Navigator.of(context).pop(); // dismiss loading
 
     if (success) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartScreen()));
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_cartVM.error ?? 'Không thể thêm vào giỏ hàng.')),
+        SnackBar(
+          content: Text(_cartVM.error ?? 'Không thể thêm vào giỏ hàng.'),
+        ),
       );
     }
   }
@@ -123,35 +133,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Expanded(
               child: SelectionArea(
                 child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildImageSlider(),
-                    _buildProductInfo(),
-                    const SizedBox(height: 10),
-                    if (_viewModel.productInfo != null) _buildProductInfoBox(),
-                    if (_viewModel.productInfo != null)
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildImageSlider(),
+                      _buildProductInfo(),
                       const SizedBox(height: 10),
-                    if (_viewModel.dealInfo != null) _buildDealBox(),
-                    if (_viewModel.dealInfo != null) const SizedBox(height: 10),
-                    if (_viewModel.description != null) _buildDescriptionBox(),
-                    if (_viewModel.description != null)
+                      if (_viewModel.productInfo != null)
+                        _buildProductInfoBox(),
+                      if (_viewModel.productInfo != null)
+                        const SizedBox(height: 10),
+                      if (_viewModel.dealInfo != null) _buildDealBox(),
+                      if (_viewModel.dealInfo != null)
+                        const SizedBox(height: 10),
+                      if (_viewModel.description != null)
+                        _buildDescriptionBox(),
+                      if (_viewModel.description != null)
+                        const SizedBox(height: 10),
+                      if (_viewModel.shortDescription != null &&
+                          _viewModel.shortDescription!.isNotEmpty)
+                        _buildShortDescriptionBox(),
+                      if (_viewModel.shortDescription != null &&
+                          _viewModel.shortDescription!.isNotEmpty)
+                        const SizedBox(height: 10),
+                      _buildSpecsTable(),
                       const SizedBox(height: 10),
-                    if (_viewModel.shortDescription != null &&
-                        _viewModel.shortDescription!.isNotEmpty)
-                      _buildShortDescriptionBox(),
-                    if (_viewModel.shortDescription != null &&
-                        _viewModel.shortDescription!.isNotEmpty)
-                      const SizedBox(height: 10),
-                    _buildSpecsTable(),
-                    const SizedBox(height: 10),
-                    _buildReviewSection(),
-                    const SizedBox(height: 100),
-                  ],
+                      _buildReviewSection(),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
       bottomSheet: _buildBottomBar(),
@@ -193,9 +206,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const Spacer(),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CartScreen()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
             },
             child: SizedBox(
               width: 36,
@@ -371,7 +384,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 if (p.isPreOrder)
                   const TextSpan(
-                    text: ' - Nhận Order',
+                    text: ' - Nhận Order từ 2 - 4 ngày',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -439,10 +452,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               if (p.stockQuantity != null)
                 Text(
                   'Số lượng còn: ${p.stockQuantity}',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 13, color: AppColors.grey),
                 ),
             ],
           ),
@@ -501,7 +511,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget _buildVariantSection() {
     final variants = _viewModel.groupedProducts!;
-    final selected = variants.where((v) => v.id == _viewModel.product.id).firstOrNull;
+    final selected = variants
+        .where((v) => v.id == _viewModel.product.id)
+        .firstOrNull;
     final selectedColor = selected?.color ?? '';
 
     return Column(
@@ -550,7 +562,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             return GestureDetector(
               onTap: isSelected ? null : () => _selectVariant(v, index),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
@@ -572,7 +587,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: isSelected ? AppColors.primary : AppColors.grey,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.grey,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -581,7 +598,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? AppColors.primary : AppColors.black,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.black,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -691,44 +710,48 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return SizedBox(
       width: double.infinity,
       child: Container(
-      padding: const EdgeInsets.all(20),
-      color: AppColors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Mô tả sản phẩm',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.black,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            _viewModel.description!,
-            maxLines: _isDescriptionExpanded ? null : 4,
-            overflow: _isDescriptionExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 15,
-              color: AppColors.black,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () => setState(() => _isDescriptionExpanded = !_isDescriptionExpanded),
-            child: Text(
-              _isDescriptionExpanded ? 'Thu gọn' : 'Xem thêm',
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
+        padding: const EdgeInsets.all(20),
+        color: AppColors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Mô tả sản phẩm',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
               ),
             ),
-          ),
-        ],
-      ),
+            const SizedBox(height: 10),
+            Text(
+              _viewModel.description!,
+              maxLines: _isDescriptionExpanded ? null : 4,
+              overflow: _isDescriptionExpanded
+                  ? TextOverflow.visible
+                  : TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 15,
+                color: AppColors.black,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () => setState(
+                () => _isDescriptionExpanded = !_isDescriptionExpanded,
+              ),
+              child: Text(
+                _isDescriptionExpanded ? 'Thu gọn' : 'Xem thêm',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -737,30 +760,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return SizedBox(
       width: double.infinity,
       child: Container(
-      padding: const EdgeInsets.all(20),
-      color: AppColors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Mô tả ngắn',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.black,
+        padding: const EdgeInsets.all(20),
+        color: AppColors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Mô tả ngắn',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            _viewModel.shortDescription!,
-            style: const TextStyle(
-              fontSize: 15,
-              color: AppColors.black,
-              height: 1.6,
+            const SizedBox(height: 10),
+            Text(
+              _viewModel.shortDescription!,
+              style: const TextStyle(
+                fontSize: 15,
+                color: AppColors.black,
+                height: 1.6,
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -1131,7 +1154,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Xóa', style: TextStyle(color: AppColors.primary)),
+            child: const Text(
+              'Xóa',
+              style: TextStyle(color: AppColors.primary),
+            ),
           ),
         ],
       ),
@@ -1145,7 +1171,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       }
     }
   }
-
 
   void _showFullImage(String url) {
     showDialog(

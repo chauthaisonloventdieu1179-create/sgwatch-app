@@ -42,7 +42,7 @@ class HomeViewModel extends ChangeNotifier {
     BrandModel(id: -10, name: 'Đồng hồ nữ', slug: 'dong-ho-nu', filterGender: 'female'),
     BrandModel(id: -11, name: 'Đồng hồ cặp đôi', slug: 'dong-ho-cap-doi', filterGender: 'couple'),
     BrandModel(id: -12, name: 'Đồng hồ order', slug: 'dong-ho-order', filterStockType: 'pre_order'),
-    BrandModel(id: -13, name: 'Đồng hồ nội địa', slug: 'dong-ho-noi-dia', filterIsDomestic: 1),
+    BrandModel(id: -13, name: 'Đồng hồ nội địa Nhật', slug: 'dong-ho-noi-dia', filterIsDomestic: 1),
   ];
 
   /// Row 2: laptop, macbook, ipad, đồng hồ cũ

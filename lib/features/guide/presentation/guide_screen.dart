@@ -330,6 +330,228 @@ class _GuideScreenState extends State<GuideScreen> {
               title: 'HƯỚNG DẪN ĐI ĐẾN CỬA HÀNG',
               child: _buildVideoPlayer(5),
             ),
+            const SizedBox(height: 12),
+            _buildExpandableSection(
+              index: 6,
+              number: 7,
+              title: 'HƯỚNG DẪN CHỌN ĐỒNG HỒ',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Hero banner
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF1976D2), Color(0xFF0D47A1)],
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.watch, size: 30, color: Colors.white),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'HƯỚNG DẪN CHỌN ĐỒNG HỒ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'PHÙ HỢP CỔ TAY',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Section 1
+                  _buildWatchGuideSection(
+                    icon: Icons.straighten,
+                    iconColor: const Color(0xFF2196F3),
+                    title: '1. XÁC ĐỊNH KÍCH THƯỚC CỔ TAY',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Trước tiên, bạn cần biết cổ tay mình thuộc loại nào:',
+                          style: TextStyle(fontSize: 13, color: AppColors.black, height: 1.5),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildWristSizeCard(label: 'Cổ tay nhỏ', size: 'Dưới 15 cm', color: const Color(0xFF4CAF50)),
+                        const SizedBox(height: 8),
+                        _buildWristSizeCard(label: 'Cổ tay trung bình', size: '15 – 17 cm', color: const Color(0xFF2196F3)),
+                        const SizedBox(height: 8),
+                        _buildWristSizeCard(label: 'Cổ tay to', size: 'Trên 17 cm', color: const Color(0xFFFF9800)),
+                        const SizedBox(height: 14),
+                        _buildHighlightBox(
+                          icon: Icons.tips_and_updates,
+                          text: 'Cách đo đơn giản: dùng thước dây hoặc sợi dây quấn quanh cổ tay rồi đo lại.',
+                          color: const Color(0xFF2196F3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Section 2
+                  _buildWatchGuideSection(
+                    icon: Icons.radio_button_checked,
+                    iconColor: const Color(0xFF9C27B0),
+                    title: '2. CHỌN ĐƯỜNG KÍNH MẶT ĐỒNG HỒ (CASE SIZE)',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Đây là yếu tố quan trọng nhất:',
+                          style: TextStyle(fontSize: 13, color: AppColors.grey, fontStyle: FontStyle.italic),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildCaseSizeCard(wrist: 'Cổ tay nhỏ (<15 cm)', recommend: '34 – 38 mm', note: 'Tránh đồng hồ quá to vì sẽ bị "nuốt tay"', color: const Color(0xFF4CAF50)),
+                        const SizedBox(height: 8),
+                        _buildCaseSizeCard(wrist: 'Cổ tay trung bình (15–17 cm)', recommend: '38 – 42 mm', note: 'Đây là size dễ đeo nhất', color: const Color(0xFF2196F3)),
+                        const SizedBox(height: 8),
+                        _buildCaseSizeCard(wrist: 'Cổ tay to (>17 cm)', recommend: '42 – 46 mm', note: 'Tạo cảm giác mạnh mẽ, cân đối', color: const Color(0xFFFF9800)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Section 3
+                  _buildWatchGuideSection(
+                    icon: Icons.style,
+                    iconColor: const Color(0xFFE91E63),
+                    title: '3. CHỌN KIỂU DÁNG THEO CỔ TAY',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildStyleBlock(
+                          title: 'Cổ tay nhỏ',
+                          color: const Color(0xFF4CAF50),
+                          items: ['Ưu tiên: mặt tròn, đơn giản', 'Dây da hoặc kim loại nhỏ', 'Tránh đồng hồ thể thao quá hầm hố'],
+                          isPositive: [true, true, false],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildStyleBlock(
+                          title: 'Cổ tay trung bình',
+                          color: const Color(0xFF2196F3),
+                          items: ['Hầu như đeo được mọi kiểu', 'Có thể thử cả dress watch và sport watch'],
+                          isPositive: [true, true],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildStyleBlock(
+                          title: 'Cổ tay to',
+                          color: const Color(0xFFFF9800),
+                          items: ['Hợp đồng hồ Diver (lặn)', 'Chronograph (nhiều mặt số)', 'Dây kim loại hoặc cao su bản lớn sẽ đẹp hơn'],
+                          isPositive: [true, true, true],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Section 4
+                  _buildWatchGuideSection(
+                    icon: Icons.palette,
+                    iconColor: const Color(0xFFFF5722),
+                    title: '4. MÀU SẮC & PHONG CÁCH',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildWatchBulletItem('Da sáng / cổ tay nhỏ → nên chọn màu nhẹ: bạc, trắng, xanh'),
+                        const SizedBox(height: 8),
+                        _buildWatchBulletItem('Da tối / cổ tay to → hợp màu mạnh: đen, vàng, xanh đậm'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Section 5
+                  _buildWatchGuideSection(
+                    icon: Icons.warning_amber_rounded,
+                    iconColor: const Color(0xFFFF9800),
+                    title: '5. MỘT SỐ LỖI THƯỜNG GẶP',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildWatchErrorItem('Đeo đồng hồ quá to so với cổ tay'),
+                        const SizedBox(height: 8),
+                        _buildWatchErrorItem('Dây lỏng hoặc quá chật'),
+                        const SizedBox(height: 8),
+                        _buildWatchErrorItem('Lug (càng nối dây) dài vượt cổ tay'),
+                        const SizedBox(height: 8),
+                        _buildWatchErrorItem('Chọn theo trend nhưng không hợp dáng tay'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Section 6
+                  _buildWatchGuideSection(
+                    icon: Icons.lightbulb_outline,
+                    iconColor: const Color(0xFFFFC107),
+                    title: '6. MẸO CHỌN NHANH',
+                    child: _buildHighlightBox(
+                      icon: Icons.visibility,
+                      text: 'Nhìn tổng thể: đồng hồ không được "tràn" ra khỏi cổ tay. Khi nhìn từ trên xuống phải cân đối, gọn gàng.',
+                      color: const Color(0xFFFFC107),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Footer
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFFF3F8FF), Color(0xFFE3F2FD)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBBDEFB)),
+                    ),
+                    child: const Column(
+                      children: [
+                        Icon(Icons.watch, size: 32, color: Color(0xFF1976D2)),
+                        SizedBox(height: 10),
+                        Text(
+                          'SGWATCH',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Mọi thắc mắc về kích thước hoặc chọn mẫu đồng hồ phù hợp, hãy liên hệ SGWATCH để được tư vấn miễn phí.',
+                          style: TextStyle(fontSize: 13, color: AppColors.black, height: 1.6),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
           ],
         ),
@@ -630,6 +852,230 @@ class _GuideScreenState extends State<GuideScreen> {
             child: Icon(Icons.image, size: 48, color: AppColors.greyLight),
           ),
         ),
+      ),
+    );
+  }
+
+  // ── Watch guide helpers ──────────────────────────────────────────────────
+
+  Widget _buildWatchGuideSection({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required Widget child,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGrey,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.greyLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 16, color: iconColor),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWristSizeCard({
+    required String label,
+    required String size,
+    required Color color,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.circle, size: 8, color: color),
+          const SizedBox(width: 10),
+          Text(
+            label,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color),
+          ),
+          const Spacer(),
+          Text(
+            size,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCaseSizeCard({
+    required String wrist,
+    required String recommend,
+    required String note,
+    required Color color,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(wrist, style: const TextStyle(fontSize: 12, color: AppColors.grey)),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(Icons.arrow_forward, size: 14, color: color),
+              const SizedBox(width: 6),
+              Text(
+                'Nên chọn: $recommend',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(note, style: const TextStyle(fontSize: 12, color: AppColors.grey, fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStyleBlock({
+    required String title,
+    required Color color,
+    required List<String> items,
+    required List<bool> isPositive,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
+          const SizedBox(height: 8),
+          ...List.generate(items.length, (i) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: i < items.length - 1 ? 6 : 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Icon(
+                      isPositive[i] ? Icons.check_circle : Icons.cancel,
+                      size: 14,
+                      color: isPositive[i] ? const Color(0xFF4CAF50) : const Color(0xFFE53935),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(items[i], style: const TextStyle(fontSize: 13, color: AppColors.black, height: 1.4)),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWatchBulletItem(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 6),
+          child: Icon(Icons.circle, size: 6, color: AppColors.grey),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(text, style: const TextStyle(fontSize: 13, color: AppColors.black, height: 1.5)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWatchErrorItem(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 2),
+          child: Icon(Icons.close, size: 14, color: Color(0xFFE65100)),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(text, style: const TextStyle(fontSize: 13, color: AppColors.black, height: 1.5)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHighlightBox({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: color),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: color, height: 1.5),
+            ),
+          ),
+        ],
       ),
     );
   }
