@@ -5,6 +5,7 @@ import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/features/chat/data/models/chat_message_model.dart';
 import 'package:sgwatch_app/features/chat/presentation/chat_viewmodel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? productImageUrl;
@@ -373,11 +374,69 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
       },
-      child: Text(
+      child: _buildTextWithLinks(text),
+    );
+  }
+
+  static final _urlRegex = RegExp(
+    r'https?://[^\s]+',
+    caseSensitive: false,
+  );
+
+  Widget _buildTextWithLinks(String text) {
+    final spans = <InlineSpan>[];
+    int lastEnd = 0;
+
+    for (final match in _urlRegex.allMatches(text)) {
+      // text thường trước URL
+      if (match.start > lastEnd) {
+        spans.add(TextSpan(
+          text: text.substring(lastEnd, match.start),
+          style: const TextStyle(fontSize: 14, color: AppColors.black, height: 1.4),
+        ));
+      }
+      // URL span — clickable
+      final url = match.group(0)!;
+      spans.add(WidgetSpan(
+        child: GestureDetector(
+          onTap: () async {
+            final uri = Uri.tryParse(url);
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          },
+          child: Text(
+            url,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.blue,
+              height: 1.4,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+            ),
+          ),
+        ),
+      ));
+      lastEnd = match.end;
+    }
+
+    // text còn lại sau URL cuối
+    if (lastEnd < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastEnd),
+        style: const TextStyle(fontSize: 14, color: AppColors.black, height: 1.4),
+      ));
+    }
+
+    // Không có URL → Text thường
+    if (spans.isEmpty) {
+      return Text(
         text,
         style: const TextStyle(fontSize: 14, color: AppColors.black, height: 1.4),
-      ),
-    );
+      );
+    }
+
+    return RichText(text: TextSpan(children: spans));
   }
 
   String _formatFileSize(int bytes) {
@@ -511,8 +570,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 style:
                     const TextStyle(fontSize: 14, color: AppColors.black),
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _sendMessage(),
+                maxLines: null,
+                textInputAction: TextInputAction.newline,
               ),
             ),
           ),
