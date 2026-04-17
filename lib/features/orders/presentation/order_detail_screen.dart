@@ -187,7 +187,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               const SizedBox(height: 16),
               _buildInvoiceButton(d),
             ],
-            if (d.status == OrderStatus.pending) ...[
+            if (d.status == OrderStatus.pending ||
+                d.status == OrderStatus.waitingOrder) ...[
               const SizedBox(height: 16),
               _buildCancelOrderButton(d),
             ],

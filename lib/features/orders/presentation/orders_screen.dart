@@ -17,6 +17,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   late final OrderViewModel _viewModel;
 
   static const List<_OrderTab> _tabs = [
+    _OrderTab(icon: Icons.inventory_2_outlined, label: 'Hàng\norder'),
+    _OrderTab(icon: Icons.pending_actions_outlined, label: 'Đang\nxử lý'),
     _OrderTab(icon: Icons.access_time, label: 'Chờ xác\nnhận'),
     _OrderTab(icon: Icons.local_shipping_outlined, label: 'Chờ giao\nhàng'),
     _OrderTab(icon: Icons.check_box_outlined, label: 'Đã hoàn\nthành'),
@@ -114,16 +116,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Widget _buildTabs() {
-    return Row(
-      children: List.generate(_tabs.length, (index) {
-        final tab = _tabs[index];
-        final isSelected = _viewModel.selectedTab == index;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(_tabs.length, (index) {
+          final tab = _tabs[index];
+          final isSelected = _viewModel.selectedTab == index;
 
-        return Expanded(
-          child: GestureDetector(
+          return GestureDetector(
             onTap: () => _viewModel.selectTab(index),
             child: Container(
-              height: 80,
+              width: 72,
+              height: 72,
               margin: EdgeInsets.only(right: index < _tabs.length - 1 ? 8 : 0),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.black : AppColors.white,
@@ -146,7 +150,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 children: [
                   Icon(
                     tab.icon,
-                    size: 26,
+                    size: 24,
                     color: isSelected ? AppColors.white : AppColors.black,
                   ),
                   const SizedBox(height: 3),
@@ -163,9 +167,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ],
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -219,7 +223,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   bool _needsPayment(OrderListItem order) =>
-      order.status == OrderStatus.pending &&
+      (order.status == OrderStatus.waitingOrder ||
+          order.status == OrderStatus.pending) &&
       order.paymentStatus == 'pending' &&
       (order.paymentMethod == 'bank_transfer' ||
           order.paymentMethod == 'deposit_transfer');

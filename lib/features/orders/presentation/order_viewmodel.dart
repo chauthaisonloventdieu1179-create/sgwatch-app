@@ -21,6 +21,8 @@ class OrderViewModel extends ChangeNotifier {
   List<OrderListItem> get currentOrders => _ordersByTab[_selectedTab] ?? [];
 
   static const List<OrderStatus> _tabStatuses = [
+    OrderStatus.waitingOrder,
+    OrderStatus.processing,
     OrderStatus.pending,
     OrderStatus.shipping,
     OrderStatus.completed,

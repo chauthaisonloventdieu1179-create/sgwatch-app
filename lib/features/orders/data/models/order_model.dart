@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 
 enum OrderStatus {
+  waitingOrder,
+  processing,
   pending,
   shipping,
   completed,
@@ -10,6 +12,10 @@ enum OrderStatus {
 
   static OrderStatus fromString(String s) {
     switch (s) {
+      case 'waiting_order':
+        return OrderStatus.waitingOrder;
+      case 'processing':
+        return OrderStatus.processing;
       case 'pending':
         return OrderStatus.pending;
       case 'shipping':
@@ -21,12 +27,16 @@ enum OrderStatus {
       case 'refunded':
         return OrderStatus.refunded;
       default:
-        return OrderStatus.pending;
+        return OrderStatus.waitingOrder;
     }
   }
 
   String get label {
     switch (this) {
+      case OrderStatus.waitingOrder:
+        return 'Hàng order';
+      case OrderStatus.processing:
+        return 'Đang xử lý';
       case OrderStatus.pending:
         return 'Chờ xác nhận';
       case OrderStatus.shipping:
@@ -40,10 +50,23 @@ enum OrderStatus {
     }
   }
 
-  String get apiValue => name;
+  String get apiValue {
+    switch (this) {
+      case OrderStatus.waitingOrder:
+        return 'waiting_order';
+      case OrderStatus.processing:
+        return 'processing';
+      default:
+        return name;
+    }
+  }
 
   Color get color {
     switch (this) {
+      case OrderStatus.waitingOrder:
+        return const Color(0xFF795548);
+      case OrderStatus.processing:
+        return const Color(0xFF009688);
       case OrderStatus.pending:
         return const Color(0xFFFF9800);
       case OrderStatus.shipping:
