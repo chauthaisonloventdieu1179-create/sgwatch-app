@@ -315,12 +315,15 @@ class AdminDatasource {
   Future<AdminConversationListResponse> getConversations({
     int page = 1,
     int limit = 20,
+    String? search,
   }) async {
-    final resp = await _api.get(_kChatConversations, queryParameters: {
+    final params = <String, dynamic>{
       'page': page,
       'limit': limit,
       'is_hidden': false,
-    });
+    };
+    if (search != null && search.isNotEmpty) params['search'] = search;
+    final resp = await _api.get(_kChatConversations, queryParameters: params);
     final data = resp.data['data'] as Map<String, dynamic>;
     final pagination = data['pagination'] as Map<String, dynamic>? ?? {};
 

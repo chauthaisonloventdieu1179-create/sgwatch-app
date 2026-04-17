@@ -29,18 +29,22 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
 
   final _ds = AdminDatasource(ApiClient());
   final _scrollController = ScrollController();
+  final _searchController = TextEditingController();
   final _pusher = PusherService();
   Timer? _debounceTimer;
+  Timer? _searchDebounce;
 
   List<AdminConversationModel> _conversations = [];
   bool _isLoading = false;
   int _currentPage = 1;
   bool _hasMore = true;
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _searchController.addListener(_onSearchChanged);
     // Hiện cache ngay nếu có, rồi silent refresh để sync
     if (_cache != null && _cache!.isNotEmpty) {
       _conversations = List.from(_cache!);
@@ -57,6 +61,17 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _onExternalOpenRoom());
   }
 
+  void _onSearchChanged() {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 400), () {
+      final q = _searchController.text.trim();
+      if (q != _searchQuery) {
+        _searchQuery = q;
+        _loadConversations();
+      }
+    });
+  }
+
   void _onPusherMessage(Map<String, dynamic> _) {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(seconds: 1), _silentRefresh);
@@ -64,6 +79,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
 
   /// Fetch page 1, merge in-place: update item theo ID, thêm conv mới lên đầu, sort lại
   Future<void> _silentRefresh() async {
+    if (_searchQuery.isNotEmpty) return; // don't override search results
     try {
       final res = await _ds.getConversations(page: 1);
       if (!mounted) return;
@@ -122,7 +138,9 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
   @override
   void dispose() {
     _debounceTimer?.cancel();
+    _searchDebounce?.cancel();
     _scrollController.dispose();
+    _searchController.dispose();
     _pusher.removeListener(
       channelName: _pusherChannel,
       eventName: _pusherEvent,
@@ -148,13 +166,14 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
       _currentPage = 1;
       _hasMore = true;
     });
+    final query = _searchQuery.isNotEmpty ? _searchQuery : null;
     try {
-      final res = await _ds.getConversations(page: 1);
+      final res = await _ds.getConversations(page: 1, search: query);
       setState(() {
         _conversations = res.conversations;
         _hasMore = res.currentPage < res.totalPages;
         _currentPage = res.currentPage;
-        _cache = List.from(_conversations);
+        if (query == null) _cache = List.from(_conversations);
       });
     } catch (_) {
     } finally {
@@ -166,13 +185,14 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
     if (_isLoading || !_hasMore) return;
     final nextPage = _currentPage + 1;
     setState(() => _isLoading = true);
+    final query = _searchQuery.isNotEmpty ? _searchQuery : null;
     try {
-      final res = await _ds.getConversations(page: nextPage);
+      final res = await _ds.getConversations(page: nextPage, search: query);
       setState(() {
         _conversations.addAll(res.conversations);
         _hasMore = res.currentPage < res.totalPages;
         _currentPage = res.currentPage;
-        _cache = List.from(_conversations);
+        if (query == null) _cache = List.from(_conversations);
       });
     } catch (_) {
     } finally {
@@ -197,7 +217,44 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
         ),
         centerTitle: true,
       ),
-      body: _buildBody(),
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          Expanded(child: _buildBody()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      color: AppColors.white,
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: TextField(
+        controller: _searchController,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          hintText: 'Tìm kiếm khách hàng...',
+          hintStyle: const TextStyle(fontSize: 14, color: AppColors.greyPlaceholder),
+          prefixIcon: const Icon(Icons.search, color: AppColors.grey, size: 20),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? GestureDetector(
+                  onTap: () {
+                    _searchController.clear();
+                  },
+                  child: const Icon(Icons.close, color: AppColors.grey, size: 18),
+                )
+              : null,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          isDense: true,
+          filled: true,
+          fillColor: AppColors.backgroundGrey,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
     );
   }
 
