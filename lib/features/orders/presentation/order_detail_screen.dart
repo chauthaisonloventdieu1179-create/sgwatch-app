@@ -1343,7 +1343,7 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
     final isDeposit = widget.order.paymentMethod == 'deposit_transfer';
     final vnAmount = isDeposit && widget.order.depositAmount > 0
         ? widget.order.depositAmount
-        : widget.order.totalAmount;
+        : widget.order.totalAmount * 175;
 
     Widget card({
       required String title,

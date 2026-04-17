@@ -412,7 +412,7 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                 _order.paymentMethod == 'deposit_transfer' ? 'Tiền cọc' : 'Số tiền',
                 _order.paymentMethod == 'deposit_transfer' && _order.depositAmount > 0
                     ? PriceFormatter.formatVND(_order.depositAmount)
-                    : PriceFormatter.formatJPY(_order.totalAmount),
+                    : PriceFormatter.formatVND(_order.totalAmount * 175),
                 highlight: true,
               ),
               _bankRow('Nội dung CK', _transferContent),
