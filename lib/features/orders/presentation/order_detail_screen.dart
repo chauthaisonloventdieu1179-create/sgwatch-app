@@ -1403,7 +1403,7 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               PriceFormatter.formatVND(vnAmount),
               highlight: true,
             ),
-            _buildBankRow('Nội dung CK', widget.order.orderNumber),
+            _buildBankRow('Nội dung CK', '${widget.order.orderNumber} - ${widget.order.shippingName}'),
           ],
         ),
       ],
@@ -1539,7 +1539,17 @@ class _BankInfoSheet extends StatelessWidget {
                     _BankEntry('Ngân hàng', 'VIETCOMBANK'),
                     _BankEntry('Số tài khoản', '9042628888'),
                     _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
-                    _BankEntry('Nội dung CK', order.orderNumber),
+                    _BankEntry(
+                      order.paymentMethod == 'deposit_transfer'
+                          ? 'Tiền cọc'
+                          : 'Số tiền',
+                      order.paymentMethod == 'deposit_transfer' &&
+                              order.depositAmount > 0
+                          ? PriceFormatter.formatVND(order.depositAmount)
+                          : PriceFormatter.formatVND(order.totalAmount * 175),
+                      highlight: true,
+                    ),
+                    _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
                   ]),
                 ],
               ),
@@ -1571,12 +1581,12 @@ class _BankInfoSheet extends StatelessWidget {
         border: Border.all(color: const Color(0xFFB3D4F5)),
       ),
       child: Column(
-        children: entries.map((e) => _bankRow(context, e.label, e.value)).toList(),
+        children: entries.map((e) => _bankRow(context, e.label, e.value, highlight: e.highlight)).toList(),
       ),
     );
   }
 
-  Widget _bankRow(BuildContext context, String label, String value) {
+  Widget _bankRow(BuildContext context, String label, String value, {bool highlight = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -1592,10 +1602,10 @@ class _BankInfoSheet extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.black,
+                fontWeight: highlight ? FontWeight.bold : FontWeight.w600,
+                color: highlight ? AppColors.primary : AppColors.black,
               ),
             ),
           ),
@@ -1624,5 +1634,6 @@ class _BankInfoSheet extends StatelessWidget {
 class _BankEntry {
   final String label;
   final String value;
-  const _BankEntry(this.label, this.value);
+  final bool highlight;
+  const _BankEntry(this.label, this.value, {this.highlight = false});
 }
