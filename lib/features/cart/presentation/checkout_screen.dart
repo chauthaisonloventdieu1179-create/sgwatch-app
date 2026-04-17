@@ -100,15 +100,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return [
         'Chuyển khoản toàn bộ',
         'Cọc 1 triệu (Thanh toán khi nhận hàng)',
-        // TODO: Bỏ comment khi cấu hình Stripe xong
-        // 'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
+        'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
       ];
     }
     return [
       'Chuyển khoản toàn bộ',
       'Daibiki (代引き)',
-      // TODO: Bỏ comment khi cấu hình Stripe xong
-      // 'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
+      'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
     ];
   }
 

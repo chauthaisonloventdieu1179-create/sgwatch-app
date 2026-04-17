@@ -693,14 +693,42 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            _viewModel.dealInfo!,
-            style: const TextStyle(
-              fontSize: 15,
-              color: AppColors.black,
-              height: 1.6,
-            ),
-          ),
+          ..._viewModel.dealInfo!
+              .split('\n')
+              .map((line) => line.trim())
+              .where((line) => line.isNotEmpty)
+              .map(
+                (line) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Icon(
+                          Icons.star,
+                          size: 13,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          line,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.black,
+                            height: 1.5,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.primary,
+                            decorationThickness: 1.2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
         ],
       ),
     );

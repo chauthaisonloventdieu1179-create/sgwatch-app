@@ -37,13 +37,6 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
 
   bool get _isDaibiki => _order.paymentMethod == 'cod';
 
-  bool get _isVN {
-    final lower = _order.shippingCountry.toLowerCase();
-    return lower.contains('vn') ||
-        lower.contains('vietnam') ||
-        lower.contains('vi\u1ec7t');
-  }
-
   String get _transferContent =>
       '${_order.orderNumber} - ${_order.shippingName}';
 
@@ -319,10 +312,25 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               ))),
           const Divider(height: 1, color: AppColors.greyLight),
           const SizedBox(height: 10),
+          if (_order.shippingFee > 0)
+            _summaryRow(
+                'Phí vận chuyển', PriceFormatter.formatJPY(_order.shippingFee)),
+          if (_order.codFee > 0)
+            _summaryRow(
+                'Phí dịch vụ Daibiki', PriceFormatter.formatJPY(_order.codFee)),
+          if (_order.stripeFee > 0)
+            _summaryRow(
+                'Phí dịch vụ Stripe', PriceFormatter.formatJPY(_order.stripeFee)),
           if (_order.discountAmount > 0)
             _summaryRow(
                 'Giảm giá', '-${PriceFormatter.formatJPY(_order.discountAmount)}',
                 color: const Color(0xFF4CAF50)),
+          if (_order.paymentMethod == 'deposit_transfer' && _order.depositAmount > 0)
+            _summaryRow(
+              'Tiền cọc cần thanh toán',
+              PriceFormatter.formatVND(_order.depositAmount),
+              color: AppColors.primary,
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -370,114 +378,141 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
   // ── Bank info card (VN vs JP) ────────────────────────────────
 
   Widget _buildBankInfoCard() {
-    return _card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
+    return Column(
+      children: [
+        // ── Khối 1: Chuyển khoản Việt Nam ──
+        _card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
-              SizedBox(width: 8),
-              Text(
-                'Thông tin chuyển khoản',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1565C0),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (_isVN) ...[
-            _bankRow('Ngân hàng', 'VIETCOMBANK'),
-            _bankRow('Số tài khoản', '9042628888'),
-            _bankRow('Chủ tài khoản', 'TRAN TOAN'),
-            _bankRow(
-              'Số tiền',
-              PriceFormatter.formatJPY(_order.totalAmount),
-              highlight: true,
-            ),
-            _bankRow('Nội dung CK', _transferContent),
-          ] else ...[
-            const Text(
-              'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.black,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 12),
-            _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-            _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
-            _bankRow('Loại TK', '普通 (Futsu)'),
-            _bankRow('Số tài khoản', '3061217'),
-            _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-            _bankRow(
-              'Số tiền',
-              PriceFormatter.formatJPY(_order.totalAmount),
-              highlight: true,
-            ),
-            _bankRow('Nội dung CK', _transferContent),
-            const SizedBox(height: 8),
-            // Tips box
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E0),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFFCC02)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const Row(
                 children: [
-                  const Text(
-                    'Cách tìm tên chi nhánh:',
+                  Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Chuyển khoản Việt Nam',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFE65100),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Gõ chữ テ sau đó tìm đến chi nhánh 天満橋支店',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFFE65100),
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _openYouTubeGuide,
-                    child: Row(
-                      children: [
-                        Icon(Icons.play_circle_fill,
-                            size: 20, color: Colors.red.shade600),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'Video hướng dẫn chuyển khoản từ Yucho sang Mizuho',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.red.shade600,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ],
+                      color: Color(0xFF1565C0),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ],
-      ),
+              const SizedBox(height: 12),
+              _bankRow('Ngân hàng', 'VIETCOMBANK'),
+              _bankRow('Số tài khoản', '9042628888'),
+              _bankRow('Chủ tài khoản', 'TRAN TOAN'),
+              _bankRow(
+                _order.paymentMethod == 'deposit_transfer' ? 'Tiền cọc' : 'Số tiền',
+                _order.paymentMethod == 'deposit_transfer' && _order.depositAmount > 0
+                    ? PriceFormatter.formatVND(_order.depositAmount)
+                    : PriceFormatter.formatJPY(_order.totalAmount),
+                highlight: true,
+              ),
+              _bankRow('Nội dung CK', _transferContent),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        // ── Khối 2: Chuyển khoản Nhật Bản ──
+        _card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Chuyển khoản Nhật Bản',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1565C0),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.black,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+              _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
+              _bankRow('Loại TK', '普通 (Futsu)'),
+              _bankRow('Số tài khoản', '3061217'),
+              _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+              _bankRow(
+                'Số tiền',
+                PriceFormatter.formatJPY(_order.totalAmount),
+                highlight: true,
+              ),
+              _bankRow('Nội dung CK', _transferContent),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF3E0),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFFFCC02)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Cách tìm tên chi nhánh:',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFE65100),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Gõ chữ テ sau đó tìm đến chi nhánh 天満橋支店',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFE65100),
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: _openYouTubeGuide,
+                      child: Row(
+                        children: [
+                          Icon(Icons.play_circle_fill,
+                              size: 20, color: Colors.red.shade600),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              'Video hướng dẫn chuyển khoản từ Yucho sang Mizuho',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red.shade600,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

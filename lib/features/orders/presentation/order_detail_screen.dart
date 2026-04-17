@@ -1345,57 +1345,82 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
     );
   }
 
-  // ── Bank info card (VN vs JP) ────────────────────────────────
+  // ── Bank info card (VN + JP always shown) ────────────────────────────────
 
   Widget _buildBankInfoCard() {
-    final isVN = widget.order.isVietnamAddress;
+    final isDeposit = widget.order.paymentMethod == 'deposit_transfer';
+    final vnAmount = isDeposit && widget.order.depositAmount > 0
+        ? widget.order.depositAmount
+        : widget.order.totalAmount;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F7FF),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFB3D4F5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
-              SizedBox(width: 8),
-              Text(
-                'Thông tin chuyển khoản',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1565C0),
+    Widget card({
+      required String title,
+      required Color titleColor,
+      required Color bgColor,
+      required Color borderColor,
+      required List<Widget> rows,
+    }) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.account_balance, size: 16, color: titleColor),
+                const SizedBox(width: 6),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (isVN) ...[
+              ],
+            ),
+            const SizedBox(height: 10),
+            ...rows,
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Vietnamese bank card
+        card(
+          title: 'Chuyển khoản Việt Nam',
+          titleColor: const Color(0xFF1565C0),
+          bgColor: const Color(0xFFF0F7FF),
+          borderColor: const Color(0xFFB3D4F5),
+          rows: [
             _buildBankRow('Ngân hàng', 'VIETCOMBANK'),
             _buildBankRow('Số tài khoản', '9042628888'),
             _buildBankRow('Chủ tài khoản', 'TRAN TOAN'),
             _buildBankRow(
-              'Số tiền',
-              PriceFormatter.formatJPY(widget.order.totalAmount),
+              isDeposit ? 'Tiền cọc' : 'Số tiền',
+              PriceFormatter.formatVND(vnAmount),
               highlight: true,
             ),
             _buildBankRow('Nội dung CK', widget.order.orderNumber),
-          ] else ...[
-            const Text(
-              'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.black,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 12),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // Japanese bank card
+        card(
+          title: 'Chuyển khoản Nhật Bản',
+          titleColor: const Color(0xFF1B5E20),
+          bgColor: const Color(0xFFF1F8E9),
+          borderColor: const Color(0xFFA5D6A7),
+          rows: [
             _buildBankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
             _buildBankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
             _buildBankRow('Loại TK', '普通 (Futsu)'),
@@ -1407,8 +1432,7 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               highlight: true,
             ),
             _buildBankRow('Nội dung CK', widget.order.orderNumber),
-            const SizedBox(height: 8),
-            // Tips box
+            const SizedBox(height: 4),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),
@@ -1463,8 +1487,8 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               ),
             ),
           ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 
