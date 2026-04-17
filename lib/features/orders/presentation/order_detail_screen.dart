@@ -1342,71 +1342,77 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
 
   Widget _buildBankInfoCard() {
     final isDeposit = widget.order.paymentMethod == 'deposit_transfer';
-    final vnAmount = isDeposit && widget.order.depositAmount > 0
-        ? widget.order.depositAmount
-        : widget.order.totalAmount * 175;
+    final isVN = widget.order.isVietnamAddress;
+    final transferContent = '${widget.order.orderNumber} - ${widget.order.shippingName}';
 
-    Widget card({
-      required String title,
-      required Color titleColor,
-      required Color bgColor,
-      required Color borderColor,
-      required List<Widget> rows,
-    }) {
+    if (isVN) {
+      final vnAmount = isDeposit && widget.order.depositAmount > 0
+          ? widget.order.depositAmount
+          : widget.order.totalAmount * 175;
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: bgColor,
+          color: const Color(0xFFF0F7FF),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: borderColor),
+          border: Border.all(color: const Color(0xFFB3D4F5)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                Icon(Icons.account_balance, size: 16, color: titleColor),
-                const SizedBox(width: 6),
+                Icon(Icons.account_balance, size: 16, color: Color(0xFF1565C0)),
+                SizedBox(width: 6),
                 Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
-                  ),
+                  'Chuyển khoản Việt Nam',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            ...rows,
+            _buildBankRow('Ngân hàng', 'VIETCOMBANK'),
+            _buildBankRow('Số tài khoản', '9042628888'),
+            _buildBankRow('Chủ tài khoản', 'TRAN TOAN'),
+            _buildBankRow(isDeposit ? 'Tiền cọc' : 'Số tiền', PriceFormatter.formatVND(vnAmount), highlight: true),
+            _buildBankRow('Nội dung CK', transferContent),
           ],
         ),
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Vietnamese bank card
-        card(
-          title: 'Chuyển khoản Việt Nam',
-          titleColor: const Color(0xFF1565C0),
-          bgColor: const Color(0xFFF0F7FF),
-          borderColor: const Color(0xFFB3D4F5),
-          rows: [
-            _buildBankRow('Ngân hàng', 'VIETCOMBANK'),
-            _buildBankRow('Số tài khoản', '9042628888'),
-            _buildBankRow('Chủ tài khoản', 'TRAN TOAN'),
-            _buildBankRow(
-              isDeposit ? 'Tiền cọc' : 'Số tiền',
-              PriceFormatter.formatVND(vnAmount),
-              highlight: true,
-            ),
-            _buildBankRow('Nội dung CK', '${widget.order.orderNumber} - ${widget.order.shippingName}'),
-          ],
-        ),
-      ],
+    // JP bank
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F8E9),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFA5D6A7)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.account_balance, size: 16, color: Color(0xFF1B5E20)),
+              SizedBox(width: 6),
+              Text(
+                'Chuyển khoản Nhật Bản',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _buildBankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+          _buildBankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
+          _buildBankRow('Loại TK', '普通 (Futsu)'),
+          _buildBankRow('Số tài khoản', '3061217'),
+          _buildBankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+          _buildBankRow('Số tiền', PriceFormatter.formatJPY(widget.order.totalAmount), highlight: true),
+          _buildBankRow('Nội dung CK', transferContent),
+        ],
+      ),
     );
   }
 
@@ -1532,25 +1538,35 @@ class _BankInfoSheet extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // ── STK Việt Nam ────────────────────────────
-                  _sectionHeader('🇻🇳  Tài khoản Việt Nam'),
-                  const SizedBox(height: 10),
-                  _bankBlock(context, [
-                    _BankEntry('Ngân hàng', 'VIETCOMBANK'),
-                    _BankEntry('Số tài khoản', '9042628888'),
-                    _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
-                    _BankEntry(
-                      order.paymentMethod == 'deposit_transfer'
-                          ? 'Tiền cọc'
-                          : 'Số tiền',
-                      order.paymentMethod == 'deposit_transfer' &&
-                              order.depositAmount > 0
-                          ? PriceFormatter.formatVND(order.depositAmount)
-                          : PriceFormatter.formatVND(order.totalAmount * 175),
-                      highlight: true,
-                    ),
-                    _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
-                  ]),
+                  if (order.isVietnamAddress) ...[
+                    _sectionHeader('🇻🇳  Tài khoản Việt Nam'),
+                    const SizedBox(height: 10),
+                    _bankBlock(context, [
+                      _BankEntry('Ngân hàng', 'VIETCOMBANK'),
+                      _BankEntry('Số tài khoản', '9042628888'),
+                      _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
+                      _BankEntry(
+                        order.paymentMethod == 'deposit_transfer' ? 'Tiền cọc' : 'Số tiền',
+                        order.paymentMethod == 'deposit_transfer' && order.depositAmount > 0
+                            ? PriceFormatter.formatVND(order.depositAmount)
+                            : PriceFormatter.formatVND(order.totalAmount * 175),
+                        highlight: true,
+                      ),
+                      _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
+                    ]),
+                  ] else ...[
+                    _sectionHeader('🇯🇵  Tài khoản Nhật Bản'),
+                    const SizedBox(height: 10),
+                    _bankBlock(context, [
+                      _BankEntry('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+                      _BankEntry('Chi nhánh', '天満橋支店 (Temmabashi)'),
+                      _BankEntry('Loại TK', '普通 (Futsu)'),
+                      _BankEntry('Số tài khoản', '3061217'),
+                      _BankEntry('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+                      _BankEntry('Số tiền', PriceFormatter.formatJPY(order.totalAmount), highlight: true),
+                      _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
+                    ]),
+                  ],
                 ],
               ),
             ),
