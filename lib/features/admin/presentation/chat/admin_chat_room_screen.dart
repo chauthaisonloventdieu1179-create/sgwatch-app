@@ -314,60 +314,60 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
                 crossAxisAlignment:
                     me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: msg.isImageFile
-                        ? EdgeInsets.zero
-                        : const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: me ? AppColors.primary : AppColors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(16),
-                        topRight: const Radius.circular(16),
-                        bottomLeft: Radius.circular(me ? 16 : 4),
-                        bottomRight: Radius.circular(me ? 4 : 16),
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Color(0x0D000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 2))
-                      ],
-                    ),
-                    child: msg.isImageFile
-                        ? GestureDetector(
-                            onTap: () => _openImageViewer(msg.fileUrl!),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                msg.fileUrl!,
-                                width: 200,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Icon(Icons.broken_image,
-                                      color: AppColors.grey),
-                                ),
+                  msg.isImageFile
+                      ? GestureDetector(
+                          onTap: () => _openImageViewer(msg.fileUrl!),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              msg.fileUrl!,
+                              width: 200,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: Icon(Icons.broken_image,
+                                    color: AppColors.grey),
                               ),
                             ),
-                          )
-                        : msg.isFile
-                            ? _buildFileMessage(msg, me)
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (msg.replyToMessage != null) ...[
-                                    _buildReplyPreview(msg.replyToMessage!, isMine: me),
-                                    const SizedBox(height: 6),
+                          ),
+                        )
+                      : Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: me
+                                ? const Color(0xFFFFE0DE)
+                                : AppColors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(16),
+                              topRight: const Radius.circular(16),
+                              bottomLeft: Radius.circular(me ? 16 : 4),
+                              bottomRight: Radius.circular(me ? 4 : 16),
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color(0x0D000000),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2))
+                            ],
+                          ),
+                          child: msg.isFile
+                              ? _buildFileMessage(msg, me)
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (msg.replyToMessage != null) ...[
+                                      _buildReplyPreview(msg.replyToMessage!, isMine: me),
+                                      const SizedBox(height: 6),
+                                    ],
+                                    _buildTextWithLinks(
+                                      msg.message ?? '',
+                                      textColor: AppColors.black,
+                                    ),
                                   ],
-                                  _buildTextWithLinks(
-                                    msg.message ?? '',
-                                    textColor: me ? AppColors.white : AppColors.black,
-                                  ),
-                                ],
-                              ),
-                  ),
+                                ),
+                        ),
                   const SizedBox(height: 2),
                   Text(
                     DateFormatter.formatDateTime(msg.createdAt),
@@ -439,9 +439,8 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
   }
 
   Widget _buildReplyPreview(ReplyMessage reply, {required bool isMine}) {
-    final accentColor = isMine ? Colors.white70 : AppColors.primary;
     final bgColor = isMine
-        ? const Color(0x33FFFFFF)
+        ? const Color(0xFFFFCCC9)
         : const Color(0xFFF0F0F0);
     final previewText = (reply.message != null && reply.message!.trim().isNotEmpty)
         ? reply.message!.replaceAll('\n', ' ')
@@ -452,7 +451,7 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border(left: BorderSide(color: accentColor, width: 3)),
+        border: Border(left: BorderSide(color: AppColors.primary, width: 3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,10 +459,10 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
         children: [
           Text(
             reply.userName ?? 'Unknown',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: accentColor,
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 2),
@@ -471,9 +470,9 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
             previewText,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
-              color: isMine ? Colors.white70 : AppColors.grey,
+              color: AppColors.grey,
               height: 1.3,
             ),
           ),

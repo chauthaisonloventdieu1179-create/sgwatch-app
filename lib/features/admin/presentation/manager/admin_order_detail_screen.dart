@@ -246,6 +246,16 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                           const SizedBox(height: 12),
                           _buildNoteCard(),
                         ],
+                        if (_order!.adminNote != null &&
+                            _order!.adminNote!.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          _buildAdminNoteCard(),
+                        ],
+                        if (_order!.paymentReceipt != null &&
+                            _order!.paymentReceipt!.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          _buildPaymentReceiptCard(),
+                        ],
                       ],
                     ),
                     if (_isUpdating)
@@ -294,7 +304,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             style: const TextStyle(fontSize: 12, color: AppColors.grey),
           ),
           const Divider(height: 20),
-          _buildInfoRow('Thanh toán',
+          _buildInfoRow('Phương thức',
               _paymentMethodLabel(o.paymentMethod), AppColors.black),
           const SizedBox(height: 6),
           _buildInfoRow(
@@ -302,10 +312,57 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             o.paymentStatus == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán',
             o.paymentStatus == 'paid' ? Colors.green : Colors.orange,
           ),
+          if (o.orderType.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            _buildInfoRow('Loại đơn', o.orderType, AppColors.black),
+          ],
+          if (o.cancelReason != null && o.cancelReason!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            _buildInfoRow('Lý do hủy', o.cancelReason!, Colors.red),
+          ],
+          if (_hasTimestamps(o)) ...[
+            const Divider(height: 20),
+            const Text('Lịch sử',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.grey)),
+            const SizedBox(height: 8),
+            if (o.confirmedAt != null)
+              _buildInfoRow('Xác nhận',
+                  DateFormatter.formatDateTime(o.confirmedAt!), AppColors.black),
+            if (o.paidAt != null) ...[
+              const SizedBox(height: 4),
+              _buildInfoRow('Thanh toán',
+                  DateFormatter.formatDateTime(o.paidAt!), AppColors.black),
+            ],
+            if (o.shippedAt != null) ...[
+              const SizedBox(height: 4),
+              _buildInfoRow('Giao hàng',
+                  DateFormatter.formatDateTime(o.shippedAt!), AppColors.black),
+            ],
+            if (o.deliveredAt != null) ...[
+              const SizedBox(height: 4),
+              _buildInfoRow('Đã giao',
+                  DateFormatter.formatDateTime(o.deliveredAt!), AppColors.black),
+            ],
+            if (o.cancelledAt != null) ...[
+              const SizedBox(height: 4),
+              _buildInfoRow('Đã hủy',
+                  DateFormatter.formatDateTime(o.cancelledAt!), Colors.red),
+            ],
+          ],
         ],
       ),
     );
   }
+
+  bool _hasTimestamps(AdminOrderModel o) =>
+      o.confirmedAt != null ||
+      o.paidAt != null ||
+      o.shippedAt != null ||
+      o.deliveredAt != null ||
+      o.cancelledAt != null;
 
   Widget _buildCustomerCard() {
     final o = _order!;
@@ -328,12 +385,15 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.black)),
           const SizedBox(height: 12),
+          if (o.customerName != null && o.customerName!.isNotEmpty) ...[
+            _buildInfoRow('Khách hàng', o.customerName!, AppColors.black),
+            const SizedBox(height: 6),
+          ],
           if (o.user != null) ...[
             _buildInfoRow('Email', o.user!.email, AppColors.black),
             const SizedBox(height: 6),
           ],
-          _buildInfoRow(
-              'Người nhận', o.shippingName, AppColors.black),
+          _buildInfoRow('Người nhận', o.shippingName, AppColors.black),
           if (o.shippingPhone.isNotEmpty) ...[
             const SizedBox(height: 6),
             _buildInfoRow('Điện thoại', o.shippingPhone, AppColors.black),
@@ -351,10 +411,13 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             _buildInfoRow(
                 'Mã bưu chính', o.shippingPostalCode!, AppColors.black),
           ],
+          if (o.shippingCarrier != null && o.shippingCarrier!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            _buildInfoRow('Đơn vị vận chuyển', o.shippingCarrier!, AppColors.black),
+          ],
           if (o.trackingNumber != null) ...[
             const SizedBox(height: 6),
-            _buildInfoRow(
-                'Mã vận chuyển', o.trackingNumber!, AppColors.primary),
+            _buildInfoRow('Mã vận đơn', o.trackingNumber!, AppColors.primary),
           ],
         ],
       ),
@@ -477,22 +540,42 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.black)),
           const SizedBox(height: 12),
-          _buildPriceRow(
-              'Tạm tính', PriceFormatter.formatJPY(o.subtotal.toDouble())),
+          _buildPriceRow('Tạm tính', _formatAmount(o.subtotal)),
           if (o.shippingFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow('Phí vận chuyển',
-                PriceFormatter.formatJPY(o.shippingFee.toDouble())),
+            _buildPriceRow('Phí vận chuyển', _formatAmount(o.shippingFee)),
           ],
           if (o.codFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow(
-                'Phí COD', PriceFormatter.formatJPY(o.codFee.toDouble())),
+            _buildPriceRow('Phí COD', _formatAmount(o.codFee)),
           ],
           if (o.stripeFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow('Phí Stripe',
-                PriceFormatter.formatJPY(o.stripeFee.toDouble())),
+            _buildPriceRow('Phí Stripe', _formatAmount(o.stripeFee)),
+          ],
+          if (o.discountAmount > 0) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Giảm giá',
+                    style: TextStyle(fontSize: 13, color: AppColors.grey)),
+                Text('- ${_formatAmount(o.discountAmount)}',
+                    style: const TextStyle(fontSize: 13, color: Colors.green)),
+              ],
+            ),
+          ],
+          if (o.pointsUsed > 0) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Điểm dùng',
+                    style: TextStyle(fontSize: 13, color: AppColors.grey)),
+                Text('- ${o.pointsUsed} điểm',
+                    style: const TextStyle(fontSize: 13, color: Colors.green)),
+              ],
+            ),
           ],
           const Divider(height: 20),
           Row(
@@ -504,7 +587,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                       fontWeight: FontWeight.bold,
                       color: AppColors.black)),
               Text(
-                PriceFormatter.formatJPY(o.totalAmount.toDouble()),
+                _formatAmount(o.totalAmount),
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -512,6 +595,33 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
               ),
             ],
           ),
+          if (o.depositAmount > 0 && o.paymentMethod == 'deposit_transfer') ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Tiền cọc',
+                    style: TextStyle(fontSize: 13, color: AppColors.grey)),
+                Text(PriceFormatter.formatVND(o.depositAmount.toDouble()),
+                    style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange)),
+              ],
+            ),
+          ],
+          if (o.pointsEarned > 0) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Điểm tích lũy',
+                    style: TextStyle(fontSize: 13, color: AppColors.grey)),
+                Text('+ ${o.pointsEarned} điểm',
+                    style: const TextStyle(fontSize: 13, color: Colors.blue)),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -540,6 +650,119 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
           Text(_order!.note!,
               style: const TextStyle(fontSize: 13, color: AppColors.grey)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAdminNoteCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade200),
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x0D000000), blurRadius: 4, offset: Offset(0, 2))
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.admin_panel_settings,
+                  size: 16, color: Colors.amber.shade700),
+              const SizedBox(width: 6),
+              Text('Ghi chú admin',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.amber.shade800)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(_order!.adminNote!,
+              style: const TextStyle(fontSize: 13, color: AppColors.black)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentReceiptCard() {
+    final url = _order!.paymentReceipt!;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x0D000000), blurRadius: 4, offset: Offset(0, 2))
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Biên lai thanh toán',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black)),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: () => _openImageFullScreen(url),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                url,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Text(
+                  url,
+                  style: const TextStyle(
+                      fontSize: 12, color: AppColors.primary),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Center(
+            child: Text('Nhấn để xem toàn màn hình',
+                style: TextStyle(fontSize: 11, color: Colors.grey[500])),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openImageFullScreen(String url) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: const Text('Biên lai thanh toán',
+                style: TextStyle(color: AppColors.white, fontSize: 15)),
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 5.0,
+              child: Image.network(
+                url,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Icon(
+                    Icons.broken_image, color: AppColors.white, size: 64),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -684,6 +907,13 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
     }
   }
 
+  String _formatAmount(int amount) {
+    if (_order!.isVietnamOrder) {
+      return PriceFormatter.formatVND(amount.toDouble());
+    }
+    return PriceFormatter.formatJPY(amount.toDouble());
+  }
+
   String _paymentMethodLabel(String method) {
     switch (method) {
       case 'stripe':
@@ -692,6 +922,8 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
         return 'COD';
       case 'bank_transfer':
         return 'Chuyển khoản';
+      case 'deposit_transfer':
+        return 'Cọc 1 triệu';
       default:
         return method;
     }

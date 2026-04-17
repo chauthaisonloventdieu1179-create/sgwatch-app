@@ -98,13 +98,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   List<String> get _paymentMethods {
     if (_isVietnam) {
       return [
-        'Chuyển khoản toàn bộ',
+        'Chuyển khoản',
         'Cọc 1 triệu (Thanh toán khi nhận hàng)',
         'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
       ];
     }
     return [
-      'Chuyển khoản toàn bộ',
+      'Chuyển khoản',
       'Daibiki (代引き)',
       'Stripe (Visa, Mastercard, AmEx, JCB, Discover)',
     ];
@@ -113,7 +113,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   /// Maps display label → API value for payment_method field.
   static const _paymentMethodApiMap = <String, String>{
     'Cọc 1 triệu (Thanh toán khi nhận hàng)': 'deposit_transfer',
-    'Chuyển khoản toàn bộ': 'bank_transfer',
+    'Chuyển khoản': 'bank_transfer',
     'Daibiki (代引き)': 'cod',
     'Stripe (Visa, Mastercard, AmEx, JCB, Discover)': 'stripe',
   };

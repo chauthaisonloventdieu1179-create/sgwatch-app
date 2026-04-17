@@ -31,6 +31,11 @@ class AdminOrderModel {
   final String? shippingCarrier;
   final String? cancelReason;
   final String? adminNote;
+  final int discountAmount;
+  final int pointsUsed;
+  final int pointsEarned;
+  final int depositAmount;
+  final String? customerName;
   final DateTime? confirmedAt;
   final DateTime? paidAt;
   final DateTime? shippedAt;
@@ -66,6 +71,11 @@ class AdminOrderModel {
     this.shippingCarrier,
     this.cancelReason,
     this.adminNote,
+    required this.discountAmount,
+    required this.pointsUsed,
+    required this.pointsEarned,
+    required this.depositAmount,
+    this.customerName,
     this.confirmedAt,
     this.paidAt,
     this.shippedAt,
@@ -108,6 +118,11 @@ class AdminOrderModel {
       shippingCarrier: json['shipping_carrier']?.toString(),
       cancelReason: json['cancel_reason']?.toString(),
       adminNote: json['admin_note']?.toString(),
+      discountAmount: _parseInt(json['discount_amount']),
+      pointsUsed: _parseInt(json['points_used']),
+      pointsEarned: _parseInt(json['points_earned']),
+      depositAmount: _parseInt(json['deposit_amount']),
+      customerName: json['customer_name']?.toString(),
       confirmedAt: parseDate(json['confirmed_at']),
       paidAt: parseDate(json['paid_at']),
       shippedAt: parseDate(json['shipped_at']),
@@ -122,6 +137,9 @@ class AdminOrderModel {
           : null,
     );
   }
+
+  bool get isVietnamOrder =>
+      shippingCountry.toUpperCase() == 'VN' || currency == 'VND';
 
   String get statusLabel {
     switch (status) {
