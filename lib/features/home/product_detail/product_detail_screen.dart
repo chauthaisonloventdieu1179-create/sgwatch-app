@@ -697,38 +697,54 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               .split('\n')
               .map((line) => line.trim())
               .where((line) => line.isNotEmpty)
-              .map(
-                (line) => Padding(
+              .map((line) {
+                final isBullet = line.startsWith('•') ||
+                    line.startsWith('●') ||
+                    line.startsWith('-') ||
+                    line.startsWith('*') ||
+                    line.startsWith('.');
+                final text = isBullet ? line.substring(1).trim() : line;
+                return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 3),
-                        child: Icon(
-                          Icons.star,
-                          size: 13,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          line,
+                  child: isBullet
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: const Icon(
+                                Icons.star,
+                                size: 13,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                text,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                  height: 1.5,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: AppColors.primary,
+                                  decorationThickness: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          text,
                           style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.black,
                             height: 1.5,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.primary,
-                            decorationThickness: 1.2,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                );
+              }),
         ],
       ),
     );

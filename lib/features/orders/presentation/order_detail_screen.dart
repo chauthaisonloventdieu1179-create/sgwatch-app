@@ -16,7 +16,6 @@ import 'package:sgwatch_app/core/utils/date_formatter.dart';
 import 'package:sgwatch_app/core/utils/price_formatter.dart';
 import 'package:sgwatch_app/features/orders/data/models/order_model.dart';
 import 'package:sgwatch_app/features/orders/presentation/order_viewmodel.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   final int orderId;
@@ -1153,13 +1152,6 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
     }
   }
 
-  Future<void> _openYouTubeGuide() async {
-    final uri = Uri.parse('https://youtu.be/HmFedZcUJbQ');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1413,81 +1405,6 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
             _buildBankRow('Nội dung CK', widget.order.orderNumber),
           ],
         ),
-        const SizedBox(height: 12),
-        // Japanese bank card
-        card(
-          title: 'Chuyển khoản Nhật Bản',
-          titleColor: const Color(0xFF1B5E20),
-          bgColor: const Color(0xFFF1F8E9),
-          borderColor: const Color(0xFFA5D6A7),
-          rows: [
-            _buildBankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-            _buildBankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
-            _buildBankRow('Loại TK', '普通 (Futsu)'),
-            _buildBankRow('Số tài khoản', '3061217'),
-            _buildBankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-            _buildBankRow(
-              'Số tiền',
-              PriceFormatter.formatJPY(widget.order.totalAmount),
-              highlight: true,
-            ),
-            _buildBankRow('Nội dung CK', widget.order.orderNumber),
-            const SizedBox(height: 4),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E0),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFFCC02)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Cách tìm tên chi nhánh:',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFE65100),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Gõ chữ テ sau đó tìm đến chi nhánh 天満橋支店',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFFE65100),
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _openYouTubeGuide,
-                    child: Row(
-                      children: [
-                        Icon(Icons.play_circle_fill,
-                            size: 20, color: Colors.red.shade600),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'Video hướng dẫn chuyển khoản từ Yucho sang Mizuho',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.red.shade600,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -1623,37 +1540,6 @@ class _BankInfoSheet extends StatelessWidget {
                     _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
                     _BankEntry('Nội dung CK', order.orderNumber),
                   ]),
-                  const SizedBox(height: 16),
-                  // ── STK Nhật Bản ────────────────────────────
-                  _sectionHeader('🇯🇵  Tài khoản Nhật Bản'),
-                  const SizedBox(height: 10),
-                  _bankBlock(context, [
-                    _BankEntry('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-                    _BankEntry('Chi nhánh', '天満橋支店 (Temmabashi)'),
-                    _BankEntry('Loại TK', '普通 (Futsu)'),
-                    _BankEntry('Số tài khoản', '3061217'),
-                    _BankEntry('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-                    _BankEntry('Nội dung CK', order.orderNumber),
-                  ]),
-                  const SizedBox(height: 12),
-                  // Tips box JP
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF3E0),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFFFCC02)),
-                    ),
-                    child: const Text(
-                      'Cách tìm chi nhánh: Gõ chữ テ rồi chọn 天満橋支店',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE65100),
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

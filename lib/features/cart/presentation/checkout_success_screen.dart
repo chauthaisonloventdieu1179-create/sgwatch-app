@@ -9,7 +9,6 @@ import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/price_formatter.dart';
 import 'package:sgwatch_app/features/orders/data/models/order_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutSuccessScreen extends StatefulWidget {
   final Map<String, dynamic> orderJson;
@@ -87,13 +86,6 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
           backgroundColor: AppColors.primary,
         ),
       );
-    }
-  }
-
-  Future<void> _openYouTubeGuide() async {
-    final uri = Uri.parse('https://youtu.be/HmFedZcUJbQ');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -333,6 +325,7 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
                 'Tổng thanh toán',
@@ -342,13 +335,25 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
-                PriceFormatter.formatJPY(_order.totalAmount),
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    PriceFormatter.formatJPY(_order.totalAmount),
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  Text(
+                    '≈ ${PriceFormatter.formatVND(_order.totalAmount * 175)}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.grey,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -411,104 +416,6 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                 highlight: true,
               ),
               _bankRow('Nội dung CK', _transferContent),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        // ── Khối 2: Chuyển khoản Nhật Bản ──
-        _card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Row(
-                children: [
-                  Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
-                  SizedBox(width: 8),
-                  Text(
-                    'Chuyển khoản Nhật Bản',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1565C0),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.black,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-              _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
-              _bankRow('Loại TK', '普通 (Futsu)'),
-              _bankRow('Số tài khoản', '3061217'),
-              _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-              _bankRow(
-                'Số tiền',
-                PriceFormatter.formatJPY(_order.totalAmount),
-                highlight: true,
-              ),
-              _bankRow('Nội dung CK', _transferContent),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E0),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFFFCC02)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Cách tìm tên chi nhánh:',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFE65100),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Gõ chữ テ sau đó tìm đến chi nhánh 天満橋支店',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE65100),
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: _openYouTubeGuide,
-                      child: Row(
-                        children: [
-                          Icon(Icons.play_circle_fill,
-                              size: 20, color: Colors.red.shade600),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              'Video hướng dẫn chuyển khoản từ Yucho sang Mizuho',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.red.shade600,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
