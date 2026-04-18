@@ -380,87 +380,94 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
     );
   }
 
-  // ── Bank info card (VN vs JP) ────────────────────────────────
+  // ── Bank info card (VN + JP always shown) ───────────────────
 
   Widget _buildBankInfoCard() {
-    final isVN = _order.isVietnamAddress;
     final isDeposit = _order.paymentMethod == 'deposit_transfer';
+    final vnAmount = isDeposit && _order.depositAmount > 0
+        ? _order.depositAmount
+        : _order.totalAmount * 175;
 
-    if (isVN) {
-      // ── Chuyển khoản Việt Nam ──
-      return _card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
-                SizedBox(width: 8),
-                Text(
-                  'Chuyển khoản Việt Nam',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1565C0),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _bankRow('Ngân hàng', 'VIETCOMBANK'),
-            _bankRow('Số tài khoản', '9042628888'),
-            _bankRow('Chủ tài khoản', 'TRAN TOAN'),
-            _bankRow(
-              isDeposit ? 'Tiền cọc' : 'Số tiền',
-              isDeposit && _order.depositAmount > 0
-                  ? PriceFormatter.formatVND(_order.depositAmount)
-                  : PriceFormatter.formatVND(_order.totalAmount * 175),
-              highlight: true,
-            ),
-            _bankRow('Nội dung CK', _transferContent),
-          ],
-        ),
-      );
-    }
-
-    // ── Chuyển khoản Nhật Bản ──
-    return _card(
+    // ── Chuyển khoản Việt Nam ──
+    final vnCard = _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(Icons.account_balance, size: 18, color: Color(0xFF1B5E20)),
+              Icon(Icons.account_balance, size: 18, color: Color(0xFF1565C0)),
               SizedBox(width: 8),
               Text(
-                'Chuyển khoản Nhật Bản',
+                '🇻🇳  Chuyển khoản Việt Nam',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1B5E20),
+                  color: Color(0xFF1565C0),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text(
-            'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
-            style: TextStyle(fontSize: 13, color: AppColors.black, height: 1.5),
-          ),
           const SizedBox(height: 12),
-          _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-          _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
-          _bankRow('Loại TK', '普通 (Futsu)'),
-          _bankRow('Số tài khoản', '3061217'),
-          _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+          _bankRow('Ngân hàng', 'VIETCOMBANK'),
+          _bankRow('Số tài khoản', '9042628888'),
+          _bankRow('Chủ tài khoản', 'TRAN TOAN'),
           _bankRow(
-            'Số tiền',
-            PriceFormatter.formatJPY(_order.totalAmount),
+            isDeposit ? 'Tiền cọc' : 'Số tiền',
+            PriceFormatter.formatVND(vnAmount),
             highlight: true,
           ),
           _bankRow('Nội dung CK', _transferContent),
         ],
       ),
+    );
+
+    // Với đặt cọc chỉ thanh toán bằng VND → chỉ hiện block Việt Nam
+    if (isDeposit) return vnCard;
+
+    // ── Chuyển khoản Nhật Bản ──
+    return Column(
+      children: [
+        vnCard,
+        const SizedBox(height: 16),
+        _card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.account_balance, size: 18, color: Color(0xFF1B5E20)),
+                  SizedBox(width: 8),
+                  Text(
+                    '🇯🇵  Chuyển khoản Nhật Bản',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1B5E20),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
+                style: TextStyle(fontSize: 13, color: AppColors.black, height: 1.5),
+              ),
+              const SizedBox(height: 12),
+              _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+              _bankRow('Chi nhánh', '天満橋支店 (Temmabashi)'),
+              _bankRow('Loại TK', '普通 (Futsu)'),
+              _bankRow('Số tài khoản', '3061217'),
+              _bankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+              _bankRow(
+                'Số tiền',
+                PriceFormatter.formatJPY(_order.totalAmount),
+                highlight: true,
+              ),
+              _bankRow('Nội dung CK', _transferContent),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
