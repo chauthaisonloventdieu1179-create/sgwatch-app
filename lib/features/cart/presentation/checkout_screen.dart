@@ -1302,134 +1302,281 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Future<void> _confirmAndPlaceOrder() async {
-    final isDeposit = _selectedPaymentMethod
-            ?.contains('Cọc') ==
-        true;
+    final isDeposit = _selectedPaymentMethod?.contains('Cọc') == true;
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text('Xác nhận đặt hàng',
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.black)),
-            const SizedBox(height: 16),
-            _confirmRow('Sản phẩm',
-                '${_cartVM.items.length} sản phẩm'),
-            const SizedBox(height: 8),
-            _confirmRow('Thanh toán',
-                _selectedPaymentMethod ?? ''),
-            const SizedBox(height: 8),
-            _confirmRow('Địa chỉ',
-                _selectedAddress?.fullAddress ?? ''),
-            const Divider(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Tổng cộng',
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black)),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, scrollController) => Container(
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              // Header cố định
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                child: Column(
                   children: [
-                    Text(
-                      isDeposit
-                          ? PriceFormatter.formatVND(1000000)
-                          : PriceFormatter.formatJPY(_grandTotal),
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary),
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
                     ),
-                    if (isDeposit)
-                      const Text('(Cọc 1 triệu VND)',
-                          style: TextStyle(
-                              fontSize: 11, color: AppColors.grey)),
+                    const SizedBox(height: 14),
+                    const Row(
+                      children: [
+                        Icon(Icons.receipt_long_outlined,
+                            color: AppColors.primary, size: 20),
+                        SizedBox(width: 8),
+                        Text('Xác nhận đặt hàng',
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.grey,
-                      side: const BorderSide(color: AppColors.greyLight),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: const Text('Hủy',
-                        style: TextStyle(fontSize: 14)),
+              ),
+              // Nội dung cuộn
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // --- Sản phẩm ---
+                      _confirmSection('Sản phẩm (${_cartVM.totalQuantity})'),
+                      const SizedBox(height: 8),
+                      ..._cartVM.items.map((item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(item.name,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          color: AppColors.black)),
+                                ),
+                                const SizedBox(width: 8),
+                                Text('x${item.quantity}',
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.grey)),
+                                const SizedBox(width: 8),
+                                Text(
+                                  PriceFormatter.formatJPY(item.totalPrice),
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.black),
+                                ),
+                              ],
+                            ),
+                          )),
+                      const Divider(height: 20),
+
+                      // --- Địa chỉ ---
+                      _confirmSection('Địa chỉ nhận hàng'),
+                      const SizedBox(height: 8),
+                      Text(
+                        _selectedAddress!.label,
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.black),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        _selectedAddress!.fullAddress,
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.grey),
+                      ),
+                      const Divider(height: 20),
+
+                      // --- Chi tiết thanh toán ---
+                      _confirmSection('Chi tiết thanh toán'),
+                      const SizedBox(height: 10),
+                      _confirmRow('Phương thức',
+                          _selectedPaymentMethod ?? ''),
+                      const SizedBox(height: 6),
+                      _confirmRow('Tạm tính',
+                          PriceFormatter.formatJPY(_subtotal)),
+                      if (_shippingFee > 0) ...[
+                        const SizedBox(height: 6),
+                        _confirmRow(
+                          'Phí vận chuyển',
+                          '+${PriceFormatter.formatJPY(_shippingFee)}'
+                          '\n≈ ${PriceFormatter.formatVND(_shippingFee * 175)}',
+                          valueColor: AppColors.primary,
+                        ),
+                      ],
+                      if (_serviceFee > 0) ...[
+                        const SizedBox(height: 6),
+                        _confirmRow(
+                          _isDaibiki ? 'Phí Daibiki' : 'Phí Stripe',
+                          '+${PriceFormatter.formatJPY(_serviceFee)}',
+                          valueColor: AppColors.primary,
+                        ),
+                      ],
+                      if (_discount > 0) ...[
+                        const SizedBox(height: 6),
+                        _confirmRow(
+                          'Mã giảm giá',
+                          '-${PriceFormatter.formatJPY(_discount)}',
+                          valueColor: Colors.green,
+                        ),
+                      ],
+                      if (_usePoint && _pointDiscount > 0) ...[
+                        const SizedBox(height: 6),
+                        _confirmRow(
+                          'SGWATCH Point',
+                          '-${PriceFormatter.formatJPY(_pointDiscount)}',
+                          valueColor: Colors.green,
+                        ),
+                      ],
+                      const Divider(height: 20),
+
+                      // --- Tổng cộng ---
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Tổng cộng',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black)),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                isDeposit
+                                    ? PriceFormatter.formatVND(1000000)
+                                    : PriceFormatter.formatJPY(_grandTotal),
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary),
+                              ),
+                              if (!isDeposit) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  '≈ ${PriceFormatter.formatVND(_grandTotal * 175)}',
+                                  style: const TextStyle(
+                                      fontSize: 13, color: AppColors.grey),
+                                ),
+                              ],
+                              if (isDeposit)
+                                const Text('(Cọc 1 triệu VND)',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.grey)),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.black,
-                      foregroundColor: AppColors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+              ),
+              // Buttons cố định dưới cùng
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    20, 8, 20, MediaQuery.of(ctx).padding.bottom + 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.grey,
+                          side:
+                              const BorderSide(color: AppColors.greyLight),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('Hủy',
+                            style: TextStyle(fontSize: 14)),
+                      ),
                     ),
-                    child: const Text('Xác nhận',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold)),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.black,
+                          foregroundColor: AppColors.white,
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('Xác nhận',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
     if (confirmed == true) _placeOrder();
   }
 
-  Widget _confirmRow(String label, String value) {
+  Widget _confirmSection(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: AppColors.grey,
+          letterSpacing: 0.3),
+    );
+  }
+
+  Widget _confirmRow(String label, String value, {Color? valueColor}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 90,
+          width: 110,
           child: Text(label,
-              style: const TextStyle(fontSize: 13, color: AppColors.grey)),
+              style:
+                  const TextStyle(fontSize: 13, color: AppColors.grey)),
         ),
         Expanded(
           child: Text(value,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.black)),
+                  color: valueColor ?? AppColors.black)),
         ),
       ],
     );
