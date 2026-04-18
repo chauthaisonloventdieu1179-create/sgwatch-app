@@ -1625,6 +1625,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
       setState(() => _isPlacingOrder = false);
 
+      // Stripe API error (server trả 500 khi Stripe thất bại)
+      if (paymentMethod == 'stripe') {
+        if (e is DioException) {
+          debugPrint('[Checkout] Stripe API error ${e.response?.statusCode}: ${e.response?.data}');
+        }
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+                'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Đóng',
+                    style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
       String errorMsg = 'Đặt hàng thất bại. Vui lòng thử lại.';
       if (e is DioException && e.response?.data is Map) {
         final data = e.response!.data as Map;
