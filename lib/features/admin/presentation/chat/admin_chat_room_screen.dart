@@ -196,7 +196,41 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
     }
   }
 
-  Future<void> _pickImages() async {
+  void _showImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined, color: AppColors.black),
+              title: const Text('Thư viện ảnh'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromGallery();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined, color: AppColors.black),
+              title: const Text('Chụp ảnh'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromCamera();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickFromGallery() async {
     final picked = await _picker.pickMultiImage();
     if (picked.isEmpty) return;
     setState(() {
@@ -204,6 +238,12 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
         _pendingImages.add(File(f.path));
       }
     });
+  }
+
+  Future<void> _pickFromCamera() async {
+    final picked = await _picker.pickImage(source: ImageSource.camera);
+    if (picked == null) return;
+    setState(() => _pendingImages.add(File(picked.path)));
   }
 
   @override
@@ -616,7 +656,7 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
         children: [
           IconButton(
             icon: const Icon(Icons.image_outlined, color: AppColors.grey),
-            onPressed: _pickImages,
+            onPressed: _showImageSourceSheet,
           ),
           Expanded(
             child: TextField(

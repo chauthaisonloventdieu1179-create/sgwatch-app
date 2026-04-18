@@ -572,6 +572,40 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _showImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined, color: AppColors.black),
+              title: const Text('Thư viện ảnh'),
+              onTap: () {
+                Navigator.pop(context);
+                _viewModel.pickImages();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined, color: AppColors.black),
+              title: const Text('Chụp ảnh'),
+              onTap: () {
+                Navigator.pop(context);
+                _viewModel.pickFromCamera();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Input bar ──────────────────────────────────────────────
   Widget _buildInputBar() {
     return Container(
@@ -594,7 +628,7 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Row(
         children: [
           GestureDetector(
-            onTap: _viewModel.isSending ? null : () => _viewModel.pickImages(),
+            onTap: _viewModel.isSending ? null : () => _showImageSourceSheet(),
             child: SizedBox(
               width: 40,
               height: 40,

@@ -283,10 +283,16 @@ class ChatViewModel extends ChangeNotifier {
   Future<void> pickImages() async {
     final picked = await _picker.pickMultiImage();
     if (picked.isEmpty) return;
-
     for (final xFile in picked) {
       _pendingImages.add(File(xFile.path));
     }
+    notifyListeners();
+  }
+
+  Future<void> pickFromCamera() async {
+    final picked = await _picker.pickImage(source: ImageSource.camera);
+    if (picked == null) return;
+    _pendingImages.add(File(picked.path));
     notifyListeners();
   }
 
