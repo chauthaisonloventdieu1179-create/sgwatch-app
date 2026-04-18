@@ -1658,10 +1658,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (clientSecret == null || publicKey == null) {
       if (!mounted) return;
       setState(() => _isPlacingOrder = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
-          backgroundColor: AppColors.primary,
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Thanh toán không thành công'),
+          content: const Text(
+            'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Đóng',
+                style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
       );
       return;
@@ -1693,10 +1705,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _cartVM.clearCache();
         _showStripeRetrySheet(orderId: orderId, orderNumber: orderNumber);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
-            backgroundColor: AppColors.primary,
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+              'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Đóng',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         );
       }
@@ -1735,9 +1759,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
       if (clientSecret == null || publicKey == null) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Không nhận được thông tin thanh toán.'),
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+              'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Đóng',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         );
         return;
@@ -1762,10 +1799,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         // Hủy thanh toán lần 2 → đóng tất cả và về home
         Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
-            backgroundColor: AppColors.primary,
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+              'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Đóng',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         );
       }

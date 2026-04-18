@@ -736,9 +736,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
       if (clientSecret == null || publicKey == null) {
         setState(() => _isRetryingPayment = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Không nhận được thông tin thanh toán.')),
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+              'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Đóng',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         );
         return;
       }
@@ -773,12 +787,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           const SnackBar(content: Text('Thanh toán đã bị hủy.')),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Thanh toán thất bại: ${e.error.localizedMessage ?? e.error.message}',
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Thanh toán không thành công'),
+            content: const Text(
+              'Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.',
             ),
-            backgroundColor: AppColors.primary,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Đóng',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         );
       }
