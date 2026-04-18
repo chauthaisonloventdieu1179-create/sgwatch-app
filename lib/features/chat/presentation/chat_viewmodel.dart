@@ -290,10 +290,17 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   Future<void> pickFromCamera() async {
-    final picked = await _picker.pickImage(source: ImageSource.camera);
-    if (picked == null) return;
-    _pendingImages.add(File(picked.path));
-    notifyListeners();
+    debugPrint('[ChatVM] ── pickFromCamera ──');
+    try {
+      final picked = await _picker.pickImage(source: ImageSource.camera);
+      debugPrint('[ChatVM]   pickImage result: ${picked?.path ?? 'null'}');
+      if (picked == null) return;
+      _pendingImages.add(File(picked.path));
+      notifyListeners();
+    } catch (e, st) {
+      debugPrint('[ChatVM]   pickFromCamera ERROR: $e');
+      debugPrint('[ChatVM]   stackTrace: $st');
+    }
   }
 
   void removePendingImage(int index) {

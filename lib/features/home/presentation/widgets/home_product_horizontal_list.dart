@@ -35,29 +35,40 @@ class _HomeProductHorizontalListState
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _startAutoScroll();
+    // Đợi frame đầu tiên render xong rồi mới bắt đầu auto-scroll
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _startAutoScroll();
+    });
   }
 
   void _startAutoScroll() {
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!mounted) return;
       if (!_scrollController.hasClients) return;
-      final max = _scrollController.position.maxScrollExtent;
-      final current = _scrollController.offset;
+
+      final pos = _scrollController.position;
+      if (pos.maxScrollExtent <= 0) return;
+
+      final current = pos.pixels;
       final step = (widget.cardWidth ?? 170) + 12; // card + separator
 
-      if (current + step >= max) {
-        // Về đầu danh sách
-        _scrollController.animateTo(
-          0,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
-        );
-      } else {
-        _scrollController.animateTo(
-          current + step,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeInOut,
-        );
+      try {
+        if (current + step >= pos.maxScrollExtent) {
+          // Về đầu danh sách
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _scrollController.animateTo(
+            current + step,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+          );
+        }
+      } catch (_) {
+        // Bỏ qua nếu scroll không khả dụng tại thời điểm này
       }
     });
   }

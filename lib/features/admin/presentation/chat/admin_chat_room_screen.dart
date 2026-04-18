@@ -241,9 +241,16 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
   }
 
   Future<void> _pickFromCamera() async {
-    final picked = await _picker.pickImage(source: ImageSource.camera);
-    if (picked == null) return;
-    setState(() => _pendingImages.add(File(picked.path)));
+    debugPrint('[AdminChatRoom] ── _pickFromCamera ──');
+    try {
+      final picked = await _picker.pickImage(source: ImageSource.camera);
+      debugPrint('[AdminChatRoom]   pickImage result: ${picked?.path ?? 'null'}');
+      if (picked == null) return;
+      setState(() => _pendingImages.add(File(picked.path)));
+    } catch (e, st) {
+      debugPrint('[AdminChatRoom]   _pickFromCamera ERROR: $e');
+      debugPrint('[AdminChatRoom]   stackTrace: $st');
+    }
   }
 
   @override
