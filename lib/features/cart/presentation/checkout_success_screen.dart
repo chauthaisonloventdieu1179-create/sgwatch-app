@@ -14,10 +14,7 @@ import 'package:sgwatch_app/features/orders/data/models/order_model.dart';
 class CheckoutSuccessScreen extends StatefulWidget {
   final Map<String, dynamic> orderJson;
 
-  const CheckoutSuccessScreen({
-    super.key,
-    required this.orderJson,
-  });
+  const CheckoutSuccessScreen({super.key, required this.orderJson});
 
   @override
   State<CheckoutSuccessScreen> createState() => _CheckoutSuccessScreenState();
@@ -185,8 +182,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               color: Colors.green.shade50,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.check_circle,
-                size: 40, color: Colors.green.shade600),
+            child: Icon(
+              Icons.check_circle,
+              size: 40,
+              color: Colors.green.shade600,
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -217,8 +217,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded,
-                      size: 18, color: Colors.orange.shade700),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    size: 18,
+                    color: Colors.orange.shade700,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -254,71 +257,84 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          ...(_order.items.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        color: AppColors.backgroundGrey,
-                        child: Image.network(
-                          item.productImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(
-                            Icons.watch,
-                            size: 22,
-                            color: AppColors.greyLight,
-                          ),
+          ...(_order.items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      color: AppColors.backgroundGrey,
+                      child: Image.network(
+                        item.productImage,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.watch,
+                          size: 22,
+                          color: AppColors.greyLight,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.productName,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black,
-                            ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.productName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.black,
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '${PriceFormatter.formatJPY(item.unitPrice)} x${item.quantity}',
-                            style: const TextStyle(
-                                fontSize: 12, color: AppColors.grey),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${PriceFormatter.formatJPY(item.unitPrice)} x${item.quantity}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.grey,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ))),
+                  ),
+                ],
+              ),
+            ),
+          )),
           const Divider(height: 1, color: AppColors.greyLight),
           const SizedBox(height: 10),
           if (_order.shippingFee > 0)
             _summaryRow(
-                'Phí vận chuyển', PriceFormatter.formatJPY(_order.shippingFee)),
+              'Phí vận chuyển',
+              PriceFormatter.formatJPY(_order.shippingFee),
+            ),
           if (_order.codFee > 0)
             _summaryRow(
-                'Phí dịch vụ Daibiki', PriceFormatter.formatJPY(_order.codFee)),
+              'Phí dịch vụ Daibiki',
+              PriceFormatter.formatJPY(_order.codFee),
+            ),
           if (_order.stripeFee > 0)
             _summaryRow(
-                'Phí dịch vụ Stripe', PriceFormatter.formatJPY(_order.stripeFee)),
+              'Phí dịch vụ Stripe',
+              PriceFormatter.formatJPY(_order.stripeFee),
+            ),
           if (_order.discountAmount > 0)
             _summaryRow(
-                'Giảm giá', '-${PriceFormatter.formatJPY(_order.discountAmount)}',
-                color: const Color(0xFF4CAF50)),
-          if (_order.paymentMethod == 'deposit_transfer' && _order.depositAmount > 0)
+              'Giảm giá',
+              '-${PriceFormatter.formatJPY(_order.discountAmount)}',
+              color: const Color(0xFF4CAF50),
+            ),
+          if (_order.paymentMethod == 'deposit_transfer' &&
+              _order.depositAmount > 0)
             _summaryRow(
               'Tiền cọc cần thanh toán',
               PriceFormatter.formatVND(_order.depositAmount),
@@ -349,10 +365,7 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                   ),
                   Text(
                     '≈ ${PriceFormatter.formatVND(_order.totalAmount * 175)}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
                   ),
                 ],
               ),
@@ -369,13 +382,18 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 13, color: AppColors.grey)),
-          Text(value,
-              style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: color ?? AppColors.black)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: AppColors.grey),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: color ?? AppColors.black,
+            ),
+          ),
         ],
       ),
     );
@@ -436,7 +454,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.account_balance, size: 18, color: Color(0xFF1B5E20)),
+                  Icon(
+                    Icons.account_balance,
+                    size: 18,
+                    color: Color(0xFF1B5E20),
+                  ),
                   SizedBox(width: 8),
                   Text(
                     '🇯🇵  Chuyển khoản Nhật Bản',
@@ -451,7 +473,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               const SizedBox(height: 8),
               const Text(
                 'Quý khách vui lòng chuyển khoản qua hình thức sau và chụp lại bill xác nhận:',
-                style: TextStyle(fontSize: 13, color: AppColors.black, height: 1.5),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.black,
+                  height: 1.5,
+                ),
               ),
               const SizedBox(height: 12),
               _bankRow('Ngân hàng', 'みずほ銀行 (Mizuho)'),
@@ -467,12 +493,12 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               _bankRow('Nội dung CK', _transferContent),
               const SizedBox(height: 10),
               _youtubeLink(
-                'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                'Hướng dẫn chuyển tiền tại cây ATM từ ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                 'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
               ),
               const SizedBox(height: 6),
               _youtubeLink(
-                'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                'Hướng dẫn chuyển tiền banking từ app ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                 'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
               ),
             ],
@@ -642,8 +668,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                                   color: Colors.black54,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.close,
-                                    size: 16, color: Colors.white),
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -657,8 +686,9 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed:
-                    (_selectedImage == null || _isUploading) ? null : _upload,
+                onPressed: (_selectedImage == null || _isUploading)
+                    ? null
+                    : _upload,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.black,
                   foregroundColor: AppColors.white,

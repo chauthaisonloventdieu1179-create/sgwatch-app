@@ -53,7 +53,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       _error = null;
     });
     final result = await widget.viewModel.loadOrderDetail(widget.orderId);
-    debugPrint('[OrderDetail] loaded: ${result?.id}, paymentMethod=${result?.paymentMethod}, paymentStatus=${result?.paymentStatus}, needsStripeRetry=${result?.needsStripeRetry}');
+    debugPrint(
+      '[OrderDetail] loaded: ${result?.id}, paymentMethod=${result?.paymentMethod}, paymentStatus=${result?.paymentStatus}, needsStripeRetry=${result?.needsStripeRetry}',
+    );
     if (!mounted) return;
     if (result == null) {
       setState(() {
@@ -106,7 +108,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             child: const SizedBox(
               width: 30,
               height: 30,
-              child: Icon(Icons.arrow_back_ios, size: 20, color: AppColors.black),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: AppColors.black,
+              ),
             ),
           ),
           Expanded(
@@ -216,7 +222,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
               const SizedBox(height: 4),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: d.status.color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -320,10 +329,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   const SizedBox(height: 2),
                   Text(
                     'SKU: ${item.productSku}',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 11, color: AppColors.grey),
                   ),
                 ],
                 const SizedBox(height: 4),
@@ -378,7 +384,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           if (d.discountAmount > 0)
             _priceRow('Giảm giá', -d.discountAmount, highlight: true),
           if (d.pointsUsed > 0)
-            _priceRow('Điểm sử dụng', -d.pointsUsed.toDouble(), highlight: true),
+            _priceRow(
+              'Điểm sử dụng',
+              -d.pointsUsed.toDouble(),
+              highlight: true,
+            ),
           if (d.depositAmount > 0) _priceRow('Đặt cọc', d.depositAmount),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
@@ -408,10 +418,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ),
                   Text(
                     '≈ ${PriceFormatter.formatVND(d.totalAmount * 175)}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
                   ),
                 ],
               ),
@@ -491,12 +498,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           if (d.trackingNumber != null) ...[
             const SizedBox(height: 8),
-            _infoRow(Icons.local_shipping_outlined,
-                'Mã vận đơn: ${d.trackingNumber}'),
+            _infoRow(
+              Icons.local_shipping_outlined,
+              'Mã vận đơn: ${d.trackingNumber}',
+            ),
           ],
           if (d.shippingCarrier != null) ...[
             const SizedBox(height: 8),
-            _infoRow(Icons.business_outlined, 'Đơn vị vận chuyển: ${d.shippingCarrier}'),
+            _infoRow(
+              Icons.business_outlined,
+              'Đơn vị vận chuyển: ${d.shippingCarrier}',
+            ),
           ],
           if (d.note != null && d.note!.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -528,10 +540,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             _paymentMethodLabel(d.paymentMethod),
           ),
           const SizedBox(height: 8),
-          _infoRow(
-            Icons.info_outline,
-            _paymentStatusLabel(d.paymentStatus),
-          ),
+          _infoRow(Icons.info_outline, _paymentStatusLabel(d.paymentStatus)),
           // ── Payment receipt image ──
           if (d.needsPayment) ...[
             const SizedBox(height: 12),
@@ -563,7 +572,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Center(
-                        child: Icon(Icons.broken_image, size: 40, color: AppColors.greyLight),
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 40,
+                          color: AppColors.greyLight,
+                        ),
                       ),
                     ),
                   ),
@@ -572,7 +585,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(Icons.check_circle, size: 16, color: Color(0xFF4CAF50)),
+                  const Icon(
+                    Icons.check_circle,
+                    size: 16,
+                    color: Color(0xFF4CAF50),
+                  ),
                   const SizedBox(width: 4),
                   const Expanded(
                     child: Text(
@@ -609,8 +626,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.warning_amber_rounded,
-                        size: 18, color: Colors.orange.shade700),
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 18,
+                      color: Colors.orange.shade700,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -668,7 +688,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: AppColors.white),
+                  strokeWidth: 2,
+                  color: AppColors.white,
+                ),
               )
             : const Icon(Icons.receipt_long_outlined, size: 20),
         label: Text(
@@ -678,7 +700,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF1565C0),
           foregroundColor: AppColors.white,
-          disabledBackgroundColor: const Color(0xFF1565C0).withValues(alpha: 0.6),
+          disabledBackgroundColor: const Color(
+            0xFF1565C0,
+          ).withValues(alpha: 0.6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -703,7 +727,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: AppColors.white),
+                  strokeWidth: 2,
+                  color: AppColors.white,
+                ),
               )
             : const Icon(Icons.credit_card_outlined, size: 20),
         label: Text(
@@ -726,8 +752,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _retryStripePayment(OrderDetailModel d) async {
     setState(() => _isRetryingPayment = true);
     try {
-      final endpoint =
-          Endpoints.retryPayment.replaceFirst('{id}', d.id.toString());
+      final endpoint = Endpoints.retryPayment.replaceFirst(
+        '{id}',
+        d.id.toString(),
+      );
       final response = await ApiClient().post(endpoint);
       if (!mounted) return;
 
@@ -749,7 +777,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
                   'Đóng',
-                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -784,9 +815,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       if (!mounted) return;
       setState(() => _isRetryingPayment = false);
       if (e.error.code == FailureCode.Canceled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thanh toán đã bị hủy.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Thanh toán đã bị hủy.')));
       } else {
         await showDialog(
           context: context,
@@ -800,7 +831,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
                   'Đóng',
-                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -829,9 +863,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: AppColors.primary),
+                  strokeWidth: 2,
+                  color: AppColors.primary,
+                ),
               )
-            : const Icon(Icons.cancel_outlined, size: 20, color: AppColors.primary),
+            : const Icon(
+                Icons.cancel_outlined,
+                size: 20,
+                color: AppColors.primary,
+              ),
         label: Text(
           _isCancelling ? 'Đang hủy...' : 'Hủy đơn hàng',
           style: const TextStyle(
@@ -866,7 +906,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             onPressed: () => Navigator.pop(context, true),
             child: const Text(
               'Hủy đơn',
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -876,7 +919,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     setState(() => _isCancelling = true);
     try {
-      final endpoint = Endpoints.cancelOrder.replaceFirst('{id}', d.id.toString());
+      final endpoint = Endpoints.cancelOrder.replaceFirst(
+        '{id}',
+        d.id.toString(),
+      );
       await ApiClient().post(endpoint);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -903,8 +949,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     try {
       final token = await LocalStorage.getToken();
-      final endpoint = Endpoints.orderInvoice.replaceFirst('{id}', d.id.toString());
-      final base = Env.baseURL.endsWith('/') ? Env.baseURL.substring(0, Env.baseURL.length - 1) : Env.baseURL;
+      final endpoint = Endpoints.orderInvoice.replaceFirst(
+        '{id}',
+        d.id.toString(),
+      );
+      final base = Env.baseURL.endsWith('/')
+          ? Env.baseURL.substring(0, Env.baseURL.length - 1)
+          : Env.baseURL;
       final url = '$base${Env.apiPath}$endpoint';
 
       final dir = await getTemporaryDirectory();
@@ -1008,10 +1059,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           const SizedBox(height: 8),
           Text(
             d.cancelReason ?? '',
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.grey,
-            ),
+            style: const TextStyle(fontSize: 13, color: AppColors.grey),
           ),
           if (d.cancelledAt != null) ...[
             const SizedBox(height: 6),
@@ -1117,10 +1165,7 @@ class _PaymentReceiptSheet extends StatefulWidget {
   final OrderDetailModel order;
   final VoidCallback onUploaded;
 
-  const _PaymentReceiptSheet({
-    required this.order,
-    required this.onUploaded,
-  });
+  const _PaymentReceiptSheet({required this.order, required this.onUploaded});
 
   @override
   State<_PaymentReceiptSheet> createState() => _PaymentReceiptSheetState();
@@ -1202,7 +1247,11 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
                     color: AppColors.backgroundGrey,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close, size: 20, color: AppColors.grey),
+                  child: const Icon(
+                    Icons.close,
+                    size: 20,
+                    color: AppColors.grey,
+                  ),
                 ),
               ),
             ),
@@ -1224,10 +1273,7 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
                 ),
                 Text(
                   widget.order.orderNumber,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: AppColors.grey),
                 ),
               ],
             ),
@@ -1327,8 +1373,9 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed:
-                    (_selectedImage == null || _isUploading) ? null : _upload,
+                onPressed: (_selectedImage == null || _isUploading)
+                    ? null
+                    : _upload,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.black,
                   foregroundColor: AppColors.white,
@@ -1367,7 +1414,8 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
 
   Widget _buildBankInfoCard() {
     final isDeposit = widget.order.paymentMethod == 'deposit_transfer';
-    final transferContent = '${widget.order.orderNumber} - ${widget.order.shippingName}';
+    final transferContent =
+        '${widget.order.orderNumber} - ${widget.order.shippingName}';
     final vnAmount = isDeposit && widget.order.depositAmount > 0
         ? widget.order.depositAmount
         : widget.order.totalAmount * 175;
@@ -1389,7 +1437,11 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               SizedBox(width: 6),
               Text(
                 '🇻🇳  Chuyển khoản Việt Nam',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1565C0),
+                ),
               ),
             ],
           ),
@@ -1397,7 +1449,11 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
           _buildBankRow('Ngân hàng', 'VIETCOMBANK'),
           _buildBankRow('Số tài khoản', '9042628888'),
           _buildBankRow('Chủ tài khoản', 'TRAN TOAN'),
-          _buildBankRow(isDeposit ? 'Tiền cọc' : 'Số tiền', PriceFormatter.formatVND(vnAmount), highlight: true),
+          _buildBankRow(
+            isDeposit ? 'Tiền cọc' : 'Số tiền',
+            PriceFormatter.formatVND(vnAmount),
+            highlight: true,
+          ),
           _buildBankRow('Nội dung CK', transferContent),
         ],
       ),
@@ -1423,11 +1479,19 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.account_balance, size: 16, color: Color(0xFF1B5E20)),
+                  Icon(
+                    Icons.account_balance,
+                    size: 16,
+                    color: Color(0xFF1B5E20),
+                  ),
                   SizedBox(width: 6),
                   Text(
                     '🇯🇵  Chuyển khoản Nhật Bản',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1B5E20),
+                    ),
                   ),
                 ],
               ),
@@ -1437,16 +1501,20 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               _buildBankRow('Loại TK', '普通 (Futsu)'),
               _buildBankRow('Số tài khoản', '3061217'),
               _buildBankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-              _buildBankRow('Số tiền', PriceFormatter.formatJPY(widget.order.totalAmount), highlight: true),
+              _buildBankRow(
+                'Số tiền',
+                PriceFormatter.formatJPY(widget.order.totalAmount),
+                highlight: true,
+              ),
               _buildBankRow('Nội dung CK', transferContent),
               const SizedBox(height: 10),
               _youtubeLink(
-                'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                'Hướng dẫn chuyển tiền tại cây ATM từ ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                 'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
               ),
               const SizedBox(height: 6),
               _youtubeLink(
-                'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                'Hướng dẫn chuyển tiền banking từ app ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                 'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
               ),
             ],
@@ -1582,7 +1650,11 @@ class _BankInfoSheet extends StatelessWidget {
                     color: AppColors.backgroundGrey,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close, size: 20, color: AppColors.grey),
+                  child: const Icon(
+                    Icons.close,
+                    size: 20,
+                    color: AppColors.grey,
+                  ),
                 ),
               ),
             ),
@@ -1595,7 +1667,11 @@ class _BankInfoSheet extends StatelessWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.account_balance, size: 20, color: Color(0xFF1565C0)),
+                      Icon(
+                        Icons.account_balance,
+                        size: 20,
+                        color: Color(0xFF1565C0),
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Thông tin chuyển khoản',
@@ -1615,35 +1691,53 @@ class _BankInfoSheet extends StatelessWidget {
                     _BankEntry('Số tài khoản', '9042628888'),
                     _BankEntry('Chủ tài khoản', 'TRAN TOAN'),
                     _BankEntry(
-                      order.paymentMethod == 'deposit_transfer' ? 'Tiền cọc' : 'Số tiền',
-                      order.paymentMethod == 'deposit_transfer' && order.depositAmount > 0
+                      order.paymentMethod == 'deposit_transfer'
+                          ? 'Tiền cọc'
+                          : 'Số tiền',
+                      order.paymentMethod == 'deposit_transfer' &&
+                              order.depositAmount > 0
                           ? PriceFormatter.formatVND(order.depositAmount)
                           : PriceFormatter.formatVND(order.totalAmount * 175),
                       highlight: true,
                     ),
-                    _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
+                    _BankEntry(
+                      'Nội dung CK',
+                      '${order.orderNumber} - ${order.shippingName}',
+                    ),
                   ]),
                   if (order.paymentMethod != 'deposit_transfer') ...[
                     const SizedBox(height: 16),
                     _sectionHeader('🇯🇵  Tài khoản Nhật Bản'),
                     const SizedBox(height: 10),
-                    _bankBlock(context, [
-                      _BankEntry('Ngân hàng', 'みずほ銀行 (Mizuho)'),
-                      _BankEntry('Chi nhánh', '天満橋支店 (Temmabashi)'),
-                      _BankEntry('Loại TK', '普通 (Futsu)'),
-                      _BankEntry('Số tài khoản', '3061217'),
-                      _BankEntry('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
-                      _BankEntry('Số tiền', PriceFormatter.formatJPY(order.totalAmount), highlight: true),
-                      _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
-                    ], bgColor: const Color(0xFFF1F8E9), borderColor: const Color(0xFFA5D6A7)),
+                    _bankBlock(
+                      context,
+                      [
+                        _BankEntry('Ngân hàng', 'みずほ銀行 (Mizuho)'),
+                        _BankEntry('Chi nhánh', '天満橋支店 (Temmabashi)'),
+                        _BankEntry('Loại TK', '普通 (Futsu)'),
+                        _BankEntry('Số tài khoản', '3061217'),
+                        _BankEntry('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
+                        _BankEntry(
+                          'Số tiền',
+                          PriceFormatter.formatJPY(order.totalAmount),
+                          highlight: true,
+                        ),
+                        _BankEntry(
+                          'Nội dung CK',
+                          '${order.orderNumber} - ${order.shippingName}',
+                        ),
+                      ],
+                      bgColor: const Color(0xFFF1F8E9),
+                      borderColor: const Color(0xFFA5D6A7),
+                    ),
                     const SizedBox(height: 10),
                     _youtubeLink(
-                      'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                      'Hướng dẫn chuyển tiền tại cây ATM từ ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                       'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
                     ),
                     const SizedBox(height: 6),
                     _youtubeLink(
-                      'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                      'Hướng dẫn chuyển tiền banking từ app ngân hàng Yucho sang ngân hàng Mizuho của công ty SGWATCH.',
                       'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
                     ),
                   ],
@@ -1667,7 +1761,9 @@ class _BankInfoSheet extends StatelessWidget {
     );
   }
 
-  Widget _bankBlock(BuildContext context, List<_BankEntry> entries, {
+  Widget _bankBlock(
+    BuildContext context,
+    List<_BankEntry> entries, {
     Color bgColor = const Color(0xFFF0F7FF),
     Color borderColor = const Color(0xFFB3D4F5),
   }) {
@@ -1680,12 +1776,22 @@ class _BankInfoSheet extends StatelessWidget {
         border: Border.all(color: borderColor),
       ),
       child: Column(
-        children: entries.map((e) => _bankRow(context, e.label, e.value, highlight: e.highlight)).toList(),
+        children: entries
+            .map(
+              (e) =>
+                  _bankRow(context, e.label, e.value, highlight: e.highlight),
+            )
+            .toList(),
       ),
     );
   }
 
-  Widget _bankRow(BuildContext context, String label, String value, {bool highlight = false}) {
+  Widget _bankRow(
+    BuildContext context,
+    String label,
+    String value, {
+    bool highlight = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
