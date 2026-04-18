@@ -220,7 +220,7 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
               title: const Text('Chụp ảnh'),
               onTap: () {
                 Navigator.pop(context);
-                _pickFromCamera();
+                Future.delayed(const Duration(milliseconds: 300), _pickFromCamera);
               },
             ),
             const SizedBox(height: 8),

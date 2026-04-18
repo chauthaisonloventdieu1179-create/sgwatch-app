@@ -596,7 +596,7 @@ class _ChatScreenState extends State<ChatScreen> {
               title: const Text('Chụp ảnh'),
               onTap: () {
                 Navigator.pop(context);
-                _viewModel.pickFromCamera();
+                Future.delayed(const Duration(milliseconds: 300), _viewModel.pickFromCamera);
               },
             ),
             const SizedBox(height: 8),
