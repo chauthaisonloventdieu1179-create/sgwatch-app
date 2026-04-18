@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(flex: 3),
             Image.asset(
-              'assets/logo/icon_logo_app.png',
+              'assets/logo/splash.png',
               width: 270,
               fit: BoxFit.contain,
             ),
