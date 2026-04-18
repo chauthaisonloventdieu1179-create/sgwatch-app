@@ -66,14 +66,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final imageBanners = banners.where((b) => !b.isVideo).toList();
     await Future.wait(
-      imageBanners.map((b) => precacheImage(
-        CachedNetworkImageProvider(b.imageUrl),
-        context,
-      )),
-    ).timeout(
-      const Duration(seconds: 5),
-      onTimeout: () => [],
-    );
+      imageBanners.map(
+        (b) => precacheImage(CachedNetworkImageProvider(b.imageUrl), context),
+      ),
+    ).timeout(const Duration(seconds: 5), onTimeout: () => []);
   }
 
   @override
@@ -86,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(flex: 3),
             Image.asset(
-              'assets/logo/logo_splash.png',
+              'assets/logo/icon_logo_app.png',
               width: 270,
               fit: BoxFit.contain,
             ),

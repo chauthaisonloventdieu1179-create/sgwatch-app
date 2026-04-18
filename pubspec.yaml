@@ -2,7 +2,7 @@ name: sgwatch_app
 description: ""
 publish_to: 'none' 
 
-version: 1.1.8
+version: 1.2.2
 
 environment:
   sdk: ^3.8.0
@@ -48,7 +48,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo/appicon.png"
+  image_path: "assets/logo/icon_logo_app.png"
   # nếu bạn có icon adaptive Android:
   # adaptive_icon_background: "#000000"
   # adaptive_icon_foreground: "assets/images/logo_foreground.png"
