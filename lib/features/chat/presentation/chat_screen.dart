@@ -573,12 +573,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showImageSourceSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SafeArea(
+      builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -586,24 +586,22 @@ class _ChatScreenState extends State<ChatScreen> {
             ListTile(
               leading: const Icon(Icons.photo_library_outlined, color: AppColors.black),
               title: const Text('Thư viện ảnh'),
-              onTap: () {
-                Navigator.pop(context);
-                _viewModel.pickImages();
-              },
+              onTap: () => Navigator.pop(ctx, 'gallery'),
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt_outlined, color: AppColors.black),
               title: const Text('Chụp ảnh'),
-              onTap: () {
-                Navigator.pop(context);
-                Future.delayed(const Duration(milliseconds: 300), _viewModel.pickFromCamera);
-              },
+              onTap: () => Navigator.pop(ctx, 'camera'),
             ),
             const SizedBox(height: 8),
           ],
         ),
       ),
-    );
+    ).then((value) {
+      if (!mounted) return;
+      if (value == 'gallery') _viewModel.pickImages();
+      if (value == 'camera') _viewModel.pickFromCamera();
+    });
   }
 
   // ── Input bar ──────────────────────────────────────────────

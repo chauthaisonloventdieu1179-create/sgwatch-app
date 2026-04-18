@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/features/favorites/presentation/favorite_viewmodel.dart';
 import 'package:sgwatch_app/features/home/data/models/product_model.dart';
@@ -29,53 +27,44 @@ class HomeProductHorizontalList extends StatefulWidget {
 class _HomeProductHorizontalListState
     extends State<HomeProductHorizontalList> {
   late final ScrollController _scrollController;
-  Timer? _timer;
+  bool _disposed = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // Đợi frame đầu tiên render xong rồi mới bắt đầu auto-scroll
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _startAutoScroll();
-    });
+    _startAutoScroll();
   }
 
-  void _startAutoScroll() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (!mounted) return;
-      if (!_scrollController.hasClients) return;
+  Future<void> _startAutoScroll() async {
+    // Chờ widget render xong và data sẵn sàng
+    await Future.delayed(const Duration(seconds: 4));
 
-      final pos = _scrollController.position;
-      if (pos.maxScrollExtent <= 0) return;
-
-      final current = pos.pixels;
-      final step = (widget.cardWidth ?? 170) + 12; // card + separator
-
-      try {
-        if (current + step >= pos.maxScrollExtent) {
-          // Về đầu danh sách
-          _scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 800),
-            curve: Curves.easeInOut,
-          );
-        } else {
-          _scrollController.animateTo(
-            current + step,
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.easeInOut,
-          );
+    while (!_disposed && mounted) {
+      if (_scrollController.hasClients) {
+        final pos = _scrollController.position;
+        if (pos.maxScrollExtent > 0) {
+          final current = pos.pixels;
+          final step = (widget.cardWidth ?? 170) + 12;
+          final goBack = current + step >= pos.maxScrollExtent;
+          try {
+            await _scrollController.animateTo(
+              goBack ? 0 : current + step,
+              duration: Duration(milliseconds: goBack ? 800 : 600),
+              curve: Curves.easeInOut,
+            );
+          } catch (_) {}
         }
-      } catch (_) {
-        // Bỏ qua nếu scroll không khả dụng tại thời điểm này
       }
-    });
+
+      if (_disposed || !mounted) break;
+      await Future.delayed(const Duration(seconds: 3));
+    }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _disposed = true;
     _scrollController.dispose();
     super.dispose();
   }

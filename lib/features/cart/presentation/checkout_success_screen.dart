@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:sgwatch_app/app/config/constants.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
@@ -464,10 +465,49 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
                 highlight: true,
               ),
               _bankRow('Nội dung CK', _transferContent),
+              const SizedBox(height: 10),
+              _youtubeLink(
+                'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
+              ),
+              const SizedBox(height: 6),
+              _youtubeLink(
+                'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _youtubeLink(String title, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.play_circle_outline, size: 18, color: Colors.red),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.red,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.red,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

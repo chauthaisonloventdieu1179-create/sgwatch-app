@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -1438,10 +1439,49 @@ class _PaymentReceiptSheetState extends State<_PaymentReceiptSheet> {
               _buildBankRow('Chủ tài khoản', 'エスジージー(ド)\nSGG合同会社'),
               _buildBankRow('Số tiền', PriceFormatter.formatJPY(widget.order.totalAmount), highlight: true),
               _buildBankRow('Nội dung CK', transferContent),
+              const SizedBox(height: 10),
+              _youtubeLink(
+                'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
+              ),
+              const SizedBox(height: 6),
+              _youtubeLink(
+                'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _youtubeLink(String title, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.play_circle_outline, size: 18, color: Colors.red),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.red,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.red,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1596,6 +1636,16 @@ class _BankInfoSheet extends StatelessWidget {
                       _BankEntry('Số tiền', PriceFormatter.formatJPY(order.totalAmount), highlight: true),
                       _BankEntry('Nội dung CK', '${order.orderNumber} - ${order.shippingName}'),
                     ], bgColor: const Color(0xFFF1F8E9), borderColor: const Color(0xFFA5D6A7)),
+                    const SizedBox(height: 10),
+                    _youtubeLink(
+                      'Hướng dẫn chuyển tiền tại cây ATM (Yucho → Mizuho)',
+                      'https://www.youtube.com/watch?v=HmFedZcUJbQ&si=i9yqre-r0Fad9M5e',
+                    ),
+                    const SizedBox(height: 6),
+                    _youtubeLink(
+                      'Hướng dẫn chuyển tiền banking qua app (Yucho → Mizuho)',
+                      'https://www.youtube.com/shorts/aJJ3QECKOs8?si=SenPfoaYKPYl-xxl',
+                    ),
                   ],
                 ],
               ),
@@ -1672,6 +1722,35 @@ class _BankInfoSheet extends StatelessWidget {
             child: const Padding(
               padding: EdgeInsets.only(left: 6),
               child: Icon(Icons.copy_rounded, size: 16, color: AppColors.grey),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _youtubeLink(String title, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.play_circle_outline, size: 18, color: Colors.red),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.red,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.red,
+              ),
             ),
           ),
         ],

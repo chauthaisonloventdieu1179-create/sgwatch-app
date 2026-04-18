@@ -197,12 +197,12 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
   }
 
   void _showImageSourceSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SafeArea(
+      builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -210,24 +210,22 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
             ListTile(
               leading: const Icon(Icons.photo_library_outlined, color: AppColors.black),
               title: const Text('Thư viện ảnh'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickFromGallery();
-              },
+              onTap: () => Navigator.pop(ctx, 'gallery'),
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt_outlined, color: AppColors.black),
               title: const Text('Chụp ảnh'),
-              onTap: () {
-                Navigator.pop(context);
-                Future.delayed(const Duration(milliseconds: 300), _pickFromCamera);
-              },
+              onTap: () => Navigator.pop(ctx, 'camera'),
             ),
             const SizedBox(height: 8),
           ],
         ),
       ),
-    );
+    ).then((value) {
+      if (!mounted) return;
+      if (value == 'gallery') _pickFromGallery();
+      if (value == 'camera') _pickFromCamera();
+    });
   }
 
   Future<void> _pickFromGallery() async {
