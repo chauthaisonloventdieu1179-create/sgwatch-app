@@ -291,6 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 15),
                 HomeProductHorizontalList(
+                  key: ValueKey(collection.id),
                   products: collection.products,
                   favoriteViewModel: _favoriteVM,
                   // 2 card đầy + card thứ 3 lấp ló ~5px

@@ -297,9 +297,8 @@ class ChatViewModel extends ChangeNotifier {
       if (picked == null) return;
       _pendingImages.add(File(picked.path));
       notifyListeners();
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('[ChatVM]   pickFromCamera ERROR: $e');
-      debugPrint('[ChatVM]   stackTrace: $st');
     }
   }
 
