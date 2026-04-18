@@ -18,6 +18,7 @@ class ProductDetailViewModel extends ChangeNotifier {
   int _currentImageIndex = 0;
   bool _isDescriptionExpanded = false;
   List<String> _images = [];
+  List<bool> _mediaTypes = [];
   List<List<String>> _specs = [];
   String? _productInfo;
   String? _dealInfo;
@@ -32,6 +33,8 @@ class ProductDetailViewModel extends ChangeNotifier {
   int get currentImageIndex => _currentImageIndex;
   bool get isDescriptionExpanded => _isDescriptionExpanded;
   List<String> get images => _images;
+  bool isVideoAtIndex(int index) =>
+      index >= 0 && index < _mediaTypes.length && _mediaTypes[index];
   List<List<String>> get visibleSpecs =>
       _isDescriptionExpanded ? _specs : _specs.take(6).toList();
   bool get hasMoreSpecs => _specs.length > 6;
@@ -66,6 +69,7 @@ class ProductDetailViewModel extends ChangeNotifier {
   void selectVariant(GroupedProduct v) {
     product = v.toProductModel();
     _images = v.imageUrl.isNotEmpty ? [v.imageUrl] : [product.imageUrl];
+    _mediaTypes = [_isVideoUrl(_images.first)];
     _currentImageIndex = 0;
     _specs = _buildSpecsFromProduct(product);
     notifyListeners();
@@ -108,18 +112,22 @@ class ProductDetailViewModel extends ChangeNotifier {
       // Images from API: primary_image_url first, then images array (no duplicates)
       final seen = <String>{};
       final allImages = <String>[];
+      final allTypes = <bool>[];
       if (detail.imageUrl.isNotEmpty) {
         seen.add(detail.imageUrl);
         allImages.add(detail.imageUrl);
+        allTypes.add(_isVideoUrl(detail.imageUrl));
       }
       if (detail.images != null) {
         for (final img in detail.images!) {
           if (seen.add(img.imageUrl)) {
             allImages.add(img.imageUrl);
+            allTypes.add(img.isVideo);
           }
         }
       }
       _images = allImages.isNotEmpty ? allImages : [detail.imageUrl];
+      _mediaTypes = allTypes.isNotEmpty ? allTypes : [false];
 
       _productInfo = detail.productInfo;
       _dealInfo = detail.dealInfo;
@@ -297,6 +305,11 @@ class ProductDetailViewModel extends ChangeNotifier {
       if (_thongSoSkipLabels.contains(label.toLowerCase())) continue;
       specs.add([label, value]);
     }
+  }
+
+  static bool _isVideoUrl(String url) {
+    final lower = url.toLowerCase();
+    return lower.contains('.mp4') || lower.contains('.mov') || lower.contains('.webm');
   }
 
   static const _attributeLabels = {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:sgwatch_app/core/storage/local_storage.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
@@ -271,10 +272,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               itemCount: _viewModel.images.length,
               onPageChanged: (i) => _viewModel.setImageIndex(i),
               itemBuilder: (context, index) {
+                final url = _viewModel.images[index];
+                if (_viewModel.isVideoAtIndex(index)) {
+                  return _VideoSliderItem(
+                    key: ValueKey(url),
+                    url: url,
+                    isActive: index == _viewModel.currentImageIndex,
+                    onTap: () => _openFullScreenVideo(url),
+                  );
+                }
                 return GestureDetector(
                   onTap: () => _openFullScreenGallery(index),
                   child: Image.network(
-                    _viewModel.images[index],
+                    url,
                     fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => const Center(
                       child: Icon(
@@ -1185,6 +1195,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  void _openFullScreenVideo(String url) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => _FullScreenVideoPlayer(url: url)),
+    );
+  }
+
   Future<void> _confirmDeleteReview(ReviewModel review) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -1435,6 +1451,212 @@ class _FullScreenGalleryState extends State<_FullScreenGallery> {
                     '${_currentIndex + 1} / ${widget.images.length}',
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Video thumbnail item in PageView slider ───────────────────
+class _VideoSliderItem extends StatefulWidget {
+  final String url;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _VideoSliderItem({
+    super.key,
+    required this.url,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  State<_VideoSliderItem> createState() => _VideoSliderItemState();
+}
+
+class _VideoSliderItemState extends State<_VideoSliderItem> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() => _initialized = true);
+        _controller.setLooping(true);
+        _controller.setVolume(1.0);
+        if (widget.isActive) _controller.play();
+      });
+  }
+
+  @override
+  void didUpdateWidget(_VideoSliderItem old) {
+    super.didUpdateWidget(old);
+    if (!old.isActive && widget.isActive) {
+      _controller.play();
+    } else if (old.isActive && !widget.isActive) {
+      _controller.pause();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (_initialized)
+            Center(
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            )
+          else
+            const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.play_circle_outline,
+                      color: Colors.white, size: 18),
+                  SizedBox(width: 4),
+                  Text('Video',
+                      style: TextStyle(color: Colors.white, fontSize: 11)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Full-screen video player ──────────────────────────────────
+class _FullScreenVideoPlayer extends StatefulWidget {
+  final String url;
+  const _FullScreenVideoPlayer({required this.url});
+
+  @override
+  State<_FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
+}
+
+class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() => _initialized = true);
+        _controller.setLooping(true);
+        _controller.setVolume(1.0);
+        _controller.play();
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                _controller.play();
+              }
+              setState(() {});
+            },
+            child: Center(
+              child: _initialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                  : const CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
+          // Close button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            right: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+          // Play/pause indicator
+          if (_initialized)
+            Center(
+              child: AnimatedOpacity(
+                opacity: _controller.value.isPlaying ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: Colors.black54,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.play_arrow,
+                      color: Colors.white, size: 40),
+                ),
+              ),
+            ),
+          // Progress bar
+          if (_initialized)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 16,
+              left: 16,
+              right: 16,
+              child: VideoProgressIndicator(
+                _controller,
+                allowScrubbing: true,
+                colors: const VideoProgressColors(
+                  playedColor: AppColors.primary,
+                  bufferedColor: Colors.white38,
+                  backgroundColor: Colors.white24,
                 ),
               ),
             ),

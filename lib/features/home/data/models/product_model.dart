@@ -193,13 +193,21 @@ class ProductImage {
   final String imageUrl;
   final bool isPrimary;
   final int sortOrder;
+  final String fileType;
 
   const ProductImage({
     required this.id,
     required this.imageUrl,
     this.isPrimary = false,
     this.sortOrder = 0,
+    this.fileType = 'image',
   });
+
+  bool get isVideo {
+    if (fileType == 'video') return true;
+    final url = imageUrl.toLowerCase();
+    return url.contains('.mp4') || url.contains('.mov') || url.contains('.webm');
+  }
 
   factory ProductImage.fromJson(Map<String, dynamic> json) {
     return ProductImage(
@@ -207,6 +215,7 @@ class ProductImage {
       imageUrl: json['image_url']?.toString() ?? '',
       isPrimary: json['is_primary'] as bool? ?? false,
       sortOrder: json['sort_order'] as int? ?? 0,
+      fileType: json['file_type']?.toString() ?? 'image',
     );
   }
 }
