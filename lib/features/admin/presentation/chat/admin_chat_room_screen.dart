@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
 import 'package:sgwatch_app/core/services/pusher_service.dart';
 import 'package:sgwatch_app/core/storage/local_storage.dart';
@@ -239,16 +240,56 @@ class _AdminChatRoomScreenState extends State<AdminChatRoomScreen> {
   }
 
   Future<void> _pickFromCamera() async {
-    debugPrint('[AdminChatRoom] ── _pickFromCamera ──');
+    final status = await Permission.camera.status;
+    if (status.isGranted) {
+      await _doPickCamera();
+      return;
+    }
+    if (status.isPermanentlyDenied) {
+      _showCameraPermissionDialog();
+      return;
+    }
+    final result = await Permission.camera.request();
+    if (result.isGranted) {
+      await _doPickCamera();
+    } else {
+      _showCameraPermissionDialog();
+    }
+  }
+
+  Future<void> _doPickCamera() async {
     try {
       final picked = await _picker.pickImage(source: ImageSource.camera);
-      debugPrint('[AdminChatRoom]   pickImage result: ${picked?.path ?? 'null'}');
       if (picked == null) return;
       setState(() => _pendingImages.add(File(picked.path)));
-    } catch (e, st) {
-      debugPrint('[AdminChatRoom]   _pickFromCamera ERROR: $e');
-      debugPrint('[AdminChatRoom]   stackTrace: $st');
+    } catch (e) {
+      debugPrint('[AdminChatRoom] _doPickCamera ERROR: $e');
     }
+  }
+
+  void _showCameraPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cần quyền camera'),
+        content: const Text(
+            'Vui lòng cho phép SGWatch truy cập camera trong Cài đặt.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Đóng'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings();
+            },
+            child: const Text('Mở Cài đặt',
+                style: TextStyle(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

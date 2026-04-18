@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/core/utils/date_formatter.dart';
@@ -600,8 +601,51 @@ class _ChatScreenState extends State<ChatScreen> {
     ).then((value) {
       if (!mounted) return;
       if (value == 'gallery') _viewModel.pickImages();
-      if (value == 'camera') _viewModel.pickFromCamera();
+      if (value == 'camera') _openCamera();
     });
+  }
+
+  Future<void> _openCamera() async {
+    final status = await Permission.camera.status;
+    if (status.isGranted) {
+      await _viewModel.pickFromCamera();
+      return;
+    }
+    if (status.isPermanentlyDenied) {
+      _showCameraPermissionDialog();
+      return;
+    }
+    final result = await Permission.camera.request();
+    if (result.isGranted) {
+      await _viewModel.pickFromCamera();
+    } else {
+      _showCameraPermissionDialog();
+    }
+  }
+
+  void _showCameraPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cần quyền camera'),
+        content: const Text(
+            'Vui lòng cho phép SGWatch truy cập camera trong Cài đặt.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Đóng'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings();
+            },
+            child: const Text('Mở Cài đặt',
+                style: TextStyle(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
   }
 
   // ── Input bar ──────────────────────────────────────────────
