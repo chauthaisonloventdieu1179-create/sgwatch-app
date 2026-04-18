@@ -1660,7 +1660,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       setState(() => _isPlacingOrder = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Không nhận được thông tin thanh toán Stripe.'),
+          content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
           backgroundColor: AppColors.primary,
         ),
       );
@@ -1694,10 +1694,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _showStripeRetrySheet(orderId: orderId, orderNumber: orderNumber);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Thanh toán thất bại: ${e.error.localizedMessage ?? e.error.message}',
-            ),
+          const SnackBar(
+            content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
             backgroundColor: AppColors.primary,
           ),
         );
@@ -1765,10 +1763,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Thanh toán thất bại: ${e.error.localizedMessage ?? e.error.message}',
-            ),
+          const SnackBar(
+            content: Text('Hệ thống đang bảo trì. Vui lòng chọn phương án thanh toán khác.'),
             backgroundColor: AppColors.primary,
           ),
         );
