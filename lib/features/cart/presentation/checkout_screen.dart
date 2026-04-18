@@ -1258,7 +1258,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               width: 160,
               height: 48,
               child: ElevatedButton(
-                onPressed: _canPlaceOrder() ? _placeOrder : null,
+                onPressed: _canPlaceOrder() ? _confirmAndPlaceOrder : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.black,
                   foregroundColor: AppColors.white,
@@ -1299,6 +1299,140 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (_isPlacingOrder) return false;
     if (_cartVM.items.isEmpty) return false;
     return true;
+  }
+
+  Future<void> _confirmAndPlaceOrder() async {
+    final isDeposit = _selectedPaymentMethod
+            ?.contains('Cọc') ==
+        true;
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('Xác nhận đặt hàng',
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.black)),
+            const SizedBox(height: 16),
+            _confirmRow('Sản phẩm',
+                '${_cartVM.items.length} sản phẩm'),
+            const SizedBox(height: 8),
+            _confirmRow('Thanh toán',
+                _selectedPaymentMethod ?? ''),
+            const SizedBox(height: 8),
+            _confirmRow('Địa chỉ',
+                _selectedAddress?.fullAddress ?? ''),
+            const Divider(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Tổng cộng',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      isDeposit
+                          ? PriceFormatter.formatVND(1000000)
+                          : PriceFormatter.formatJPY(_grandTotal),
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary),
+                    ),
+                    if (isDeposit)
+                      const Text('(Cọc 1 triệu VND)',
+                          style: TextStyle(
+                              fontSize: 11, color: AppColors.grey)),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.grey,
+                      side: const BorderSide(color: AppColors.greyLight),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: const Text('Hủy',
+                        style: TextStyle(fontSize: 14)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      foregroundColor: AppColors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: const Text('Xác nhận',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed == true) _placeOrder();
+  }
+
+  Widget _confirmRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 90,
+          child: Text(label,
+              style: const TextStyle(fontSize: 13, color: AppColors.grey)),
+        ),
+        Expanded(
+          child: Text(value,
+              style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.black)),
+        ),
+      ],
+    );
   }
 
   Future<void> _placeOrder() async {
