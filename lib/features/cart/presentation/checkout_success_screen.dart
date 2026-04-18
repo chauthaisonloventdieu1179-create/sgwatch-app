@@ -523,11 +523,11 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Tải lên biên lai chuyển khoản',
+            'Bạn cần tải biên lai chuyển khoản tại đây.',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: AppColors.black,
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 4),
@@ -666,7 +666,8 @@ class _CheckoutSuccessScreenState extends State<CheckoutSuccessScreen> {
         Text(
           hasFile ? 'Đã chọn ảnh — nhấn để đổi' : 'Nhấn để chọn ảnh biên lai',
           style: TextStyle(
-            fontSize: 13,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
             color: hasFile ? Colors.green : AppColors.greyPlaceholder,
           ),
         ),
