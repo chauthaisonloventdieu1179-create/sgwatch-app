@@ -459,7 +459,7 @@ class _AdminChatListScreenState extends State<AdminChatListScreen> {
 
   String _formatTime(String createdAt) {
     try {
-      final dt = DateTime.parse(createdAt.replaceAll(' ', 'T'));
+      final dt = DateTime.parse(createdAt.replaceAll(' ', 'T')).toLocal();
       final now = DateTime.now();
       final diff = now.difference(dt);
       if (diff.inDays == 0) {

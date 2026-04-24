@@ -143,8 +143,7 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
           // TikTok
           _buildImageButton(
             onTap: _openTikTok,
-            assetPath: 'assets/logo/logo-tiktok.webp',
-            size: 64,
+            assetPath: 'assets/logo/logotiktok.png',
           ),
           const SizedBox(height: 10),
           // Zalo
