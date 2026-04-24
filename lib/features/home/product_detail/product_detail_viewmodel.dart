@@ -238,6 +238,8 @@ class ProductDetailViewModel extends ChangeNotifier {
     'số hiệu sản phẩm',
     'mã sản phẩm',
     'giới tính',
+    'loại máy',
+    'bảo hành',
   };
 
   List<List<String>> _buildSpecsFromProduct(ProductModel p) {
@@ -291,20 +293,52 @@ class ProductDetailViewModel extends ChangeNotifier {
   }
 
   void _appendThongSoKyThuat(String raw, List<List<String>> specs) {
-    // Tách theo dòng trống (\r\n\r\n hoặc \n\n)
-    final lines = raw.split(RegExp(r'\r?\n\r?\n'));
+    // Tách theo từng dòng đơn
+    final lines = raw.split(RegExp(r'\r?\n'));
+    String? pendingGroupLabel; // label không có value (vd: "Tính năng khác:")
+    final pendingGroupItems = <String>[];
+
+    void flushGroup() {
+      if (pendingGroupLabel != null && pendingGroupItems.isNotEmpty) {
+        specs.add([pendingGroupLabel!, pendingGroupItems.join(', ')]);
+      }
+      pendingGroupLabel = null;
+      pendingGroupItems.clear();
+    }
+
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.isEmpty) continue;
+
       final colonIdx = trimmed.indexOf(':');
-      if (colonIdx < 0) continue;
+      if (colonIdx < 0) {
+        // Dòng không có dấu ":" → bullet item của group trước
+        if (pendingGroupLabel != null) {
+          pendingGroupItems.add(trimmed);
+        }
+        continue;
+      }
+
       final label = trimmed.substring(0, colonIdx).trim();
       final value = trimmed.substring(colonIdx + 1).trim();
-      if (label.isEmpty || value.isEmpty) continue;
-      // Bỏ các dòng trùng với fixed rows đã hiển thị
+
+      if (value.isEmpty) {
+        // Header không có value (vd: "Tính năng khác:") → flush group cũ, bắt đầu group mới
+        flushGroup();
+        if (label.isNotEmpty && !_thongSoSkipLabels.contains(label.toLowerCase())) {
+          pendingGroupLabel = label;
+        }
+        continue;
+      }
+
+      // Dòng có đầy đủ label: value
+      flushGroup();
+      if (label.isEmpty) continue;
       if (_thongSoSkipLabels.contains(label.toLowerCase())) continue;
       specs.add([label, value]);
     }
+
+    flushGroup();
   }
 
   static bool _isVideoUrl(String url) {

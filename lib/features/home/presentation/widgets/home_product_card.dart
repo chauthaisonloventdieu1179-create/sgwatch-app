@@ -112,6 +112,16 @@ class HomeProductCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             children: [
+                              if (product.isCarnival)
+                                const TextSpan(
+                                  text: 'Bộ sưu tập ',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.black,
+                                    height: 1.3,
+                                  ),
+                                ),
                               TextSpan(
                                 text: product.name,
                                 style: const TextStyle(

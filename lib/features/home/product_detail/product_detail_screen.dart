@@ -383,6 +383,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           RichText(
             text: TextSpan(
               children: [
+                if (p.isCarnival)
+                  const TextSpan(
+                    text: 'Bộ sưu tập ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                      height: 1.4,
+                    ),
+                  ),
                 TextSpan(
                   text: p.name,
                   style: const TextStyle(
