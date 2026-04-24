@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:sgwatch_app/core/network/api_client.dart';
+import 'package:sgwatch_app/features/admin/data/models/admin_blog_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_conversation_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_discount_code_model.dart';
 import 'package:sgwatch_app/features/admin/data/models/admin_inventory_model.dart';
@@ -16,6 +17,7 @@ const _kAdminProducts = '/admin/shop/products';
 const _kAdminBrands = '/admin/shop-brands';
 const _kAdminCategories = '/admin/shop-categories';
 const _kAdminDiscountCodes = '/admin/discount-codes';
+const _kAdminPosts = '/admin/posts';
 const _kChatConversations = '/chat/conversations';
 const _kChatHistoryList = '/chat/history/list';
 const _kChatMarkAsRead = '/chat/messages/mark-as-read';
@@ -308,6 +310,39 @@ class AdminDatasource {
 
   Future<void> deleteDiscountCode(int id) async {
     await _api.delete('$_kAdminDiscountCodes/$id');
+  }
+
+  // ── Blog Posts ───────────────────────────────────────────────────────────
+
+  Future<List<AdminBlogPostModel>> getPosts({
+    int page = 1,
+    int perPage = 20,
+    String? keyword,
+  }) async {
+    final params = <String, dynamic>{'page': page, 'per_page': perPage};
+    if (keyword != null && keyword.isNotEmpty) params['keyword'] = keyword;
+    final resp = await _api.get(_kAdminPosts, queryParameters: params);
+    final data = resp.data['data'] as Map<String, dynamic>;
+    final list = data['posts'] as List? ?? [];
+    return list
+        .map((e) => AdminBlogPostModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<AdminBlogPostModel> createPost(FormData formData) async {
+    final resp = await _api.post(_kAdminPosts, data: formData);
+    final data = resp.data['data']['post'] as Map<String, dynamic>;
+    return AdminBlogPostModel.fromJson(data);
+  }
+
+  Future<AdminBlogPostModel> updatePost(int id, FormData formData) async {
+    final resp = await _api.post('$_kAdminPosts/$id', data: formData);
+    final data = resp.data['data']['post'] as Map<String, dynamic>;
+    return AdminBlogPostModel.fromJson(data);
+  }
+
+  Future<void> deletePost(int id) async {
+    await _api.delete('$_kAdminPosts/$id');
   }
 
   // ── Chat ─────────────────────────────────────────────────────────────────

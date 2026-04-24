@@ -169,13 +169,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLightBlue,
-      body: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(child: _buildBody()),
-        ],
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/bg.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(child: _buildBody()),
+          ],
+        ),
       ),
     );
   }

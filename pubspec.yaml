@@ -42,6 +42,7 @@ flutter:
     - assets/images/
     - assets/images/huongdanmuahang/
     - assets/videos/
+    - assets/backgrounds/
     # - assets/icons/
     # - assets/sounds/
     - assets/logo/logo-app.png

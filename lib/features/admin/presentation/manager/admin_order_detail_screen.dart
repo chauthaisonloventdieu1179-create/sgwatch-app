@@ -540,18 +540,18 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.black)),
           const SizedBox(height: 12),
-          _buildPriceRow('Tạm tính', _formatAmount(o.subtotal)),
+          _buildPriceRow('Tạm tính', o.subtotal.toDouble()),
           if (o.shippingFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow('Phí vận chuyển', _formatAmount(o.shippingFee)),
+            _buildPriceRow('Phí vận chuyển', o.shippingFee.toDouble()),
           ],
           if (o.codFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow('Phí COD', _formatAmount(o.codFee)),
+            _buildPriceRow('Phí COD', o.codFee.toDouble()),
           ],
           if (o.stripeFee > 0) ...[
             const SizedBox(height: 6),
-            _buildPriceRow('Phí Stripe', _formatAmount(o.stripeFee)),
+            _buildPriceRow('Phí Stripe', o.stripeFee.toDouble()),
           ],
           if (o.discountAmount > 0) ...[
             const SizedBox(height: 6),
@@ -560,8 +560,15 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
               children: [
                 const Text('Giảm giá',
                     style: TextStyle(fontSize: 13, color: AppColors.grey)),
-                Text('- ${_formatAmount(o.discountAmount)}',
-                    style: const TextStyle(fontSize: 13, color: Colors.green)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('- ${PriceFormatter.formatJPY(o.discountAmount.toDouble())}',
+                        style: const TextStyle(fontSize: 13, color: Colors.green)),
+                    Text('≈ -${PriceFormatter.formatVND(o.discountAmount.toDouble() * 175)}',
+                        style: const TextStyle(fontSize: 11, color: Colors.green)),
+                  ],
+                ),
               ],
             ),
           ],
@@ -586,12 +593,21 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: AppColors.black)),
-              Text(
-                _formatAmount(o.totalAmount),
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    PriceFormatter.formatJPY(o.totalAmount.toDouble()),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary),
+                  ),
+                  Text(
+                    '≈ ${PriceFormatter.formatVND(o.totalAmount.toDouble() * 175)}',
+                    style: const TextStyle(fontSize: 11, color: AppColors.grey),
+                  ),
+                ],
               ),
             ],
           ),
@@ -860,15 +876,21 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
     );
   }
 
-  Widget _buildPriceRow(String label, String value) {
+  Widget _buildPriceRow(String label, double amount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
             style: const TextStyle(fontSize: 13, color: AppColors.grey)),
-        Text(value,
-            style: const TextStyle(
-                fontSize: 13, color: AppColors.black)),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(PriceFormatter.formatJPY(amount),
+                style: const TextStyle(fontSize: 13, color: AppColors.black)),
+            Text('≈ ${PriceFormatter.formatVND(amount * 175)}',
+                style: const TextStyle(fontSize: 11, color: AppColors.grey)),
+          ],
+        ),
       ],
     );
   }
@@ -905,13 +927,6 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
       default:
         return AppColors.grey;
     }
-  }
-
-  String _formatAmount(int amount) {
-    if (_order!.isVietnamOrder) {
-      return PriceFormatter.formatVND(amount.toDouble());
-    }
-    return PriceFormatter.formatJPY(amount.toDouble());
   }
 
   String _paymentMethodLabel(String method) {

@@ -105,34 +105,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: AppColors.backgroundLightBlue,
-      drawer: _buildDrawer(context),
-      body: Column(
-        children: [
-          // Fixed header
-          HomeHeader(
-            cartItemCount: _viewModel.cartItemCount,
-            onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
-            onSearchSubmit: (query) {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(
-                    builder: (_) => ProductListScreen(searchQuery: query),
-                  ))
-                  .then((_) => _viewModel.refreshBanners());
-            },
-            onCartTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const CartScreen()))
-                  .then((_) => _viewModel.refreshBanners());
-            },
-          ),
-          // Scrollable content
-          Expanded(
-            child: _buildBody(),
-          ),
-        ],
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/bg.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Colors.transparent,
+        drawer: _buildDrawer(context),
+        body: Column(
+          children: [
+            // Fixed header
+            HomeHeader(
+              cartItemCount: _viewModel.cartItemCount,
+              onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+              onSearchSubmit: (query) {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(
+                      builder: (_) => ProductListScreen(searchQuery: query),
+                    ))
+                    .then((_) => _viewModel.refreshBanners());
+              },
+              onCartTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => const CartScreen()))
+                    .then((_) => _viewModel.refreshBanners());
+              },
+            ),
+            // Scrollable content
+            Expanded(
+              child: _buildBody(),
+            ),
+          ],
+        ),
       ),
     );
   }

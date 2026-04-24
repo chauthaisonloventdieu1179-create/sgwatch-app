@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/services/chat_unread_service.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/chat/presentation/chat_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FloatingSocialButtons extends StatefulWidget {
   const FloatingSocialButtons({super.key});
@@ -31,6 +32,13 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _openTikTok() async {
+    final uri = Uri.parse('https://www.tiktok.com/@sgwatch2021?_r=1&_t=ZS-95ng1UNcd76');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   void _showZaloQr(BuildContext context) {
@@ -132,6 +140,12 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // TikTok
+          _buildImageButton(
+            onTap: _openTikTok,
+            assetPath: 'assets/logo/logo-tiktok.webp',
+          ),
+          const SizedBox(height: 10),
           // Zalo
           _buildImageButton(
             onTap: () => _showZaloQr(context),

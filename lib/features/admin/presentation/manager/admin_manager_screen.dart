@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgwatch_app/core/theme/app_colors.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_all_orders_screen.dart';
+import 'package:sgwatch_app/features/admin/presentation/manager/admin_blog_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_discount_codes_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_inventory_screen.dart';
 import 'package:sgwatch_app/features/admin/presentation/manager/admin_notification_create_screen.dart';
@@ -126,7 +127,20 @@ class AdminManagerScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: SizedBox()),
+                Expanded(
+                  child: _buildMenuCard(
+                    context,
+                    icon: Icons.article_outlined,
+                    color: Colors.teal,
+                    title: 'Quản lý Blog',
+                    subtitle: 'Xem & quản lý bài viết',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AdminBlogScreen()),
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 24),
