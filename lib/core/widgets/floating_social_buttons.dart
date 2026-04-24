@@ -144,6 +144,7 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
           _buildImageButton(
             onTap: _openTikTok,
             assetPath: 'assets/logo/logo-tiktok.webp',
+            size: 64,
           ),
           const SizedBox(height: 10),
           // Zalo
@@ -266,12 +267,13 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
   Widget _buildImageButton({
     required VoidCallback onTap,
     required String assetPath,
+    double size = 48,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 48,
-        height: 48,
+        width: size,
+        height: size,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [
@@ -283,7 +285,7 @@ class _FloatingSocialButtonsState extends State<FloatingSocialButtons>
           ],
         ),
         child: ClipOval(
-          child: Image.asset(assetPath, width: 48, height: 48, fit: BoxFit.cover),
+          child: Image.asset(assetPath, width: size, height: size, fit: BoxFit.cover),
         ),
       ),
     );

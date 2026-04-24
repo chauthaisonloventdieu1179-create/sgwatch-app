@@ -54,14 +54,14 @@ class HomeSectionHeader extends StatelessWidget {
                     actionText!,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: AppColors.grey,
+                      color: AppColors.white,
                     ),
                   ),
                   const SizedBox(width: 2),
                   const Icon(
                     Icons.arrow_forward_ios,
                     size: 12,
-                    color: AppColors.grey,
+                    color: AppColors.white,
                   ),
                 ],
               ),
